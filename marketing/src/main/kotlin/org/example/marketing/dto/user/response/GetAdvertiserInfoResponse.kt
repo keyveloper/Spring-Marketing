@@ -1,13 +1,28 @@
 package org.example.marketing.dto.user.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
+import org.example.marketing.dto.user.request.GetAdvertiserInfoRequest
+import org.example.marketing.entity.user.Advertiser
 
 data class GetAdvertiserInfoResponse(
-
-    val advertiserInfo: GetAdvertiserInfoResult,
-
     override val frontErrorCode: Int,
 
-    override val errorMessage: String?
+    override val errorMessage: String,
 
-): FrontErrorResponse(frontErrorCode, errorMessage)
+    val advertiser: Advertiser,
+
+): FrontErrorResponse(frontErrorCode, errorMessage) {
+    companion object {
+        fun of(
+            frontErrorCode: Int,
+            errorMessage: String,
+            advertiser: Advertiser
+        ): GetAdvertiserInfoResponse {
+            return GetAdvertiserInfoResponse(
+                frontErrorCode = frontErrorCode,
+                errorMessage = errorMessage,
+                advertiser = advertiser
+            )
+        }
+    }
+}
