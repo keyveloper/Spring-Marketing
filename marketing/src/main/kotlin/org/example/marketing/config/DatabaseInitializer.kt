@@ -7,10 +7,10 @@ import org.springframework.stereotype.Component
 
 @Component
 class DatabaseInitializer(
-    @Value("\${Spring.datasource.url}") private val url: String,
-    @Value("\${Spring.datasource.username}") private val username: String,
-    @Value("\${Spring.datasource.password}") private val password: String,
-    @Value("\${Spring.datasource.driver-class-name}") private val driver: String,
+    @Value("\${spring.datasource.url}") private val url: String,
+    @Value("\${spring.datasource.username}") private val username: String,
+    @Value("\${spring.datasource.password}") private val password: String,
+    @Value("\${spring.datasource.driver-class-name}") private val driver: String,
     ) {
 
     @PostConstruct
