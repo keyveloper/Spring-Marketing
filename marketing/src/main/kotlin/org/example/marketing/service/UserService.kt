@@ -2,6 +2,7 @@ package org.example.marketing.service
 
 import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
 import org.example.marketing.dto.user.request.MakeNewInfluencerRequest
+import org.example.marketing.entity.user.Influencer
 import org.example.marketing.repository.user.AdvertiserRepository
 import org.example.marketing.repository.user.InfluencerRepository
 import org.springframework.stereotype.Service
@@ -17,5 +18,13 @@ class UserService(
 
     fun makeInfluencer(request: MakeNewInfluencerRequest) {
 
+    }
+
+    fun findAllInfluencers(): List<Influencer> {
+        return influencerRepository.findAll()
+    }
+
+    fun findInfluencerById(id: Long): Influencer? {
+        return influencerRepository.findById(id)
     }
 }
