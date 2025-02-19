@@ -1,4 +1,10 @@
 package org.example.marketing.entity.user
 
-class ChannelType {
-}
+
+data class ChannelType(
+    val id: Long,
+
+    val typeCode: Long,
+
+    val typeName: String,
+)

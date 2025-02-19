@@ -1,11 +1,12 @@
 package org.example.marketing.entity.user
 
-@Entity
-class Influencer(
+import java.time.LocalDateTime
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: String, // login id
+
+class Influencer(
+    val id: Long,
+
+    val loginId: String, // login id
 
     val password: String,
 
@@ -17,6 +18,5 @@ class Influencer(
 
     var birthday: LocalDateTime?,
 
-    @CreatedBy
     var createdAt:LocalDateTime?,
 )

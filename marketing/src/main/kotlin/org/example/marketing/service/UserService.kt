@@ -1,12 +1,20 @@
 package org.example.marketing.service
 
-import org.example.marketing.dto.user.MakeUserRequest
-import org.example.marketing.dto.user.MakeUserResult
+import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
+import org.example.marketing.dto.user.request.MakeNewInfluencerRequest
+import org.example.marketing.repository.user.AdvertiserRepository
 import org.springframework.stereotype.Service
 
 @Service
-class UserService {
-    fun makeNewUser(request: MakeUserRequest): MakeUserResult {
+class UserService(
+    private val advertiserRepository: AdvertiserRepository,
+    private val influencerRepository: InfluencerRepository
+) {
+    fun makeAdvertiser(request: MakeNewAdvertiserRequest) {
+
+    }
+
+    fun makeInfluencer(request: MakeNewInfluencerRequest) {
 
     }
 }

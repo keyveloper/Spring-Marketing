@@ -3,6 +3,9 @@ plugins {
     kotlin("plugin.spring") version "1.9.25"
     id("org.springframework.boot") version "3.4.2"
     id("io.spring.dependency-management") version "1.1.7"
+
+    // for jpa no-arg constructor
+    kotlin("plugin.jpa") version "1.9.25"
 }
 
 group = "org.example"
@@ -21,11 +24,17 @@ repositories {
 dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+    // exposed
+    implementation("org.jetbrains.exposed:exposed-core:0.59.0")
+    implementation("org.jetbrains.exposed:exposed-dao:0.59.0")
+    implementation("org.jetbrains.exposed:exposed-jdbc:0.59.0")
+    implementation("org.jetbrains.exposed:exposed-java-time:0.59.0")
+
 
     // monitoring
     implementation("org.springframework.boot:spring-boot-starter-actuator")
