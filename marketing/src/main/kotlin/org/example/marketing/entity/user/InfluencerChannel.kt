@@ -6,7 +6,7 @@ class InfluencerChannel(
 
     val influencerId: Long,
 
-    val channelTypeId: Long,
+    val channelCode: Long,
 
     val url: String
 )

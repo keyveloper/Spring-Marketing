@@ -16,8 +16,6 @@ data class MakeNewInfluencerRequest(
 
     var birthday: LocalDateTime?,
 
-    val influencerType: List<Int>, //enum code
-
     var blogUrl: String?,
 
     var instagramUrl: String?,

@@ -2,9 +2,7 @@ package org.example.marketing.entity.user
 
 
 data class Channel(
-    val id: Long,
+    val code: Int,
 
-    val typeCode: Long,
-
-    val typeName: String,
+    val name: String,
 )
