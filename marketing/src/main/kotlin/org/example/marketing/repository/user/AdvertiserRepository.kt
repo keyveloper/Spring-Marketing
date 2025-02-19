@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Repository
 
 @Repository
-class UserRepository {
+class AdvertiserRepository {
 
     private fun ResultRow.toAdvertiser() = Advertiser(
         id = this[AdvertisersTable.id].value,

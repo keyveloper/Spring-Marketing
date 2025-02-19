@@ -8,8 +8,6 @@ class Influencer(
 
     val loginId: String, // login id
 
-    val password: String,
-
     val email: String,
 
     val name: String, // user real name
