@@ -13,12 +13,12 @@ class UserService(
     private val advertiserRepository: AdvertiserRepository,
     private val influencerRepository: InfluencerRepository
 ) {
-    fun makeAdvertiser(request: MakeNewAdvertiserRequest) {
-
+    fun saveAdvertiser(request: MakeNewAdvertiserRequest): Long? {
+        return advertiserRepository.insert(request)
     }
 
-    fun makeInfluencer(request: MakeNewInfluencerRequest) {
-
+    fun saveInfluencer(request: MakeNewInfluencerRequest): Long? {
+        return influencerRepository.insert(request)
     }
 
     fun findAllInfluencers(): List<Influencer> {

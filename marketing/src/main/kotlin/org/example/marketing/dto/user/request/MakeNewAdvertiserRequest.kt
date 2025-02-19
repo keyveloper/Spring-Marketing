@@ -1,7 +1,7 @@
 package org.example.marketing.dto.user.request
 
 data class MakeNewAdvertiserRequest(
-    val id: String, //login id,
+    val loginId: String, //login id,
 
     val password: String,
 
@@ -11,7 +11,7 @@ data class MakeNewAdvertiserRequest(
 
     val contact: String,
 
-    var hompageUrl: String?,
+    var homepageUrl: String?,
 
     var advertiserType: Int,
 

@@ -1,25 +1,38 @@
 package org.example.marketing.controller
 
 import org.example.marketing.dto.user.request.GetAdvertiserInfoRequest
+import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
 import org.example.marketing.dto.user.response.GetAdvertiserInfoResponse
+import org.example.marketing.dto.user.response.MakeNewAdvertiserResponse
 import org.example.marketing.entity.user.Advertiser
 import org.example.marketing.enum.FrontErrorCode
 import org.example.marketing.service.UserService
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AdvertiserController(
     private val userService: UserService
 ) {
-//    @PostMapping
-////    fun makeAdvertiser(
-////        request: MakeNewAdvertiserRequest
-////    ): ResponseEntity<MakeNewAdvertiserResponse{
-////
-////    }
+    @PostMapping("/test/advertiser")
+    fun makeAdvertiser(
+        @RequestBody request: MakeNewAdvertiserRequest
+    ): ResponseEntity<MakeNewAdvertiserResponse> {
+        val newId = userService.saveAdvertiser(request)
+
+        return if (newId != null) {
+            ResponseEntity.status(HttpStatus.CREATED).body(
+                MakeNewAdvertiserResponse.of(
+                    FrontErrorCode.OK.code,
+                    FrontErrorCode.OK.message,
+                    newId
+                )
+            )
+        } else {
+            ResponseEntity.status(HttpStatus.CONFLICT).build()
+        }
+    }
 
 
     @GetMapping("/test/advertiser-all")
