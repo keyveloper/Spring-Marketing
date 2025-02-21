@@ -1,4 +1,4 @@
-package org.example.marketing.dto.board
+package org.example.marketing.dto.board.request
 
 import java.time.LocalDateTime
 
