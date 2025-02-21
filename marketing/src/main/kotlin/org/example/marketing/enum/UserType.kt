@@ -1,5 +1,6 @@
 package org.example.marketing.enum
 
-enum class UserType {
-
+enum class UserType(val code: Int) {
+    ADVERTISER(0),
+    INFLUENCER(1)
 }

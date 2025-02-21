@@ -13,5 +13,4 @@ object InfluencersTable: LongIdTable("influencers") {
     val contact: Column<String> = varchar("contact", 50)
     val birthday: Column<LocalDateTime?> = datetime("birthday").nullable()
     val createdAt: Column<LocalDateTime?> = datetime("created_at").nullable()
-
 }

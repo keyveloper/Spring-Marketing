@@ -17,7 +17,6 @@ class SecurityConfig(
                 auth
                     .requestMatchers("/test/**").permitAll()
             }
-
         return http.build()
     }
 }
