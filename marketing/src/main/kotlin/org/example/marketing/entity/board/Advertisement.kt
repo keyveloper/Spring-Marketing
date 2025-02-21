@@ -4,16 +4,16 @@ import java.time.LocalDateTime
 
 data class Advertisement(
     val id: Long,
-    val title: String,
-    val reviewType: Int,
-    val recruitmentNumber: Int,
-    val createdAt: LocalDateTime,
-    val recruitmentFor: String,
-    val announcementAt: LocalDateTime,
-    val reviewFor: String,
-    val endAt: LocalDateTime,
-    val status: Int,
-    val itemName: String,
-    val itemNoteUrl: String?,
-    val itemDescription: String
+    var title: String,
+    var reviewType: Int,
+    var recruitmentNumber: Int,
+    var createdAt: LocalDateTime,
+    var recruitmentFor: String,
+    var announcementAt: LocalDateTime,
+    var reviewFor: String,
+    var endAt: LocalDateTime,
+    var status: Int,
+    var itemName: String,
+    var itemNoteUrl: String?,
+    var itemDescription: String
 )
