@@ -1,11 +1,9 @@
 package org.example.marketing.repository.user
 
 import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
-import org.example.marketing.entity.user.Advertiser
+import org.example.marketing.Dao.user.Advertiser
 import org.example.marketing.table.AdvertisersTable
-import org.jetbrains.exposed.dao.id.EntityID
 import org.jetbrains.exposed.sql.ResultRow
-import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.insertAndGetId
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction

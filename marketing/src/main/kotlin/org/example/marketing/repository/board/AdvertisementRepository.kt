@@ -1,6 +1,6 @@
 package org.example.marketing.repository.board
 
-import org.example.marketing.entity.board.Advertisement
+import org.example.marketing.Dao.board.Advertisement
 import org.jetbrains.exposed.sql.ResultRow
 import org.springframework.stereotype.Repository
 
@@ -16,4 +16,3 @@ class AdvertisementRepository {
     fun delete()
 
     fun update()
-}

@@ -1,8 +1,7 @@
 package org.example.marketing.dto.user.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dto.user.request.GetAdvertiserInfoRequest
-import org.example.marketing.entity.user.Advertiser
+import org.example.marketing.Dao.user.Advertiser
 
 data class GetAdvertiserInfoResponse(
     override val frontErrorCode: Int,

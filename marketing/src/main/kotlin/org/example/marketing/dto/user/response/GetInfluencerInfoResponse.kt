@@ -1,7 +1,7 @@
 package org.example.marketing.dto.user.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.entity.user.Influencer
+import org.example.marketing.Dao.user.Influencer
 
 data class GetInfluencerInfoResponse(
     override val frontErrorCode: Int,

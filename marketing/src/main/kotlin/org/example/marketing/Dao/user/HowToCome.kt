@@ -1,4 +1,4 @@
-package org.example.marketing.entity.user
+package org.example.marketing.Dao.user
 
 
 class HowToCome(

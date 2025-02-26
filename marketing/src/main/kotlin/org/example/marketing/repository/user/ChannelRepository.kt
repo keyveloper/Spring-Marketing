@@ -1,6 +1,6 @@
 package org.example.marketing.repository.user
 
-import org.example.marketing.entity.user.Channel
+import org.example.marketing.Dao.user.Channel
 import org.example.marketing.table.ChannelsTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.springframework.stereotype.Repository

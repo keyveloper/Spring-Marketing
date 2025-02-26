@@ -1,7 +1,7 @@
 package org.example.marketing.repository.user
 
 import org.example.marketing.dto.user.request.InsertInfluencerChannel
-import org.example.marketing.entity.user.InfluencerChannel
+import org.example.marketing.Dao.user.InfluencerChannel
 import org.example.marketing.table.InfluencerChannelsTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.batchInsert

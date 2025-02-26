@@ -3,8 +3,8 @@ package org.example.marketing.service
 import org.example.marketing.dto.user.request.InsertInfluencerChannel
 import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
 import org.example.marketing.dto.user.request.MakeNewInfluencerRequest
-import org.example.marketing.entity.user.Advertiser
-import org.example.marketing.entity.user.Influencer
+import org.example.marketing.Dao.user.Advertiser
+import org.example.marketing.Dao.user.Influencer
 import org.example.marketing.enum.ChannelType
 import org.example.marketing.repository.user.AdvertiserRepository
 import org.example.marketing.repository.user.InfluencerChannelRepository
