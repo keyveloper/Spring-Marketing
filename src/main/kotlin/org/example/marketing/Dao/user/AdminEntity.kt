@@ -1,7 +1,5 @@
 package org.example.marketing.dao.user
 
-import org.example.marketing.Dao.BaseEntity
-import org.example.marketing.Dao.BaseEntityClass
 import org.example.marketing.dao.BaseEntity
 import org.example.marketing.dao.BaseEntityClass
 import org.example.marketing.table.AdminsTable

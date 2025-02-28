@@ -1,4 +1,4 @@
-package org.example.marketing.Dao
+package org.example.marketing.dao
 
 import org.example.marketing.table.BaseLongIdTable
 import org.jetbrains.exposed.dao.LongEntity

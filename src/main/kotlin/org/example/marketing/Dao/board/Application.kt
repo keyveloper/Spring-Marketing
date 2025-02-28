@@ -1,4 +1,4 @@
-package org.example.marketing.Dao.board
+package org.example.marketing.dao.board
 
 import java.time.LocalDateTime
 

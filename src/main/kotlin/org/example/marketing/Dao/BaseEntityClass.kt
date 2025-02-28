@@ -1,4 +1,4 @@
-package org.example.marketing.Dao
+package org.example.marketing.dao
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.table.BaseLongIdTable
