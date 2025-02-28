@@ -1,4 +1,4 @@
-package org.example.marketing.Dao.user
+package org.example.marketing.dao.user
 
 
 class InfluencerChannel(
