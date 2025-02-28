@@ -3,6 +3,7 @@ package org.example.marketing.service
 import org.example.marketing.domain.user.Admin
 import org.example.marketing.dto.user.request.*
 import org.example.marketing.repository.user.AdminRepository
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
@@ -10,38 +11,34 @@ class AdminService(
     private val adminRepository: AdminRepository
 ) {
 
-    fun save(request: MakeNewAdminRequest): Long {
+    fun save(request: MakeNewAdminRequest): Long = transaction {
         val newAdmin = SaveAdmin.of(
             request.loginId,
             request.password
         )
-
-        return adminRepository.save(newAdmin)
+        adminRepository.save(newAdmin)
     }
 
-    fun findById(request: GetAdminRequest): Admin {
-        return Admin.of(
-            adminRepository.findById(request.targetId)
-        )
+    fun findById(request: GetAdminRequest): Admin = transaction {
+        val adminEntity = adminRepository.findById(request.targetId)
+        Admin.of(adminEntity)
     }
 
-    fun findAll(): List<Admin> {
-        return adminRepository.findAll().map {
+    fun findAll(): List<Admin> = transaction {
+        adminRepository.findAll().map {
             Admin.of(it)
         }
     }
 
-    fun update(request: UpdateAdminRequest): Admin {
-        return Admin.of(
+    fun update(request: UpdateAdminRequest): Admin = transaction {
+        Admin.of(
             adminRepository.update(
                 UpdateAdmin.of(request)
             )
         )
     }
 
-    fun deleteById(request: DeleteAdminRequest): Int {
-        return adminRepository.deleteById(
-            request.targetId
-        )
+    fun deleteById(request: DeleteAdminRequest): Int = transaction {
+        adminRepository.deleteById(request.targetId)
     }
 }

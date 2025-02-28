@@ -14,7 +14,7 @@ abstract class BaseEntityClass<E: BaseEntity>(table: BaseLongIdTable): LongEntit
         EntityHook.subscribe { action ->
             if (action.changeType == EntityChangeType.Updated) {
                 try {
-                    action.toEntity(this)?.updatedAt = LocalDateTime.now()
+                    action.toEntity(this)?.updatedAt = System.currentTimeMillis()
                 } catch (e: Exception) {
                     logger.warn { "Failed to update entity $this updatedAt" }
                 }

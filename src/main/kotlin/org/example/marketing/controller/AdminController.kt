@@ -12,11 +12,7 @@ import org.example.marketing.dto.user.response.UpdateAdminResponse
 import org.example.marketing.enum.FrontErrorCode
 import org.example.marketing.service.AdminService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 class AdminController(
@@ -24,7 +20,7 @@ class AdminController(
 ) {
     @PostMapping("/test/admin")
     fun save(
-        @Valid @RequestParam request: MakeNewAdminRequest
+        @Valid @RequestBody request: MakeNewAdminRequest
     ): ResponseEntity<MakeNewAdminResponse> {
         return ResponseEntity.ok().body(
             MakeNewAdminResponse.of(
@@ -37,7 +33,7 @@ class AdminController(
 
     @GetMapping("/test/admin")
     fun findById(
-        @Valid @RequestParam request: GetAdminRequest
+        @Valid @RequestBody request: GetAdminRequest
     ): ResponseEntity<GetAdminResponse> {
         return ResponseEntity.ok().body(
             GetAdminResponse.of(
@@ -63,7 +59,7 @@ class AdminController(
 
     @PostMapping("/test/new/admin")
     fun update(
-        @Valid @RequestParam request: UpdateAdminRequest
+        @Valid @RequestBody request: UpdateAdminRequest
     ): ResponseEntity<UpdateAdminResponse> {
         return ResponseEntity.ok().body(
             UpdateAdminResponse.of(
@@ -76,7 +72,7 @@ class AdminController(
 
     @DeleteMapping("/test/admin")
     fun deleteById(
-        @Valid @RequestParam request: DeleteAdminRequest
+        @Valid @RequestBody request: DeleteAdminRequest
     ): ResponseEntity<DeleteAdminResponse> {
         return ResponseEntity.ok().body(
             DeleteAdminResponse.of(
