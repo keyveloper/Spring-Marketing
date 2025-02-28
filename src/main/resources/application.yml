@@ -1,7 +1,7 @@
 spring:
   datasource:
     url: jdbc:mariadb://localhost:3306/marketing?userSSL=false
-    username: root
+    username: tod
     password: 1234
     driver-class-name: org.mariadb.jdbc.Driver
     hikari:
