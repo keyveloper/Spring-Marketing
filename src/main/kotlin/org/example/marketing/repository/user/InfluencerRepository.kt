@@ -1,7 +1,7 @@
 package org.example.marketing.repository.user
 
 import org.example.marketing.dto.user.request.MakeNewInfluencerRequest
-import org.example.marketing.Dao.user.Influencer
+import org.example.marketing.dao.user.Influencer
 import org.example.marketing.table.InfluencersTable
 import org.jetbrains.exposed.sql.ResultRow
 import org.jetbrains.exposed.sql.insertAndGetId
