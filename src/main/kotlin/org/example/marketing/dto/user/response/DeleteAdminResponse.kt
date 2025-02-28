@@ -1,26 +1,22 @@
 package org.example.marketing.dto.user.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dao.user.Advertiser
 
-data class GetAdvertiserInfoResponse(
+data class DeleteAdminResponse(
     override val frontErrorCode: Int,
-
     override val errorMessage: String,
-
-    val advertiser: Advertiser,
-
+    val effectedRowsCount: Int,
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
-    companion object {
+    companion object{
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            advertiser: Advertiser
-        ): GetAdvertiserInfoResponse {
-            return GetAdvertiserInfoResponse(
+            effectedRowsCount: Int
+        ): DeleteAdminResponse {
+            return DeleteAdminResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                advertiser = advertiser
+                effectedRowsCount = effectedRowsCount
             )
         }
     }

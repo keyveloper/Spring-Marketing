@@ -1,26 +1,24 @@
 package org.example.marketing.dto.user.response
 
+import org.example.marketing.domain.user.Admin
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dao.user.Advertiser
+import org.example.marketing.dto.user.request.GetAdminRequest
 
-data class GetAdvertiserInfoResponse(
+data class GetAdminResponse(
     override val frontErrorCode: Int,
-
     override val errorMessage: String,
-
-    val advertiser: Advertiser,
-
+    val admin: Admin
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
-    companion object {
+    companion object{
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            advertiser: Advertiser
-        ): GetAdvertiserInfoResponse {
-            return GetAdvertiserInfoResponse(
+            admin: Admin
+        ): GetAdminResponse{
+            return GetAdminResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                advertiser = advertiser
+                admin = admin
             )
         }
     }
