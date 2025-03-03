@@ -1,9 +1,11 @@
 package org.example.marketing.exception
 
+import org.example.marketing.enum.FrontErrorCode
 import org.springframework.http.HttpStatus
 
 open class DuplicatedException(
     override val httpStatus: HttpStatus = HttpStatus.CONFLICT,
+    override val frontErrorCode: Int = FrontErrorCode.DUPLICATED.code,
     override val logics: String,
-    override val message: String,
-): BusinessException(httpStatus, logics, message)
+    override val message: String = FrontErrorCode.DUPLICATED.message,
+): BusinessException(httpStatus, frontErrorCode, logics, message)
