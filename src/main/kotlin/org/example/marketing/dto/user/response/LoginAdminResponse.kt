@@ -6,7 +6,7 @@ data class LoginAdminResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val jwtToken: String?
-): FrontErrorResponse() {
+): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,

@@ -5,6 +5,7 @@ import org.example.marketing.enum.UserType
 import org.example.marketing.exception.PasswordNotMatchedException
 import org.example.marketing.repository.user.AdminRepository
 import org.example.marketing.security.JwtTokenProvider
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
@@ -14,7 +15,7 @@ class AuthService(
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder
 ) {
-    fun loginAdmin(request: LoginAdminRequest): String? {
+    fun loginAdmin(request: LoginAdminRequest): String = transaction {
         val admin = adminRepository.findByLoginId(request.loginId)
 
         if (!passwordEncoder.matches(request.password, admin.password)) {
@@ -22,6 +23,8 @@ class AuthService(
         }
 
         val jwtToken = jwtTokenProvider.generateToken(admin.loginId, UserType.ADMIN)
-        return jwtToken
+        jwtToken
     }
+
+
 }

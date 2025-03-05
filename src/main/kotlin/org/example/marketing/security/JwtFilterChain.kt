@@ -6,8 +6,10 @@ import jakarta.servlet.http.HttpServletResponse
 import org.example.marketing.exception.NotFoundBearerTokenException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
 
+@Component
 class JwtFilterChain(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {

@@ -66,7 +66,7 @@ class JwtTokenProvider(
             UserType.INFLUENCER. name -> SimpleGrantedAuthority("ROLE_INFLUENCER")
             else -> throw InvalidUserTypeException(logics = "jwtProvider-getAuthentication")
         }
-        val principal = authPrincipalService.loadAdminByLoginId(loginId)
+        val principal = authPrincipalService.loadUserByTypeAndLoginId(type, loginId)
         return UsernamePasswordAuthenticationToken(principal, token, listOf(authority))
     }
 }
