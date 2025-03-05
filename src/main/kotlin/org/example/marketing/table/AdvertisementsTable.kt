@@ -1,33 +1,36 @@
 package org.example.marketing.table
 
-import org.jetbrains.exposed.dao.id.LongIdTable
+import org.example.marketing.enum.ChannelType
+import org.example.marketing.enum.ReviewType
 import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.javatime.datetime
-import java.time.LocalDateTime
 
-object AdvertisementsTable: LongIdTable("advertisements") {
+object AdvertisementsTable: BaseLongIdTable("advertisements") {
 
-    val title: Column<String> = varchar("title", 50).index()
+    val title: Column<String> = varchar("title", 255).index()
 
-    val reviewType: Column<Int> = integer("reviewType").index()
+    val reviewType: Column<ReviewType> = enumerationByName("review_type", 255, ReviewType::class).index()
+
+    val channelType: Column<ChannelType> = enumerationByName("channel_type", 255, ChannelType::class).index()
 
     val recruitmentNumber: Column<Int> = integer("recruitment_number").index()
 
-    val createdAt: Column<LocalDateTime> = datetime("created_at").index()
+    val itemName: Column<String> = varchar("item_name", 255)
 
-    val recruitmentFor: Column<String> = varchar("recruitment_for", 255)
+    val recruitmentStartAt: Column<Long> = long(" recruitment_start_at").index()
 
-    val announcementAt: Column<LocalDateTime> = datetime("announcement_at")
+    val recruitmentEndAt: Column<Long> = long("recruitment_start_at").index()
 
-    val reviewFor: Column<String> = varchar("review_for", 255)
+    val announcementAt: Column<Long> = long("announcement_at")
 
-    val endAt: Column<LocalDateTime> = datetime("end_at").index()
+    val reviewStartAt: Column<Long> = long("review_start_at")
+
+    val reviewEndAt: Column<Long> = long("review_end_at")
+
+    val endAt: Column<Long> = long("end_at")
 
     val status: Column<Int> = integer("status")
 
-    val itemName: Column<String> = varchar("item_name", 100)
+    val siteUrl: Column<String?> = text("site_url").nullable()
 
-    val itemNoteUrl: Column<String?> = varchar("item_note_url", 255).nullable()
-
-    val itemDescription: Column<String> = text("item_description")
+    val itemInfo: Column<String?> = varchar("item_info", 255).nullable()
 }

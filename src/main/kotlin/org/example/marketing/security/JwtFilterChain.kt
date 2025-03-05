@@ -14,7 +14,11 @@ class JwtFilterChain(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        return super.shouldNotFilter(request)
+        val path = request.requestURI
+
+        val skip = path.startsWith("/test")
+
+        return skip
     }
 
     override fun doFilterInternal(
