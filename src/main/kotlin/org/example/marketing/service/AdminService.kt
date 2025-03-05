@@ -4,17 +4,19 @@ import org.example.marketing.domain.user.Admin
 import org.example.marketing.dto.user.request.*
 import org.example.marketing.repository.user.AdminRepository
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 
 @Service
 class AdminService(
-    private val adminRepository: AdminRepository
+    private val adminRepository: AdminRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     fun save(request: MakeNewAdminRequest): Long = transaction {
         val newAdmin = SaveAdmin.of(
             request.loginId,
-            request.password
+            passwordEncoder.encode(request.password)
         )
         adminRepository.save(newAdmin)
     }

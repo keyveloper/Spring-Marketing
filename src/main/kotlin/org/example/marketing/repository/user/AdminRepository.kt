@@ -11,6 +11,7 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.springframework.stereotype.Component
 import java.sql.SQLException
+import kotlin.math.log
 
 @Component
 class AdminRepository {
@@ -43,9 +44,17 @@ class AdminRepository {
     fun findById(targetId: Long): AdminEntity {
         val admin = AdminEntity.findById(targetId)
             ?:throw NotFoundAdminException(
-                logics = "admin-get",
-                targetId = targetId
+                logics = "admin-get"
             )
+        return admin
+    }
+
+    fun findByLoginId(loginId: String): AdminEntity {
+        val admin = AdminEntity.find { AdminsTable.loginId eq loginId }
+            .firstOrNull() ?: throw NotFoundAdminException(
+                logics = "admins-findByLoginId"
+            )
+
         return admin
     }
 
@@ -57,7 +66,6 @@ class AdminRepository {
         val admin = AdminEntity.findById(updateDto.targetId)
             ?: throw NotFoundAdminException(
                 logics = "admin-update",
-                targetId = updateDto.targetId
             )
 
         try {
@@ -85,7 +93,6 @@ class AdminRepository {
         if (deletedRows == 0) {
             throw NotFoundAdminException(
                 logics = "admin-delete",
-                targetId = targetId // 또는 loginId를 이용해 식별할 수 있는 값
             )
         }
         return deletedRows

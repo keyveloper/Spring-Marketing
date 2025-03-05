@@ -7,6 +7,5 @@ open class NotFoundException(
     override val httpStatus: HttpStatus = HttpStatus.NOT_FOUND,
     override val frontErrorCode: Int = FrontErrorCode.NOT_FOUND_ENTITY.code,
     override val logics: String,
-    override val message: String,
-    open val targetId: Long
+    override val message: String = FrontErrorCode.NOT_FOUND_ENTITY.message,
 ): BusinessException(httpStatus, frontErrorCode, logics, message)
