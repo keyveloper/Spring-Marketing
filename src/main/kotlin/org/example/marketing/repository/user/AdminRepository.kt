@@ -11,7 +11,6 @@ import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.deleteWhere
 import org.springframework.stereotype.Component
 import java.sql.SQLException
-import kotlin.math.log
 
 @Component
 class AdminRepository {

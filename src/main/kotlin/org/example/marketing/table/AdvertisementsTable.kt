@@ -1,5 +1,6 @@
 package org.example.marketing.table
 
+import org.example.marketing.enum.AdvertisementStatus
 import org.example.marketing.enum.ChannelType
 import org.example.marketing.enum.ReviewType
 import org.jetbrains.exposed.sql.Column
@@ -28,7 +29,8 @@ object AdvertisementsTable: BaseLongIdTable("advertisements") {
 
     val endAt: Column<Long> = long("end_at")
 
-    val status: Column<Int> = integer("status")
+    val status: Column<AdvertisementStatus> =
+        enumerationByName("status", 255, AdvertisementStatus::class).index()
 
     val siteUrl: Column<String?> = text("site_url").nullable()
 

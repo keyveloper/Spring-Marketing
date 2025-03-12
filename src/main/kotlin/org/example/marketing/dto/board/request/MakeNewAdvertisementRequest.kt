@@ -1,28 +1,38 @@
 package org.example.marketing.dto.board.request
 
+import jakarta.validation.constraints.NotEmpty
+import org.example.marketing.enum.ChannelType
+import org.example.marketing.enum.ReviewType
 import java.time.LocalDateTime
 
 data class MakeNewAdvertisementRequest(
-
+    @field:NotEmpty
     val title: String,
 
-    val reviewType: Int, // Enum
+    @field:NotEmpty
+    val reviewType: ReviewType,
 
-    val recruitment_number: Int, // 모집인원
+    @field:NotEmpty
+    val channelType: ChannelType,
 
-    val recruitmentFor: String, // Json으로 시간 데이터 저장,
-    // 2025.01.01 ~ 2025.01.03
+    val recruitmentNumber: Int,
+
+    @field:NotEmpty
+    val itemName: String,
+
+    val recruitmentStartAt: LocalDateTime,
+
+    val recruitmentEndAt: LocalDateTime,
 
     val announcementAt: LocalDateTime,
 
-    val reviewFor: String, // Json으로
-    // 2025.01.01 ~ 2025.01.03
+    val reviewStartAt: LocalDateTime,
+
+    val reviewEndAt: LocalDateTime,
 
     val endAt: LocalDateTime,
 
-    val itemName: String,
+    val siteUrl: String?,
 
-    val itemNoteUrl: String?,
-
-    val itemDescription: String
+    val itemInfo: String?,
 )

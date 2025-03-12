@@ -1,29 +1,34 @@
 package org.example.marketing.dto.board.request
 
-import java.time.LocalDateTime
+import org.example.marketing.enum.ChannelType
+import org.example.marketing.enum.ReviewType
 
 data class UpdateAdvertisementRequest (
-    val advertiserId: Long,
+    val advertisementId: Long,
 
-    val title: String,
+    val title: String?,
 
-    val reviewType: Int, // enum
+    val reviewType: ReviewType?,
 
-    val recruitment_number: Int, // 모집인원
+    val channelType: ChannelType?,
 
-    val recruitmentFor: String, // Json으로 시간 데이터 저장,
-    // 2025.01.01 ~ 2025.01.03
+    val recruitmentNumber: Int?,
 
-    val announcementAt: LocalDateTime,
+    val itemName: String?,
 
-    val reviewFor: String, // Json으로
-    // 2025.01.01 ~ 2025.01.03
+    val recruitmentStartAt: Long?,
 
-    val endAt: LocalDateTime,
+    val recruitmentEndAt: Long?,
 
-    val itemName: String,
+    val announcementAt: Long?,
 
-    val itemNoteUrl: String,
+    val reviewStartAt: Long?,
 
-    val itemDescription: String
+    val reviewEndAt: Long?,
+
+    val endAt: Long?,
+
+    val siteUrl: String?,
+
+    val itemInfo: String?,
 )
