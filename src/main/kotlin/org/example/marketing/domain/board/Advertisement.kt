@@ -1,56 +1,141 @@
-package org.example.marketing.domain
+package org.example.marketing.domain.board
 
 import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.dao.board.AdvertisementEntity
+import org.example.marketing.dao.board.AdvertisementLocationEntity
 import org.example.marketing.enum.ChannelType
 import org.example.marketing.enum.ReviewType
-import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.*
 
-data class Advertisement(
-    val id: Long,
-    val title: String,
-    val reviewType: ReviewType,
-    val channelType: ChannelType,
-    val recruitmentNumber: Int,
-    val itemName: String,
-    val recruitmentStartAt: String,
-    val recruitmentEndAt: String,
-    val announcementAt: String,
-    val reviewStartAt: String,
-    val reviewEndAt: String,
-    val endAt: String,
-    val siteUrl: String?,
-    val itemInfo: String?,
-    val createdAt: String,
-    val updatedAt: String,
-) {
-    companion object {
-        fun of(entity: AdvertisementEntity): Advertisement {
-            return Advertisement(
-                id = entity.id.value,
-                title = entity.title,
-                reviewType = entity.reviewType,
-                channelType = entity.channelType,
-                recruitmentNumber = entity.recruitmentNumber,
-                itemName = entity.itemName,
-                recruitmentStartAt = CustomDateTimeFormatter.epochToString(entity.recruitmentStartAt),
-                recruitmentEndAt = CustomDateTimeFormatter.epochToString(entity.recruitmentEndAt),
-                announcementAt = CustomDateTimeFormatter.epochToString(entity.announcementAt),
-                reviewStartAt = CustomDateTimeFormatter.epochToString(entity.reviewStartAt),
-                reviewEndAt = CustomDateTimeFormatter.epochToString(entity.reviewEndAt),
-                endAt = CustomDateTimeFormatter.epochToString(entity.endAt),
-                siteUrl = entity.siteUrl,
-                itemInfo = entity.itemInfo,
-                createdAt = CustomDateTimeFormatter.epochToString(entity.createdAt),
-                updatedAt = CustomDateTimeFormatter.epochToString(entity.updatedAt)
-            )
+sealed class Advertisement {
+
+    data class AdvertisementGeneral(
+        val id: Long,
+        val title: String,
+        val reviewType: ReviewType,
+        val channelType: ChannelType,
+        val recruitmentNumber: Int,
+        val itemName: String,
+        val recruitmentStartAt: String,
+        val recruitmentEndAt: String,
+        val announcementAt: String,
+        val reviewStartAt: String,
+        val reviewEndAt: String,
+        val endAt: String,
+        val siteUrl: String?,
+        val itemInfo: String?,
+        val createdAt: String,
+        val updatedAt: String,
+    ) : Advertisement() {
+        companion object {
+            fun of(entity: AdvertisementEntity): AdvertisementGeneral {
+                return AdvertisementGeneral(
+                    id = entity.id.value,
+                    title = entity.title,
+                    reviewType = entity.reviewType,
+                    channelType = entity.channelType,
+                    recruitmentNumber = entity.recruitmentNumber,
+                    itemName = entity.itemName,
+                    recruitmentStartAt = CustomDateTimeFormatter.epochToString(entity.recruitmentStartAt),
+                    recruitmentEndAt = CustomDateTimeFormatter.epochToString(entity.recruitmentEndAt),
+                    announcementAt = CustomDateTimeFormatter.epochToString(entity.announcementAt),
+                    reviewStartAt = CustomDateTimeFormatter.epochToString(entity.reviewStartAt),
+                    reviewEndAt = CustomDateTimeFormatter.epochToString(entity.reviewEndAt),
+                    endAt = CustomDateTimeFormatter.epochToString(entity.endAt),
+                    siteUrl = entity.siteUrl,
+                    itemInfo = entity.itemInfo,
+                    createdAt = CustomDateTimeFormatter.epochToString(entity.createdAt),
+                    updatedAt = CustomDateTimeFormatter.epochToString(entity.updatedAt)
+                )
+            }
+
+
         }
-
-
     }
+
+    data class AdvertisementWithLocation(
+        val locationEntityId: Long,
+        val advertisementId: Long,
+        val title: String,
+        val reviewType: ReviewType,
+        val channelType: ChannelType,
+        val recruitmentNumber: Int,
+        val itemName: String,
+        val recruitmentStartAt: String,
+        val recruitmentEndAt: String,
+        val announcementAt: String,
+        val reviewStartAt: String,
+        val reviewEndAt: String,
+        val endAt: String,
+        val siteUrl: String?,
+        val itemInfo: String?,
+        val city: String?,
+        val district: String?,
+        val latitude: Double?,
+        val longitude: Double?,
+        val locationDetails: String,
+        val createdAt: String,
+        val updatedAt: String
+    ) : Advertisement() {
+        companion object {
+            fun of(
+                advertisement: AdvertisementEntity,
+                location: AdvertisementLocationEntity
+            ): AdvertisementWithLocation {
+                return Advertisement.AdvertisementWithLocation(
+                    locationEntityId = location.id.value,
+                    advertisementId = advertisement.id.value,
+                    title = advertisement.title,
+                    reviewType = advertisement.reviewType,
+                    channelType = advertisement.channelType,
+                    recruitmentNumber = advertisement.recruitmentNumber,
+                    itemName = advertisement.itemName,
+                    itemInfo = advertisement.itemInfo,
+                    recruitmentStartAt = CustomDateTimeFormatter.epochToString(advertisement.recruitmentStartAt),
+                    recruitmentEndAt = CustomDateTimeFormatter.epochToString(advertisement.recruitmentEndAt),
+                    announcementAt = CustomDateTimeFormatter.epochToString(advertisement.announcementAt),
+                    reviewStartAt = CustomDateTimeFormatter.epochToString(advertisement.reviewStartAt),
+                    reviewEndAt = CustomDateTimeFormatter.epochToString(advertisement.reviewEndAt),
+                    endAt = CustomDateTimeFormatter.epochToString(advertisement.endAt),
+                    siteUrl = advertisement.siteUrl,
+                    city = location.city,
+                    district = location.district,
+                    longitude = location.longitude,
+                    latitude = location.latitude,
+                    locationDetails = location.detailInfo,
+                    createdAt = CustomDateTimeFormatter.epochToString(advertisement.createdAt),
+                    updatedAt = CustomDateTimeFormatter.epochToString(advertisement.updatedAt)
+                )
+            }
+        }
+    }
+
+    data class AdvertisementLocation(
+        val id: Long,
+        val advertisementId: Long,
+        val city: String?,
+        val district: String?,
+        val latitude: Double?,
+        val longitude: Double?,
+        val detailInfo: String,
+        val createdAt: String,
+        val updatedAt: String
+    ) : Advertisement() {
+        companion object {
+            fun of(entity: AdvertisementLocationEntity): AdvertisementLocation {
+                return AdvertisementLocation(
+                    id = entity.id.value,
+                    advertisementId = entity.advertisementId,
+                    city = entity.city,
+                    district = entity.district,
+                    latitude = entity.latitude,
+                    longitude = entity.longitude,
+                    detailInfo = entity.detailInfo,
+                    createdAt = CustomDateTimeFormatter.epochToString(entity.createdAt),
+                    updatedAt = CustomDateTimeFormatter.epochToString(entity.updatedAt)
+                )
+            }
+        }
+    }
+
+
 }

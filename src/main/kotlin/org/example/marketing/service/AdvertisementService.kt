@@ -1,8 +1,10 @@
 package org.example.marketing.service
 
-import org.example.marketing.domain.Advertisement
+import org.example.marketing.dao.board.AdvertisementLocationEntity
+import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.enum.AdvertisementStatus
+import org.example.marketing.enum.ReviewType
 import org.example.marketing.repository.board.AdvertisementLocationRepository
 import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -35,25 +37,38 @@ class AdvertisementService(
             advertisementRepository.deleteById(request.targetId)
         }.id.value
     }
+
     fun findById(targetId: Long): Advertisement {
         return transaction {
-            Advertisement.of(advertisementRepository.findById(targetId))
+            val advertisement = advertisementRepository.findById(targetId)
+
+            if (advertisement.reviewType == ReviewType.VISITED) {
+                val location = findLocationInfoByAdvertisementId(targetId)
+                Advertisement.AdvertisementWithLocation.of(advertisement, location)
+            } else {
+                Advertisement.AdvertisementGeneral.of(advertisement)
+            }
         }
     }
 
-    fun findAllByReviewTypes(request: GetAdvertisementRequestByReviewTypes): List<Advertisement> {
+
+    fun findAllByReviewTypes(request: GetAdvertisementRequestByReviewTypes): List<Advertisement.AdvertisementGeneral> {
         return transaction {
             advertisementRepository.findAllByReviewTypes(request.types).map {
-                Advertisement.of(it)
+                Advertisement.AdvertisementGeneral.of(it)
             }
         }
     }
 
-    fun findAllByChannels(request: GetAdvertisementRequestByChannels): List<Advertisement> {
+    fun findAllByChannels(request: GetAdvertisementRequestByChannels): List<Advertisement.AdvertisementGeneral> {
         return transaction {
             advertisementRepository.findAllByChannels(request.channels).map {
-                Advertisement.of(it)
+                Advertisement.AdvertisementGeneral.of(it)
             }
         }
+    }
+
+    private fun findLocationInfoByAdvertisementId(targetId : Long): AdvertisementLocationEntity {
+        return advertisementLocationRepository.findByAdvertisementId(targetId)
     }
 }

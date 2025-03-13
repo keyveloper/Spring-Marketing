@@ -86,5 +86,4 @@ class AdvertisementRepository {
             AdvertisementsTable.channelType inList channels
         }.toList()
     }
-
 }

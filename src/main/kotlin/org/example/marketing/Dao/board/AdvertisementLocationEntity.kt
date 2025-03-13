@@ -13,4 +13,6 @@ class AdvertisementLocationEntity(id: EntityID<Long>): BaseEntity(id, Advertisem
     var district by AdvertisementLocationsTable.district
     var latitude by AdvertisementLocationsTable.latitude
     val longitude by AdvertisementLocationsTable.longitude
+    val detailInfo by  AdvertisementLocationsTable.detailInfo
+    val status by AdvertisementLocationsTable.status
 }

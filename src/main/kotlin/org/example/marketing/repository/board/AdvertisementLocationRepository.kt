@@ -1,11 +1,14 @@
 package org.example.marketing.repository.board
 
-import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.dao.board.AdvertisementLocationEntity
 import org.example.marketing.dto.board.request.FindAdvertisementsLocations
 import org.example.marketing.dto.board.request.SaveAdvertisementLocation
+import org.example.marketing.enum.CommonEntityStatus
+import org.example.marketing.exception.EntityDeleteException
+import org.example.marketing.exception.NotFoundAdvertisementLocationException
 import org.example.marketing.table.AdvertisementLocationsTable
 import org.jetbrains.exposed.sql.Op
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component
 
@@ -24,6 +27,33 @@ class AdvertisementLocationRepository {
         return advertisementLocation.id.value
     }
 
+
+    fun deleteByAdvertisementId(targetId: Long): AdvertisementLocationEntity {
+        val advertisementLocation = AdvertisementLocationEntity.find{
+            AdvertisementLocationsTable.advertisementId eq targetId
+        }.firstOrNull() ?: throw NotFoundAdvertisementLocationException(
+            logics = "advertisementLocationRep-deleteBy",
+            advertisementId = targetId
+        )
+
+        if (advertisementLocation.status != CommonEntityStatus.LIVE) {
+            throw EntityDeleteException(
+                logics = "advertisementLocationRep-deleteBy"
+            )
+        } else {
+            return advertisementLocation
+        }
+    }
+
+    fun findByAdvertisementId(targetId: Long): AdvertisementLocationEntity {
+        return AdvertisementLocationEntity.find(
+            AdvertisementLocationsTable.advertisementId eq targetId
+        ).firstOrNull() ?: throw NotFoundAdvertisementLocationException(
+            logics = "advertisementRepository-findByAdvertisementId",
+            advertisementId = targetId
+        )
+    }
+
     fun findAllByLocations(findDto: FindAdvertisementsLocations): List<AdvertisementLocationEntity> {
         val cities = findDto.cities.filterNotNull()
         val districts = findDto.districts.filterNotNull()
@@ -39,6 +69,5 @@ class AdvertisementLocationRepository {
             condition
         }.toList()
     }
-
 
 }

@@ -6,6 +6,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     // 40000 ~ : Business error
     DUPLICATED(40000, "Duplicated Value"),
     NOT_FOUND_ENTITY(40001, "Can't find this entity"),
+    CANNOT_DELETE_ENTITY(40002, "Can't delete this entity"),
 
     // 50000 ~ : Server CriticalM
 

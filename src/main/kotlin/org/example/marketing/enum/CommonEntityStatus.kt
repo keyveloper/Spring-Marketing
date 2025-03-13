@@ -1,6 +1,6 @@
 package org.example.marketing.enum
 
-enum class ApplicationStatus(val code: Int) {
+enum class CommonEntityStatus(val code: Int) {
     DELETED(-1),
     LIVE(0)
 }
