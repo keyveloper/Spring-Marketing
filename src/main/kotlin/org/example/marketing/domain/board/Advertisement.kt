@@ -3,10 +3,10 @@ package org.example.marketing.domain
 import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.enum.ChannelType
 import org.example.marketing.enum.ReviewType
+import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.time.format.DateTimeFormatter
 
 data class Advertisement(
     val id: Long,
@@ -28,9 +28,6 @@ data class Advertisement(
 ) {
     companion object {
         fun of(entity: AdvertisementEntity): Advertisement {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
-            fun convert(epoch: Long): String =
-                LocalDateTime.ofInstant(Instant.ofEpochMilli(epoch), ZoneId.systemDefault()).format(formatter)
 
             return Advertisement(
                 id = entity.id.value,
@@ -39,16 +36,40 @@ data class Advertisement(
                 channelType = entity.channelType,
                 recruitmentNumber = entity.recruitmentNumber,
                 itemName = entity.itemName,
-                recruitmentStartAt = convert(entity.recruitmentStartAt),
-                recruitmentEndAt = convert(entity.recruitmentEndAt),
-                announcementAt = convert(entity.announcementAt),
-                reviewStartAt = convert(entity.reviewStartAt),
-                reviewEndAt = convert(entity.reviewEndAt),
-                endAt = convert(entity.endAt),
+                recruitmentStartAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.recruitmentStartAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                recruitmentEndAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.recruitmentEndAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                announcementAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.announcementAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                reviewStartAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.reviewStartAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                reviewEndAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.reviewEndAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                endAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.endAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
                 siteUrl = entity.siteUrl,
                 itemInfo = entity.itemInfo,
-                createdAt = convert(entity.createdAt),
-                updatedAt = convert(entity.updatedAt)
+                createdAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.createdAt),
+                    ZoneId.systemDefault()
+                ).format(formatter),
+                updatedAt = LocalDateTime.ofInstant(
+                    Instant.ofEpochMilli(entity.updatedAt),
+                    ZoneId.systemDefault()
+                ).format(formatter)
             )
         }
     }

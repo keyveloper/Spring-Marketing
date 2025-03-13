@@ -17,9 +17,9 @@ object AdvertisementsTable: BaseLongIdTable("advertisements") {
 
     val itemName: Column<String> = varchar("item_name", 255)
 
-    val recruitmentStartAt: Column<Long> = long(" recruitment_start_at").index()
+    val recruitmentStartAt: Column<Long> = long("recruitment_start_at").index()
 
-    val recruitmentEndAt: Column<Long> = long("recruitment_start_at").index()
+    val recruitmentEndAt: Column<Long> = long("recruitment_end_at").index()
 
     val announcementAt: Column<Long> = long("announcement_at")
 

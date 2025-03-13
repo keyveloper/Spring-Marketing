@@ -30,6 +30,11 @@ class AdvertisementService(
         }
     }
 
+    fun deleteById(request: DeleteAdvertisementRequest): Long {
+        return transaction {
+            advertisementRepository.deleteById(request.targetId)
+        }.id.value
+    }
     fun findById(targetId: Long): Advertisement {
         return transaction {
             Advertisement.of(advertisementRepository.findById(targetId))
@@ -51,7 +56,4 @@ class AdvertisementService(
             }
         }
     }
-
-
-
 }

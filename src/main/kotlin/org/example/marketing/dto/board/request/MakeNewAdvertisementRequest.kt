@@ -9,15 +9,13 @@ data class MakeNewAdvertisementRequest(
     @field:NotEmpty
     val title: String,
 
-    @field:NotEmpty
     val reviewType: ReviewType,
 
-    @field:NotEmpty
     val channelType: ChannelType,
 
     val recruitmentNumber: Int,
 
-    @field:NotEmpty
+    @field: NotEmpty
     val itemName: String,
 
     val recruitmentStartAt: LocalDateTime,

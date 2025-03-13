@@ -1,23 +1,23 @@
 package org.example.marketing.dto.board.response
 
+import org.example.marketing.domain.Advertisement
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dto.user.response.MakeNewAdvertiserResponse
 
-data class DeleteAdvertisementResponse(
+data class GetAdvertisementResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val deletedId: Long,
+    val advertisement: Advertisement?
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            deletedId: Long,
-        ): DeleteAdvertisementResponse {
-            return DeleteAdvertisementResponse(
+            advertisement: Advertisement?
+        ): GetAdvertisementResponse {
+            return GetAdvertisementResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                deletedId = deletedId,
+                advertisement = advertisement
             )
         }
     }
