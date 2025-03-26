@@ -15,7 +15,6 @@ data class Admin(
         fun of(
             entity: AdminEntity
         ): Admin {
-            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
             return Admin(
                 id = entity.id.value,
                 loginId = entity.loginId,

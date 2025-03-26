@@ -12,10 +12,10 @@ class CustomDateTimeFormatter {
 
     companion object {
         fun epochToString(epochTimeMills: Long): String {
-            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss", Locale.KOREA)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.KOREA)
 
             val localDateTime = LocalDateTime
-                .ofInstant(Instant.ofEpochMilli(epochTimeMills), ZoneId.of("Asia/Seoul"))
+                .ofInstant(Instant.ofEpochMilli(epochTimeMills * 1000), ZoneId.of("Asia/Seoul"))
 
             return localDateTime.format(formatter)
         }

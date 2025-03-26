@@ -1,12 +1,14 @@
 package org.example.marketing.repository.board
 
 import org.example.marketing.dao.board.AdvertisementEntity
+import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.enum.AdvertisementStatus
 import org.example.marketing.enum.ChannelType
 import org.example.marketing.enum.ReviewType
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.table.AdvertisementsTable
+import org.jetbrains.exposed.sql.SortOrder
 import org.springframework.stereotype.Component
 
 @Component
@@ -29,7 +31,6 @@ class AdvertisementRepository {
             siteUrl = saveAdvertisement.siteUrl
             itemInfo = saveAdvertisement.itemInfo
         }
-
     }
 
     fun update(updateDto: UpdateAdvertisement): AdvertisementEntity {
@@ -65,6 +66,18 @@ class AdvertisementRepository {
 
         return advertisement
     }
+
+    fun findFreshAll(): List<AdvertisementEntity> {
+        val cutoffTime = System.currentTimeMillis() - 5 * 24 * 60 * 60 * 1000
+        val advertisements = AdvertisementEntity.find {
+            AdvertisementsTable.createdAt lessEq cutoffTime
+        }.orderBy(Pair(AdvertisementsTable.createdAt, SortOrder.DESC))
+            .toList()
+
+        return advertisements
+    }
+
+
 
     fun findById(targetId: Long): AdvertisementEntity {
         val advertisement = AdvertisementEntity.findById(targetId)

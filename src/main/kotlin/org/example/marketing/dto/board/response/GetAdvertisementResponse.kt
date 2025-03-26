@@ -1,18 +1,18 @@
 package org.example.marketing.dto.board.response
 
-import org.example.marketing.domain.AdvertisementGeneral
+import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.error.FrontErrorResponse
 
 data class GetAdvertisementResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val advertisement: AdvertisementGeneral?
+    val advertisement: Advertisement?
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            advertisement: AdvertisementGeneral?
+            advertisement: Advertisement?
         ): GetAdvertisementResponse {
             return GetAdvertisementResponse(
                 frontErrorCode = frontErrorCode,

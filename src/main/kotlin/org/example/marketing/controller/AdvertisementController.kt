@@ -41,6 +41,21 @@ class AdvertisementController(
         )
     }
 
+    @GetMapping("/test/advertisement/fresh")
+    fun getFreshAll(): ResponseEntity<List<GetAdvertisementResponse>> {
+        return ResponseEntity.ok().body(
+            advertisementService.findFreshAll().map {
+                GetAdvertisementResponse.of(
+                    frontErrorCode = FrontErrorCode.OK.code,
+                    errorMessage = FrontErrorCode.OK.message,
+                    advertisement = it
+                )
+            }
+        )
+    }
+
+
+
     @GetMapping("/test/advertisement/by/reviewTypes")
     fun getAllByReviewTypes(
         @Valid @RequestBody request: GetAdvertisementRequestByReviewTypes
@@ -70,6 +85,7 @@ class AdvertisementController(
             }
         )
     }
+    
 
     @PostMapping("/test/advertisement/update")
     fun update(

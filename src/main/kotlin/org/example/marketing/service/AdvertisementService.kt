@@ -38,6 +38,7 @@ class AdvertisementService(
         }.id.value
     }
 
+
     fun findById(targetId: Long): Advertisement {
         return transaction {
             val advertisement = advertisementRepository.findById(targetId)
@@ -51,6 +52,18 @@ class AdvertisementService(
         }
     }
 
+    fun findFreshAll(): List<Advertisement> {
+        return transaction {
+            advertisementRepository.findFreshAll().map {
+                if (it.reviewType != ReviewType.VISITED) {
+                    Advertisement.AdvertisementGeneral.of(it)
+                } else {
+                    val advertisementLocationEntity = findLocationInfoByAdvertisementId(it.id.value)
+                    Advertisement.AdvertisementWithLocation.of(it, advertisementLocationEntity)
+                }
+            }
+        }
+    }
 
     fun findAllByReviewTypes(request: GetAdvertisementRequestByReviewTypes): List<Advertisement.AdvertisementGeneral> {
         return transaction {
