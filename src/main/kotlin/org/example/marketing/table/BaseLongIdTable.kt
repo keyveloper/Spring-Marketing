@@ -8,5 +8,4 @@ import java.time.LocalDateTime
 abstract class BaseLongIdTable(tableName: String, idName: String = "id") : LongIdTable(tableName, idName) {
     val createdAt: Column<Long> = long("created_at").clientDefault { System.currentTimeMillis() / 1000 } // second
     val updatedAt: Column<Long> = long("updated_at").clientDefault { System.currentTimeMillis() / 1000 }
-
 }

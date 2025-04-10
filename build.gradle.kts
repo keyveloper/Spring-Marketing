@@ -6,6 +6,9 @@ plugins {
 
     // for jpa no-arg constructor
     kotlin("plugin.jpa") version "1.9.25"
+
+    // for query DSL
+    kotlin("kapt") version "1.9.25"
 }
 
 group = "org.example"
@@ -60,6 +63,14 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testImplementation("org.springframework.security:spring-security-test")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Circuit Breaker : Resilience4j
+    implementation("org.springframework.boot:spring-boot-starter-aop:3.3.4")
+    implementation("io.github.resilience4j:resilience4j-spring-boot3:2.2.0")
+    kapt("org.springframework.boot:spring-boot-configuration-processor:3.3.4")
+
+    // WebClient
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
 }
 
 kotlin {
