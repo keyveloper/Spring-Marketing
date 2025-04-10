@@ -2,10 +2,7 @@ package org.example.marketing.controller
 
 import jakarta.validation.Valid
 import org.example.marketing.dto.board.request.*
-import org.example.marketing.dto.board.response.DeleteAdvertisementResponse
-import org.example.marketing.dto.board.response.GetAdvertisementResponse
-import org.example.marketing.dto.board.response.MakeNewAdvertisementResponse
-import org.example.marketing.dto.board.response.UpdateAdvertisementResponse
+import org.example.marketing.dto.board.response.*
 import org.example.marketing.enum.FrontErrorCode
 import org.example.marketing.service.AdvertisementService
 import org.springframework.http.ResponseEntity
@@ -42,15 +39,13 @@ class AdvertisementController(
     }
 
     @GetMapping("/test/advertisement/fresh")
-    fun getFreshAll(): ResponseEntity<List<GetAdvertisementResponse>> {
+    fun getFreshAll(): ResponseEntity<GetAdvertisementFreshResponse> {
         return ResponseEntity.ok().body(
-            advertisementService.findFreshAll().map {
-                GetAdvertisementResponse.of(
-                    frontErrorCode = FrontErrorCode.OK.code,
-                    errorMessage = FrontErrorCode.OK.message,
-                    advertisement = it
-                )
-            }
+            GetAdvertisementFreshResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                advertisements = advertisementService.findFreshAll()
+            )
         )
     }
 
