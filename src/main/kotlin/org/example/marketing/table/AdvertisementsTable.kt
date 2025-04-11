@@ -1,8 +1,8 @@
 package org.example.marketing.table
 
-import org.example.marketing.enum.AdvertisementStatus
-import org.example.marketing.enum.ChannelType
-import org.example.marketing.enum.ReviewType
+import org.example.marketing.enums.AdvertisementStatus
+import org.example.marketing.enums.ChannelType
+import org.example.marketing.enums.ReviewType
 import org.jetbrains.exposed.sql.Column
 
 object AdvertisementsTable: BaseLongIdTable("advertisements") {

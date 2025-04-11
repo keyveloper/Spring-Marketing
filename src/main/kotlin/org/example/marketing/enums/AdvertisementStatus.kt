@@ -1,4 +1,4 @@
-package org.example.marketing.enum
+package org.example.marketing.enums
 
 enum class AdvertisementStatus(val code: Int) {
     DELETED(-1),

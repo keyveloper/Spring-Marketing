@@ -1,6 +1,6 @@
 package org.example.marketing.domain.user
 
-import org.example.marketing.enum.UserType
+import org.example.marketing.enums.UserType
 
 interface CustomUserPrincipal {
     val userId: Long

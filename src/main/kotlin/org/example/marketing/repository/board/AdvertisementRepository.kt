@@ -1,11 +1,10 @@
 package org.example.marketing.repository.board
 
 import org.example.marketing.dao.board.AdvertisementEntity
-import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.board.request.*
-import org.example.marketing.enum.AdvertisementStatus
-import org.example.marketing.enum.ChannelType
-import org.example.marketing.enum.ReviewType
+import org.example.marketing.enums.AdvertisementStatus
+import org.example.marketing.enums.ChannelType
+import org.example.marketing.enums.ReviewType
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.table.AdvertisementsTable
 import org.jetbrains.exposed.sql.SortOrder

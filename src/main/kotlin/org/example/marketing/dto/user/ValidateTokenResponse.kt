@@ -1,7 +1,7 @@
 package org.example.marketing.dto.user
 
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.enum.UserType
+import org.example.marketing.enums.UserType
 
 data class ValidateTokenResponse(
     val userId: Long,

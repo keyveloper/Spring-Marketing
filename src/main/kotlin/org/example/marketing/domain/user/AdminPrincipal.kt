@@ -1,7 +1,7 @@
 package org.example.marketing.domain.user
 
 import org.example.marketing.dao.user.AdminEntity
-import org.example.marketing.enum.UserType
+import org.example.marketing.enums.UserType
 
 data class AdminPrincipal(
     override val userId: Long,

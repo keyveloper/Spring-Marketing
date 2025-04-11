@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
-import org.example.marketing.enum.UserType
+import org.example.marketing.enums.UserType
 import org.example.marketing.exception.InvalidJwtTokenException
 import org.example.marketing.exception.InvalidUserTypeException
 import org.example.marketing.service.AuthPrincipalService

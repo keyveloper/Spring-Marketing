@@ -3,7 +3,7 @@ package org.example.marketing.repository.board
 import org.example.marketing.dao.board.AdvertisementLocationEntity
 import org.example.marketing.dto.board.request.FindAdvertisementsLocations
 import org.example.marketing.dto.board.request.SaveAdvertisementLocation
-import org.example.marketing.enum.CommonEntityStatus
+import org.example.marketing.enums.CommonEntityStatus
 import org.example.marketing.exception.EntityDeleteException
 import org.example.marketing.exception.NotFoundAdvertisementLocationException
 import org.example.marketing.table.AdvertisementLocationsTable
