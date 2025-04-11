@@ -3,7 +3,7 @@ package org.example.marketing.controller
 import jakarta.validation.Valid
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.dto.board.response.*
-import org.example.marketing.enum.FrontErrorCode
+import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

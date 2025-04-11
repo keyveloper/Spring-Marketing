@@ -1,8 +1,8 @@
 package org.example.marketing.dto.board.request
 
 import jakarta.validation.constraints.NotEmpty
-import org.example.marketing.enum.ChannelType
-import org.example.marketing.enum.ReviewType
+import org.example.marketing.enums.ChannelType
+import org.example.marketing.enums.ReviewType
 import java.time.LocalDateTime
 
 data class UpdateApplicationRequest (

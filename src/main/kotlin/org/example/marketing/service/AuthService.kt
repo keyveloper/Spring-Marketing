@@ -1,7 +1,7 @@
 package org.example.marketing.service
 
 import org.example.marketing.dto.user.request.LoginAdminRequest
-import org.example.marketing.enum.UserType
+import org.example.marketing.enums.UserType
 import org.example.marketing.exception.PasswordNotMatchedException
 import org.example.marketing.repository.user.AdminRepository
 import org.example.marketing.security.JwtTokenProvider

@@ -1,6 +1,6 @@
 package org.example.marketing.exception
 
-import org.example.marketing.enum.FrontErrorCode
+import org.example.marketing.enums.FrontErrorCode
 import org.springframework.http.HttpStatus
 
 data class InvalidUserTypeException(

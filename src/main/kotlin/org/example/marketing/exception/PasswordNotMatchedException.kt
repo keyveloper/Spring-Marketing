@@ -1,8 +1,7 @@
 package org.example.marketing.exception
 
-import org.example.marketing.enum.FrontErrorCode
+import org.example.marketing.enums.FrontErrorCode
 import org.springframework.http.HttpStatus
-import org.springframework.security.authentication.BadCredentialsException
 
 data class PasswordNotMatchedException(
     override val httpStatus: HttpStatus = HttpStatus.BAD_REQUEST,

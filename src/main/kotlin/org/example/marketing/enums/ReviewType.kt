@@ -1,4 +1,4 @@
-package org.example.marketing.enum
+package org.example.marketing.enums
 
 enum class ReviewType(val code: Int) {
     VISITED(0),

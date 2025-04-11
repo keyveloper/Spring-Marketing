@@ -9,7 +9,7 @@ import org.example.marketing.dto.user.response.DeleteAdminResponse
 import org.example.marketing.dto.user.response.GetAdminResponse
 import org.example.marketing.dto.user.response.MakeNewAdminResponse
 import org.example.marketing.dto.user.response.UpdateAdminResponse
-import org.example.marketing.enum.FrontErrorCode
+import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdminService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*

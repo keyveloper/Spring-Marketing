@@ -4,7 +4,7 @@ import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.user.ValidateTokenResponse
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.response.LoginAdminResponse
-import org.example.marketing.enum.FrontErrorCode
+import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AuthService
 import org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
 import org.springframework.http.ResponseEntity

@@ -1,4 +1,4 @@
-package org.example.marketing.enum
+package org.example.marketing.enums
 
 enum class FrontErrorCode(val code: Int, val message: String) {
     OK(20000, "SUCCESS"),
