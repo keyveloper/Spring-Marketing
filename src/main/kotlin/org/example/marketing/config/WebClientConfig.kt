@@ -1,12 +1,8 @@
 package org.example.marketing.config
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.WebClient
-import java.util.*
-import javax.crypto.Mac
-import javax.crypto.spec.SecretKeySpec
 
 @Configuration
 class WebClientConfig {
@@ -18,6 +14,13 @@ class WebClientConfig {
                 headers["X-Naver-Client-Id"] = props.clientId
                 headers["X-Naver-Client-Secret"] = props.clientSecret
             }
+            .build()
+    }
+
+    @Bean("naverScraperClient")
+    fun naverScraperWebClient(): WebClient {
+        return WebClient.builder()
+            .baseUrl("http://localhost:3000/scrapper")
             .build()
     }
 }

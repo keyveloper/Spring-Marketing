@@ -1,4 +1,4 @@
-package org.example.marketing.dto.naver
+package org.example.marketing.dto.keyword
 
 data class NaverOpenApiParameter(
     val query: String,

@@ -1,13 +1,15 @@
 package org.example.marketing.service
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import org.example.marketing.config.NaverAdApiProperties
-import org.example.marketing.dto.naver.NaverAdApiParameter
-import org.example.marketing.dto.naver.NaverOpenApiParameter
-import org.springframework.beans.factory.annotation.Qualifier
+import org.example.marketing.dto.keyword.RelatedKeywordFromNaverAdServer
+import org.example.marketing.dto.keyword.NaverAdApiParameter
+import org.example.marketing.dto.keyword.RelatedKeywordResponseFromNaverAdServer
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 import reactor.core.publisher.Mono
 import java.util.*
 import javax.crypto.Mac
@@ -15,46 +17,26 @@ import javax.crypto.spec.SecretKeySpec
 
 @Service
 class NaverOpenAPIService(
-    @Qualifier("naverOpenApiClient") private val openApiClient: WebClient,
-    private val adApiProps: NaverAdApiProperties
-    ) {
+    private val adApiProps: NaverAdApiProperties,
+) {
     private val logger = KotlinLogging.logger {}
 
-    @CircuitBreaker(
-        name = "naverOpenApiCircuitBreaker",
-        fallbackMethod = "fetchBlogFallbackMethod"
-    )
-    fun fetchBlogData(parameter: NaverOpenApiParameter): Mono<String> {
-        return openApiClient.get()
-            .uri { uriBuilder ->
-                val builder = uriBuilder
-                    .path("/v1/search/blog.json")
-                    .queryParam("query", parameter.query)
-
-                parameter.display?.let { builder.queryParam("display", it) }
-                parameter.start?.let { builder.queryParam("start", it) }
-                parameter.sort?.let { builder.queryParam("sort", it) }
-
-                builder.build()
-            }
-            .retrieve()
-            .bodyToMono(String::class.java)
-    }
 
     @CircuitBreaker(
         name = "naverAdApiCircuitBreaker",
-        fallbackMethod = "fetchRelKwdStatFallbackMethod"
+        fallbackMethod = "fetchRelatedKeywordFallback"
     )
-    fun fetchRelKwdStatData(
+    suspend fun fetchRelatedKeyword(
         parameter: NaverAdApiParameter
-    ): Mono<String> {
+    ): List<RelatedKeywordFromNaverAdServer> {
         val timeStamp = System.currentTimeMillis().toString()
         val path = "/keywordstool"
         val method = "GET"
-        val signature = generateSignature(timeStamp, method, path, adApiProps.secretKey)
+        val signature =
+            generateSignatureForNaverAdApi(timeStamp, method, path, adApiProps.secretKey)
         logger.info {signature}
 
-        return WebClient.builder()
+        val client = WebClient.builder()
             .baseUrl("https://api.searchad.naver.com")
             .defaultHeader("X-Timestamp", timeStamp)
             .defaultHeader("X-API-KEY", adApiProps.apiKey)
@@ -62,37 +44,32 @@ class NaverOpenAPIService(
             .defaultHeader("X-Signature", signature)
             .defaultHeader("Content-Type", "application/json; charset=utf-8")
             .build()
-            .get()
-            .uri { uriBuilder ->
+
+       return client.get()
+           .uri { uriBuilder ->
                 uriBuilder.path(path)
-                    .queryParam("hintKeywords", parameter.hintKeywords)
+                    .queryParam("hintKeywords", parameter.hintKeyword)
                     .queryParam("showDetail", "1")
                     .apply {
                         parameter.event?.let { queryParam("event", it) }
                     }
                     .build()
             }
-            .retrieve()
-            .bodyToMono(String::class.java)
-
+           .retrieve()
+           .awaitBody<RelatedKeywordResponseFromNaverAdServer>()
+           .keywordList
     }
 
 
-    fun fetchBlogFallbackMethod(
-        parameter: NaverOpenApiParameter,
-        throwable: Throwable
-    ): Mono<String> {
-        return Mono.just("naver opan api service doesn't work")
-    }
 
     fun fetchRelKwdStatFallbackMethod(
         parameter: NaverAdApiParameter,
         throwable: Throwable
-    ): Mono<String> {
-        return Mono.just("naver opan api service doesn't work")
+    ): List<RelatedKeywordFromNaverAdServer> {
+        return listOf()
     }
 
-    private fun generateSignature(
+    private fun generateSignatureForNaverAdApi(
         timeStamp: String,
         method: String,
         path: String,
