@@ -1,9 +1,11 @@
 package org.example.marketing.dto.keyword
 
 data class BlogVisitStat(
-    private val keyword: String,
     private val title: String,
-    private val avg5dCount: Int,
-    private val maxCount: Int,
-    private val minCount: Int
+    private val bloggerId: String,
+    private val blogUrl: String,
+    private val rank: Int,
+    private val avg5dVisitCount: Int,
+    private val max5dVisitCount: Int,
+    private val min5dVisitCount: Int
 )
