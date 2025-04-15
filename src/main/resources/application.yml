@@ -37,3 +37,13 @@ resilience4j:
         failureRateThreshold: 50
         waitDurationInOpenState: 10s
         permittedNumberOfCallsInHalfOpenState: 2
+  timelimiter:
+    instances:
+      naverScraperCircuitBreaker:
+        timeout-duration: 300s
+
+
+logging:
+  level:
+    reactor.netty.http.client: DEBUG
+    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
