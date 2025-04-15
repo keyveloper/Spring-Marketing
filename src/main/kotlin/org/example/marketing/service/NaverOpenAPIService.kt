@@ -2,7 +2,9 @@ package org.example.marketing.service
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.config.NaverAdApiProperties
 import org.example.marketing.dto.keyword.RelatedKeywordFromNaverAdServer
 import org.example.marketing.dto.keyword.NaverAdApiParameter
@@ -18,13 +20,14 @@ import javax.crypto.spec.SecretKeySpec
 @Service
 class NaverOpenAPIService(
     private val adApiProps: NaverAdApiProperties,
+    private val circuitBreakerRegistry: CircuitBreakerRegistry
+
 ) {
     private val logger = KotlinLogging.logger {}
-
+    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("naverAdApiCircuitBreaker")
 
     @CircuitBreaker(
         name = "naverAdApiCircuitBreaker",
-        fallbackMethod = "fetchRelatedKeywordFallback"
     )
     suspend fun fetchRelatedKeyword(
         parameter: NaverAdApiParameter
@@ -34,7 +37,6 @@ class NaverOpenAPIService(
         val method = "GET"
         val signature =
             generateSignatureForNaverAdApi(timeStamp, method, path, adApiProps.secretKey)
-        logger.info {signature}
 
         val client = WebClient.builder()
             .baseUrl("https://api.searchad.naver.com")
@@ -45,24 +47,33 @@ class NaverOpenAPIService(
             .defaultHeader("Content-Type", "application/json; charset=utf-8")
             .build()
 
-       return client.get()
-           .uri { uriBuilder ->
-                uriBuilder.path(path)
-                    .queryParam("hintKeywords", parameter.hintKeyword)
-                    .queryParam("showDetail", "1")
-                    .apply {
-                        parameter.event?.let { queryParam("event", it) }
-                    }
-                    .build()
-            }
-           .retrieve()
-           .awaitBody<RelatedKeywordResponseFromNaverAdServer>()
-           .keywordList
+        logger.info { "hint keyword: ${parameter.hintKeyword}" }
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                client.get()
+                   .uri { uriBuilder ->
+                       uriBuilder.path(path)
+                           .queryParam("hintKeywords", parameter.hintKeyword)
+                           .queryParam("showDetail", "1")
+                           .apply {
+                               parameter.event?.let { queryParam("event", it) }
+                           }
+                           .build()
+                   }
+                   .headers { h -> h.forEach { name, values -> println("$name: ${values.joinToString()}") } }
+                   .retrieve()
+                   .awaitBody<RelatedKeywordResponseFromNaverAdServer>()
+                   .keywordList
+           }
+       } catch (ex: Throwable) {
+           logger.error { "fetchScrapedData circuit error: ${ex.message}" }
+           return emptyList()
+       }
     }
 
 
 
-    fun fetchRelKwdStatFallbackMethod(
+    fun fetchRelatedKeywordFallbackMethod(
         parameter: NaverAdApiParameter,
         throwable: Throwable
     ): List<RelatedKeywordFromNaverAdServer> {
