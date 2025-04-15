@@ -1,32 +1,40 @@
 package org.example.marketing.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dto.keyword.*
 import org.springframework.stereotype.Service
+import kotlin.math.log
 
 @Service
 class GoldenKeywordService(
     private val naverOpenAPIService: NaverOpenAPIService,
     private val naverScraperService: NaverScraperService
 ) {
+    private val logger = KotlinLogging.logger {}
     suspend fun getGoldenKeywords(request: GetGoldenKeywordsRequest): List<GoldenKeywordStat> {
+        val hintKeywordFormat = request.keyword.replace("\\s".toRegex(), "")
         val relatedKeywordStats = naverOpenAPIService.fetchRelatedKeyword(
             NaverAdApiParameter(
-                hintKeyword = request.keyword,
+                hintKeyword = hintKeywordFormat,
                 event = null
             )
         )
 
         val filteredKeywords = filterGoldenKeywordCandidate(
-            originalKeyword = request.keyword,
+            originalKeyword = hintKeywordFormat,
             relatedKeywordStats
         )
+        logger.info { "🚀 relatedKeyword From ad API (filtered): $filteredKeywords" }
+
 
         val top10KeywordsWihOriginal = filteredKeywords.map { it.relKeyword }
+
+        // ✅ scrapping starts
         val scrapedDataList = naverScraperService.fetchScrapedData(top10KeywordsWihOriginal)
+        logger.info { "👋 Scrapped Data: $scrapedDataList" }
 
         return filteredKeywords.mapNotNull { keywordStat ->
             val matchedScrap = scrapedDataList.find { it.keyword == keywordStat.relKeyword }
-
             matchedScrap?.let {
                 GoldenKeywordStat.of(keywordStat, it)
             }
@@ -50,13 +58,13 @@ class GoldenKeywordService(
 
             val volume = ( dto.monthlyMobileQcCnt.toIntOrNull() ?: 1 )+ ( dto.monthlyPcQcCnt.toIntOrNull() ?: 1 )
             val competitionPoint = if (dto.compIdx == "낮음") 2 else 1
-            var final = if (bonus != 0) (volume + bonus) * competitionPoint else 0
+            val final = if (bonus != 0) (volume + bonus) * competitionPoint else 0
 
             dto to final
         }
             .sortedByDescending { it.second }
             .map { it.first }
-            .take(10)
+            .take(0)
 
         return buildList {
             if (original != null) add(original) // ✅ add original at the top
