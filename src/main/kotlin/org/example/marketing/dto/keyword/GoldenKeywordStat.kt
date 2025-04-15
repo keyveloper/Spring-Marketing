@@ -7,7 +7,7 @@ data class GoldenKeywordStat(
     val monthlySearchVolumePc: Int,
     val monthlySearchVolumeMobile: Int,
     val monthlyMeaningfulPostingVolume: Int,
-    val MKEI: Double,
+    val mKEI: Double,
     val competition: String,  // naver ad 낮음, 보통, 높음 ...
     val blogVisitStat: List<BlogVisitStat>,
 ) {
@@ -20,10 +20,10 @@ data class GoldenKeywordStat(
                 keyword = keywordStatData.relKeyword,
                 monthlySearchVolumePc = keywordStatData.monthlyPcQcCnt.toIntOrNull() ?: 1,
                 monthlySearchVolumeMobile = keywordStatData.monthlyMobileQcCnt.toIntOrNull() ?: 1,
-                monthlyMeaningfulPostingVolume = scrappedData.monthlyMeaningFulPostingBlogCount,
-                MKEI = (( keywordStatData.monthlyPcQcCnt.toDoubleOrNull() ?: 1.0)
+                monthlyMeaningfulPostingVolume = scrappedData.monthlyMeaningfulPostingBlogCount,
+                mKEI = (( keywordStatData.monthlyPcQcCnt.toDoubleOrNull() ?: 1.0)
                         + (keywordStatData.monthlyMobileQcCnt.toDoubleOrNull() ?: 1.0)).pow(2)  /
-                        scrappedData.monthlyMeaningFulPostingBlogCount.toDouble(),
+                        scrappedData.monthlyMeaningfulPostingBlogCount.toDouble(),
                 competition = keywordStatData.compIdx,
                 blogVisitStat = scrappedData.blogVisitStat
             )
