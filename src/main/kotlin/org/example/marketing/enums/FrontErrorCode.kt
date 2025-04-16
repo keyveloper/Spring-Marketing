@@ -8,7 +8,8 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     NOT_FOUND_ENTITY(40001, "Can't find this entity"),
     CANNOT_DELETE_ENTITY(40002, "Can't delete this entity"),
 
-    // 50000 ~ : Server CriticalM
+    // 50000 ~ : Server Critical
+    SERVER_CRITICAL(50000, "Server critical error, read http status code"),
 
     // 60000 ~: AUTH ERROR
     NOT_FOUND_BEARER(40002, "Can't find a Bearer Token in Http Header... "),
