@@ -28,7 +28,7 @@ class AdminRepository {
                 when {
                     // MySQL: errorCode 1062는 duplicate entry 오류
                     sqlEx.errorCode == 1062 ->
-                        throw DuplicatedAdminException(
+                          throw DuplicatedAdminException(
                             logics = "admin-insert",
                             duplicatedLoginId = admin.loginId
                         )
