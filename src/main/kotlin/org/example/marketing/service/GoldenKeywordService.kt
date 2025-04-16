@@ -64,11 +64,22 @@ class GoldenKeywordService(
         }
             .sortedByDescending { it.second }
             .map { it.first }
-            .take(0)
+            .take(5)
 
         return buildList {
             if (original != null) add(original) // ✅ add original at the top
             addAll(top10Pairs)                  // ✅ then top 10 others
         }
+    }
+
+    suspend fun testNaverAdApi(parameter: NaverAdApiParameter): List<RelatedKeywordFromNaverAdServer> {
+        val hintKeywordFormat = parameter.hintKeyword.replace("\\s".toRegex(), "")
+        logger.info {"search : $hintKeywordFormat"}
+        return naverOpenAPIService.fetchRelatedKeyword(
+            NaverAdApiParameter(
+                hintKeyword = hintKeywordFormat,
+                event = null
+            )
+        )
     }
 }
