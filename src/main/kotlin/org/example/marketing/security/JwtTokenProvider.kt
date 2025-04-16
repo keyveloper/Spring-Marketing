@@ -7,7 +7,7 @@ import io.jsonwebtoken.security.Keys
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.InvalidJwtTokenException
 import org.example.marketing.exception.InvalidUserTypeException
-import org.example.marketing.service.AuthPrincipalService
+import org.example.marketing.service.UserPrincipalService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -19,7 +19,7 @@ import java.util.*
 @Component
 class JwtTokenProvider(
     @Value("\${jwt.secret}") private val secretKey: String,
-    private val authPrincipalService: AuthPrincipalService
+    private val authPrincipalService: UserPrincipalService
     ) {
 
     private val logger = KotlinLogging.logger {}
