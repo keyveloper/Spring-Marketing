@@ -1,21 +1,19 @@
 package org.example.marketing.dto.user.request
 
+import org.example.marketing.enums.AdvertiserType
+
 data class MakeNewAdvertiserRequest(
-    val loginId: String, //login id,
+    val loginId: String,
 
     val password: String,
 
     val email: String,
 
-    val name: String, // advertiser real name
-
     val contact: String,
 
     var homepageUrl: String?,
 
-    var advertiserType: Int,
-
     var companyName: String,
 
-    val HowToCome: String
-)
+    val advertiserType: AdvertiserType,
+    )
