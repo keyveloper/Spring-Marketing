@@ -2,6 +2,7 @@ package org.example.marketing.service
 
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
+import org.example.marketing.dto.user.response.LoginAdvertiserResult
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.PasswordNotMatchedException
 import org.example.marketing.repository.user.AdminRepository
@@ -29,7 +30,7 @@ class AuthService(
         jwtToken
     }
 
-    fun loginAdvertiser(request: LoginAdvertiserRequest): String = transaction {
+    fun loginAdvertiser(request: LoginAdvertiserRequest): LoginAdvertiserResult = transaction {
         val advertiser = advertiserRepository.findByLoginId(request.loginId)
 
         if (!passwordEncoder.matches(request.password, advertiser.password)) {
@@ -37,7 +38,7 @@ class AuthService(
         }
 
         val jwtToken = jwtTokenProvider.generateToken(advertiser.loginId, UserType.ADVERTISER)
-        jwtToken
+        LoginAdvertiserResult.of(jwtToken, advertiser.id.value)
     }
 
 
