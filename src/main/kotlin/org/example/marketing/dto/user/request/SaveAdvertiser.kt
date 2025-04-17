@@ -3,7 +3,7 @@ package org.example.marketing.dto.user.request
 import org.example.marketing.enums.AdvertiserType
 
 class SaveAdvertiser(
-    val loginId: String, //login id,
+    val loginId: String, //not entity id
 
     val encodePassword: String,
 

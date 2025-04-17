@@ -3,6 +3,8 @@ package org.example.marketing.controller
 import jakarta.validation.Valid
 import org.example.marketing.dto.user.request.GetAdvertiserInfoRequest
 import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest
+import org.example.marketing.dto.user.response.AdvertiserProfileResponse
+import org.example.marketing.dto.user.response.AdvertiserProfileResult
 import org.example.marketing.dto.user.response.GetAdvertiserInfoResponse
 import org.example.marketing.dto.user.response.MakeNewAdvertiserResponse
 import org.example.marketing.enums.FrontErrorCode
@@ -36,6 +38,19 @@ class AdvertiserController(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 advertiser = advertiserService.findUserInfo(request.advertiserId)
+            )
+        )
+    }
+
+    @GetMapping("/test/advertiser/profile")
+    fun findUserProfile(
+        @RequestParam advertiserId: Long,
+    ): ResponseEntity<AdvertiserProfileResponse> {
+        return  ResponseEntity.ok().body(
+            AdvertiserProfileResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                result = advertiserService.findProfiledById(advertiserId)
             )
         )
     }
