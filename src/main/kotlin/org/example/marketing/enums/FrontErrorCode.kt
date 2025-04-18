@@ -7,8 +7,10 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     DUPLICATED(40000, "Duplicated Value"),
     NOT_FOUND_ENTITY(40001, "Can't find this entity"),
     CANNOT_DELETE_ENTITY(40002, "Can't delete this entity"),
+    ALREADY_DELETED_ENTITY(40003, "This entity is deleted already"),
 
-    // 50000 ~ : Server Critical
+    // 50000 ~ : SERVER Error
+    // Server Critical - not handle
     SERVER_CRITICAL(50000, "Server critical error, read http status code"),
 
     // 60000 ~: AUTH ERROR
