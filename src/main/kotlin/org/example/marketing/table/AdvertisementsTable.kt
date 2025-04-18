@@ -5,7 +5,7 @@ import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 import org.jetbrains.exposed.sql.Column
 
-object AdvertisementsTable: BaseLongIdTable("advertisements") {
+object AdvertisementsTable: BaseDateLongIdTable("advertisements") {
 
     val title: Column<String> = varchar("title", 255).index()
 

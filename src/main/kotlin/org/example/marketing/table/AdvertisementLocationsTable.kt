@@ -3,7 +3,7 @@ package org.example.marketing.table
 import org.example.marketing.enums.CommonEntityStatus
 import org.jetbrains.exposed.sql.Column
 
-object AdvertisementLocationsTable: BaseLongIdTable("advertisement_locations") {
+object AdvertisementLocationsTable: BaseDateLongIdTable("advertisement_locations") {
 
     val advertisementId: Column<Long> = long("advertisement_id").uniqueIndex()
 

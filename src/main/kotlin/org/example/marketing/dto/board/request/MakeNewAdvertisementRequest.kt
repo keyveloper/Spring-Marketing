@@ -2,6 +2,7 @@ package org.example.marketing.dto.board.request
 
 import jakarta.validation.constraints.NotEmpty
 import org.example.marketing.enums.ChannelType
+import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
 import java.time.LocalDateTime
 
@@ -33,4 +34,6 @@ data class MakeNewAdvertisementRequest(
     val siteUrl: String?,
 
     val itemInfo: String?,
+
+    val categories: List<DeliveryCategory>,
 )

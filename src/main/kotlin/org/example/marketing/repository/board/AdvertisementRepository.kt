@@ -8,6 +8,7 @@ import org.example.marketing.enums.ReviewType
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.table.AdvertisementsTable
 import org.jetbrains.exposed.sql.SortOrder
+import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component
 
 @Component
@@ -69,7 +70,8 @@ class AdvertisementRepository {
     fun findFreshAll(): List<AdvertisementEntity> {
         val cutoffTime = System.currentTimeMillis() - 5 * 24 * 60 * 60 * 1000
         val advertisements = AdvertisementEntity.find {
-            AdvertisementsTable.createdAt lessEq cutoffTime
+            (AdvertisementsTable.createdAt lessEq cutoffTime) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
         }.orderBy(Pair(AdvertisementsTable.createdAt, SortOrder.DESC))
             .toList()
 
@@ -77,9 +79,10 @@ class AdvertisementRepository {
     }
 
 
-
     fun findById(targetId: Long): AdvertisementEntity {
-        val advertisement = AdvertisementEntity.findById(targetId)
+        val advertisement = AdvertisementEntity.find {
+            (AdvertisementsTable.id eq targetId) and (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+        }.firstOrNull()
             ?: throw NotFoundAdvertisementException(
                 logics = "advertisement - findById"
             )
@@ -87,15 +90,18 @@ class AdvertisementRepository {
         return advertisement
     }
 
-    fun findAllByReviewTypes(reviewTypes: List<ReviewType>): List<AdvertisementEntity> {
+    fun findAllByReviewTypesExceptVisit(reviewTypes: List<ReviewType>): List<AdvertisementEntity> {
         return AdvertisementEntity.find {
-            AdvertisementsTable.reviewType inList reviewTypes
+            (AdvertisementsTable.reviewType inList reviewTypes) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
+                    (AdvertisementsTable.reviewType neq ReviewType.VISITED)
         }.toList()
     }
 
     fun findAllByChannels(channels: List<ChannelType>): List<AdvertisementEntity> {
         return AdvertisementEntity.find {
-            AdvertisementsTable.channelType inList channels
+            (AdvertisementsTable.channelType inList channels) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
         }.toList()
     }
 }
