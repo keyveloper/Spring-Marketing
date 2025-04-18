@@ -1,12 +1,12 @@
 package org.example.marketing.dao.board
 
-import org.example.marketing.dao.BaseEntity
-import org.example.marketing.dao.BaseEntityClass
+import org.example.marketing.dao.BaseDateEntity
+import org.example.marketing.dao.BaseDateEntityClass
 import org.example.marketing.table.AdvertisementsTable
 import org.jetbrains.exposed.dao.id.EntityID
 
-class AdvertisementEntity(id: EntityID<Long>) : BaseEntity(id, AdvertisementsTable) {
-    companion object : BaseEntityClass<AdvertisementEntity>(AdvertisementsTable)
+class AdvertisementEntity(id: EntityID<Long>) : BaseDateEntity(id, AdvertisementsTable) {
+    companion object : BaseDateEntityClass<AdvertisementEntity>(AdvertisementsTable)
     var title by AdvertisementsTable.title
     var reviewType by AdvertisementsTable.reviewType
     var channelType by AdvertisementsTable.channelType

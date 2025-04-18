@@ -4,7 +4,7 @@ import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
 import org.example.marketing.dto.user.response.LoginAdvertiserResult
 import org.example.marketing.enums.UserType
-import org.example.marketing.exception.PasswordNotMatchedException
+import org.example.marketing.exception.NotMatchedPasswordException
 import org.example.marketing.repository.user.AdminRepository
 import org.example.marketing.repository.user.AdvertiserRepository
 import org.example.marketing.security.JwtTokenProvider
@@ -23,7 +23,7 @@ class AuthService(
         val admin = adminRepository.findByLoginId(request.loginId)
 
         if (!passwordEncoder.matches(request.password, admin.password)) {
-            throw PasswordNotMatchedException(logics = "authservice - loginAdmin")
+            throw NotMatchedPasswordException(logics = "authservice - loginAdmin")
         }
 
         val jwtToken = jwtTokenProvider.generateToken(admin.loginId, UserType.ADMIN)
@@ -34,7 +34,7 @@ class AuthService(
         val advertiser = advertiserRepository.findByLoginId(request.loginId)
 
         if (!passwordEncoder.matches(request.password, advertiser.password)) {
-            throw PasswordNotMatchedException(logics = "authService- loginAdvertiser")
+            throw NotMatchedPasswordException(logics = "authService- loginAdvertiser")
         }
 
         val jwtToken = jwtTokenProvider.generateToken(advertiser.loginId, UserType.ADVERTISER)

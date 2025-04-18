@@ -2,11 +2,9 @@ package org.example.marketing.table
 
 import org.example.marketing.enums.AdvertiserType
 import org.example.marketing.enums.UserStatus
-import org.example.marketing.enums.UserType
-import org.example.marketing.table.AdminsTable.uniqueIndex
 import org.jetbrains.exposed.sql.Column
 
-object AdvertisersTable: BaseLongIdTable("advertisers") {
+object AdvertisersTable: BaseDateLongIdTable("advertisers") {
     val loginId: Column<String> = varchar("login_id", 255).uniqueIndex()
     val password: Column<String> = varchar("password", 255)
     val status: Column<UserStatus> = enumerationByName("status", 255, UserStatus::class).index()
