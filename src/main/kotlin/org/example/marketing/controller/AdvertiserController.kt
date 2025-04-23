@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 class AdvertiserController(
     private val advertiserService: AdvertiserService
 ) {
-    @PostMapping("/test/advertiser")
+    @PostMapping("/test/advertiser/geneal")
     fun save(
         @Valid @RequestBody request: MakeNewAdvertiserRequest
     ): ResponseEntity<MakeNewAdvertiserResponse> {

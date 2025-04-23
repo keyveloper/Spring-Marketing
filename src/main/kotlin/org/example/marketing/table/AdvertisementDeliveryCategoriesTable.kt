@@ -4,7 +4,7 @@ import org.example.marketing.enums.DeliveryCategory
 import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 
-object AdvertisementDeliveryCategoriesTable: LongIdTable() {
+object AdvertisementDeliveryCategoriesTable: LongIdTable("advertisement_delivery_categories") {
     val advertisementId: Column<Long> = long("advertisement_id").index()
     val category: Column<DeliveryCategory> = enumerationByName("category", 255, DeliveryCategory::class)
 }
