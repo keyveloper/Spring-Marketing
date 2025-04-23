@@ -3,6 +3,7 @@ package org.example.marketing.repository.board
 import org.example.marketing.dao.board.AdvertisementDeliveryCategoryEntity
 import org.example.marketing.domain.board.AdvertisementDeliveryCategory
 import org.example.marketing.dto.user.request.SaveDeliveryCategory
+import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
 import org.jetbrains.exposed.sql.batchInsert
 import org.springframework.stereotype.Component
@@ -19,11 +20,20 @@ class AdvertisementDeliveryCategoryRepository {
         return insertedRows.size
     }
 
-    fun findByAdvertisementId(targetId: Long): List<AdvertisementDeliveryCategoryEntity> {
+    fun findAllByAdvertisementId(targetId: Long): List<AdvertisementDeliveryCategoryEntity> {
         val entities = AdvertisementDeliveryCategoryEntity.find {
             AdvertisementDeliveryCategoriesTable.advertisementId eq targetId
         }.toList()
 
         return entities
     }
+
+    fun findByCategory(category: DeliveryCategory): List<AdvertisementDeliveryCategoryEntity> {
+        val entities = AdvertisementDeliveryCategoryEntity.find {
+            AdvertisementDeliveryCategoriesTable.category eq category
+        }.toList()
+
+        return entities
+    }
+
 }

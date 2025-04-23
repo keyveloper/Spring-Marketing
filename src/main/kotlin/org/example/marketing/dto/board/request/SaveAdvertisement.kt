@@ -36,7 +36,7 @@ data class SaveAdvertisement(
 ) {
     companion object{
         fun of(
-            request: MakeNewAdvertisementRequest,
+            request: MakeNewAdvertisementGeneralRequest,
             status: AdvertisementStatus
         ): SaveAdvertisement {
             val zone = ZoneId.of("Asia/Seoul")

@@ -1,23 +1,23 @@
 package org.example.marketing.dto.board.response
 
-import org.example.marketing.domain.board.AdvertisementGeneral
+import org.example.marketing.domain.board.AdvertisementDelivery
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class GetAdvertisementFreshResponse(
+data class GetAdvertisementDeliveryResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val advertisements: List<AdvertisementGeneral>
+    val advertisement: AdvertisementDelivery
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            advertisements: List<AdvertisementGeneral>
-        ): GetAdvertisementFreshResponse {
-            return GetAdvertisementFreshResponse(
+            advertisement: AdvertisementDelivery
+        ): GetAdvertisementDeliveryResponse {
+            return GetAdvertisementDeliveryResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                advertisements = advertisements
+                advertisement = advertisement
             )
         }
     }
