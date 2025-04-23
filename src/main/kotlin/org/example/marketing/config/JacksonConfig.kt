@@ -1,5 +1,6 @@
 package org.example.marketing.config
 
+import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -17,5 +18,6 @@ class JacksonConfig {
         return ObjectMapper()
             .registerModule(KotlinModule.Builder().build())
             .registerModule(module)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
 }
