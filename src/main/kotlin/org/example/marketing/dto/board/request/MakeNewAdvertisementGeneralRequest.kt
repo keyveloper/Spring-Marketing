@@ -34,6 +34,4 @@ data class MakeNewAdvertisementGeneralRequest(
     val siteUrl: String?,
 
     val itemInfo: String?,
-
-    val categories: List<DeliveryCategory>,
 )

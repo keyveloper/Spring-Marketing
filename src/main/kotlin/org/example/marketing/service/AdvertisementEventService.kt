@@ -18,69 +18,69 @@ class AdvertisementEventService(
 
 ) {
 
-    fun findFreshAll(): List<AdvertisementGeneral> {
-        return transaction {
-            advertisementRepository.findFreshAll().map {
-
-                when (it.reviewType) {
-                    ReviewType.DELIVERY -> {
-                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
-                            .map { AdvertisementDeliveryCategory.of(it) }
-                        AdvertisementGeneral.AdvertisementDelivery.of(
-                            it,
-                            AdvertisementDeliveryCategories.of(categoryDomains)
-                        )
-                    }
-
-                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
-                }
-            }
-        }
-    }
-
-
-
-    fun findAllByReviewTypes(request: GetAdvertisementRequestByReviewTypes): List<AdvertisementGeneral> {
-        return transaction {
-            advertisementRepository.findAllByReviewTypesExceptVisit(request.types).map {
-                when (it.reviewType) {
-                    ReviewType.DELIVERY -> {
-                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
-                            .map { AdvertisementDeliveryCategory.of(it) }
-                        AdvertisementGeneral.AdvertisementDelivery.of(
-                            it,
-                            AdvertisementDeliveryCategories.of(categoryDomains)
-                        )
-                    }
-
-                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
-                }
-            }
-        }
-    }
-
-    fun findAllByChannels(request: GetAdvertisementRequestByChannels): List<AdvertisementGeneral> {
-        return transaction {
-            advertisementRepository.findAllByChannels(request.channels).map {
-                when (it.reviewType) {
-                    ReviewType.VISITED -> {
-                        val location = findLocationInfoByAdvertisementId(it.id.value)
-                        AdvertisementGeneral.AdvertisementWithLocation.of(it, location)
-                    }
-
-                    ReviewType.DELIVERY -> {
-                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
-                            .map { AdvertisementDeliveryCategory.of(it) }
-                        AdvertisementGeneral.AdvertisementDelivery.of(
-                            it,
-                            AdvertisementDeliveryCategories.of(categoryDomains)
-                        )
-                    }
-
-                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
-                }
-            }
-        }
-    }
+//    fun findFreshAll(): List<AdvertisementGeneral> {
+//        return transaction {
+//            advertisementRepository.findFreshAll().map {
+//
+//                when (it.reviewType) {
+//                    ReviewType.DELIVERY -> {
+//                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
+//                            .map { AdvertisementDeliveryCategory.of(it) }
+//                        AdvertisementGeneral.AdvertisementDelivery.of(
+//                            it,
+//                            AdvertisementDeliveryCategories.of(categoryDomains)
+//                        )
+//                    }
+//
+//                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
+//                }
+//            }
+//        }
+//    }
+//
+//
+//
+//    fun findAllByReviewTypes(request: GetAdvertisementRequestByReviewTypes): List<AdvertisementGeneral> {
+//        return transaction {
+//            advertisementRepository.findAllByReviewTypesExceptVisit(request.types).map {
+//                when (it.reviewType) {
+//                    ReviewType.DELIVERY -> {
+//                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
+//                            .map { AdvertisementDeliveryCategory.of(it) }
+//                        AdvertisementGeneral.AdvertisementDelivery.of(
+//                            it,
+//                            AdvertisementDeliveryCategories.of(categoryDomains)
+//                        )
+//                    }
+//
+//                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
+//                }
+//            }
+//        }
+//    }
+//
+//    fun findAllByChannels(request: GetAdvertisementRequestByChannels): List<AdvertisementGeneral> {
+//        return transaction {
+//            advertisementRepository.findAllByChannels(request.channels).map {
+//                when (it.reviewType) {
+//                    ReviewType.VISITED -> {
+//                        val location = findLocationInfoByAdvertisementId(it.id.value)
+//                        AdvertisementGeneral.AdvertisementWithLocation.of(it, location)
+//                    }
+//
+//                    ReviewType.DELIVERY -> {
+//                        val categoryDomains = deliveryCategoryRepository.findByAdvertisementId(it.id.value)
+//                            .map { AdvertisementDeliveryCategory.of(it) }
+//                        AdvertisementGeneral.AdvertisementDelivery.of(
+//                            it,
+//                            AdvertisementDeliveryCategories.of(categoryDomains)
+//                        )
+//                    }
+//
+//                    else -> AdvertisementGeneral.AdvertisementGeneral.of(it)
+//                }
+//            }
+//        }
+//    }
 }
 
