@@ -1,5 +1,6 @@
 package org.example.marketing.repository.board
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.enums.AdvertisementStatus
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AdvertisementRepository {
+    private val logger = KotlinLogging.logger {}
 
     fun save(saveAdvertisement: SaveAdvertisement): AdvertisementEntity {
         return  AdvertisementEntity.new {
@@ -80,6 +82,7 @@ class AdvertisementRepository {
 
 
     fun findById(targetId: Long): AdvertisementEntity {
+        logger.info {"targetId: $targetId"}
         val advertisement = AdvertisementEntity.find {
             (AdvertisementsTable.id eq targetId) and (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
         }.firstOrNull()
