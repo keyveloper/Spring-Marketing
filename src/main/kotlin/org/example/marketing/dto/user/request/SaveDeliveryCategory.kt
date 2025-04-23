@@ -1,6 +1,5 @@
 package org.example.marketing.dto.user.request
 
-import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.enums.DeliveryCategory
 
 data class SaveDeliveryCategory(

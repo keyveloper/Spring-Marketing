@@ -6,7 +6,7 @@ import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
 import java.time.LocalDateTime
 
-data class MakeNewAdvertisementRequest(
+data class MakeNewAdvertisementGeneralRequest(
     @field:NotEmpty
     val title: String,
 
