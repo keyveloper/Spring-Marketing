@@ -60,7 +60,7 @@ class AdvertisementDeliveryService(
     ): List<AdvertisementDelivery> {
         return transaction {
             val categoryEntities = advertisementDeliveryCategoryRepository.findByCategory(
-                request.deliverCateGory,
+                request.deliveryCategory,
             )
 
             val targetAdvertisementIds = categoryEntities

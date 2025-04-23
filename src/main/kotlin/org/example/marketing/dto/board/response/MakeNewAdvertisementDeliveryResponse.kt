@@ -2,7 +2,7 @@ package org.example.marketing.dto.board.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class MakeNewAdvertisementGeneralResponse(
+data class MakeNewAdvertisementDeliveryResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val createdId: Long
@@ -12,8 +12,8 @@ data class MakeNewAdvertisementGeneralResponse(
             frontErrorCode: Int,
             errorMessage: String,
             createdId: Long
-        ): MakeNewAdvertisementGeneralResponse {
-            return MakeNewAdvertisementGeneralResponse(
+        ): MakeNewAdvertisementDeliveryResponse {
+            return MakeNewAdvertisementDeliveryResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
                 createdId = createdId
@@ -21,3 +21,4 @@ data class MakeNewAdvertisementGeneralResponse(
         }
     }
 }
+

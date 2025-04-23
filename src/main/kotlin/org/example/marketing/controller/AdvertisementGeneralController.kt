@@ -15,9 +15,9 @@ class AdvertisementGeneralController( // only for general advertisement
     @PostMapping("/test/advertisement/general")
     fun save(
         @Valid @RequestBody request: MakeNewAdvertisementGeneralRequest
-    ): ResponseEntity<MakeNewAdvertisementResponse> {
+    ): ResponseEntity<MakeNewAdvertisementGeneralResponse> {
         return ResponseEntity.ok().body(
-            MakeNewAdvertisementResponse.of(
+            MakeNewAdvertisementGeneralResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 createdId = advertisementService.save(request)

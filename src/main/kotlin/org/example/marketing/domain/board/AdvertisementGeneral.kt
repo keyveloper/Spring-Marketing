@@ -15,16 +15,16 @@ data class AdvertisementGeneral(
     val channelType: ChannelType,
     val recruitmentNumber: Int,
     val itemName: String,
-    val recruitmentStartAt: String,
-    val recruitmentEndAt: String,
-    val announcementAt: String,
-    val reviewStartAt: String,
-    val reviewEndAt: String,
-    val endAt: String,
+    val recruitmentStartAt: Long,
+    val recruitmentEndAt: Long,
+    val announcementAt: Long,
+    val reviewStartAt: Long,
+    val reviewEndAt: Long,
+    val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
-    val createdAt: String,
-    val updatedAt: String,
+    val createdAt: Long,
+    val updatedAt: Long,
 ) {
     companion object {
         fun of(
@@ -37,16 +37,16 @@ data class AdvertisementGeneral(
                 channelType = entity.channelType,
                 recruitmentNumber = entity.recruitmentNumber,
                 itemName = entity.itemName,
-                recruitmentStartAt = CustomDateTimeFormatter.epochToString(entity.recruitmentStartAt),
-                recruitmentEndAt = CustomDateTimeFormatter.epochToString(entity.recruitmentEndAt),
-                announcementAt = CustomDateTimeFormatter.epochToString(entity.announcementAt),
-                reviewStartAt = CustomDateTimeFormatter.epochToString(entity.reviewStartAt),
-                reviewEndAt = CustomDateTimeFormatter.epochToString(entity.reviewEndAt),
-                endAt = CustomDateTimeFormatter.epochToString(entity.endAt),
+                recruitmentStartAt = entity.recruitmentStartAt,
+                recruitmentEndAt = entity.recruitmentEndAt,
+                announcementAt = entity.announcementAt,
+                reviewStartAt = entity.reviewStartAt,
+                reviewEndAt = entity.reviewEndAt,
+                endAt = entity.endAt,
                 siteUrl = entity.siteUrl,
                 itemInfo = entity.itemInfo,
-                createdAt = CustomDateTimeFormatter.epochToString(entity.createdAt),
-                updatedAt = CustomDateTimeFormatter.epochToString(entity.updatedAt)
+                createdAt = entity.createdAt,
+                updatedAt = entity.updatedAt
             )
         }
     }

@@ -8,7 +8,7 @@ import org.example.marketing.enums.DeliveryCategory
 data class AdvertisementDelivery(
     override val advertisementGeneral: AdvertisementGeneral,
     override val advertisementType: AdvertisementType = AdvertisementType.DELIVERY,
-    val categories: AdvertisementDeliveryCategories
+    val categories: List<DeliveryCategory>
 ): Advertisement {
     companion object {
         fun of(
@@ -17,7 +17,7 @@ data class AdvertisementDelivery(
         ): AdvertisementDelivery {
             return AdvertisementDelivery(
                 advertisementGeneral = advertisementGeneral,
-                categories = categories
+                categories = categories.categories
             )
         }
     }
