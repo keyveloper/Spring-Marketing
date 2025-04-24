@@ -4,21 +4,18 @@ import org.example.marketing.dto.error.FrontErrorResponse
 import org.example.marketing.enums.UserType
 
 data class ValidateTokenResponse(
-    val userId: Long,
-    val userType: UserType,
+    val validateResult: ValidateTokenResult,
     override val frontErrorCode: Int,
     override val errorMessage: String
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
-            userId: Long,
-            userType: UserType,
+            validateResult: ValidateTokenResult,
             frontErrorCode: Int,
             errorMessage: String
         ): ValidateTokenResponse {
             return ValidateTokenResponse(
-                userId = userId,
-                userType = userType,
+                validateResult = validateResult,
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage
             )

@@ -62,7 +62,8 @@ class JwtTokenProvider(
         val type = claims["type"] as? String
         val authority = when(type) {
             UserType.ADMIN.name -> SimpleGrantedAuthority("ROLE_ADMIN")
-            UserType.ADVERTISER.name -> SimpleGrantedAuthority("ROLE_ADVERTISER")
+            UserType.ADVERTISER_BRAND.name -> SimpleGrantedAuthority("ROLE_ADVERTISER_BRAMD")
+            UserType.ADVERTISER_COMMON.name -> SimpleGrantedAuthority("ROLE_ADVERTISER_COMMON")
             UserType.INFLUENCER. name -> SimpleGrantedAuthority("ROLE_INFLUENCER")
             else -> throw InvalidUserTypeException(logics = "jwtProvider-getAuthentication")
         }

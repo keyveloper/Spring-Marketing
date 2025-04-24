@@ -6,7 +6,7 @@ import org.example.marketing.enums.UserType
 data class AdvertiserPrincipal(
     override val userId: Long, // entity id : Loog
     override val loginId: String,
-    override val userType: UserType = UserType.ADVERTISER
+    override val userType: UserType = UserType.ADVERTISER_COMMON
 ): CustomUserPrincipal {
     companion object {
         fun of(admin: AdvertiserEntity): AdvertiserPrincipal {

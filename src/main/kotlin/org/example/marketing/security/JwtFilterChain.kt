@@ -16,7 +16,7 @@ class JwtFilterChain(
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
         val path = request.requestURI
 
-        val skip = path.startsWith("/test")
+        val skip = path.startsWith("/test") || path.startsWith("/valid-token")
 
         return skip
     }

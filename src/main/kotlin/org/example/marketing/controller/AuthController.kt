@@ -2,6 +2,7 @@ package org.example.marketing.controller
 
 import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.user.ValidateTokenResponse
+import org.example.marketing.dto.user.ValidateTokenResult
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
 import org.example.marketing.dto.user.response.LoginAdminResponse
@@ -53,8 +54,11 @@ class AuthController(
     ): ResponseEntity<ValidateTokenResponse> {
         return ResponseEntity.ok().body(
             ValidateTokenResponse.of(
-                userId = user.userId,
-                userType = user.userType,
+                validateResult = ValidateTokenResult.of(
+                    user.userId,
+                    user.userType,
+                    true
+                ),
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message
             )

@@ -37,7 +37,7 @@ class AuthService(
             throw NotMatchedPasswordException(logics = "authService- loginAdvertiser")
         }
 
-        val jwtToken = jwtTokenProvider.generateToken(advertiser.loginId, UserType.ADVERTISER)
+        val jwtToken = jwtTokenProvider.generateToken(advertiser.loginId, UserType.ADVERTISER_BRAND)
         LoginAdvertiserResult.of(jwtToken, advertiser.id.value)
     }
 
