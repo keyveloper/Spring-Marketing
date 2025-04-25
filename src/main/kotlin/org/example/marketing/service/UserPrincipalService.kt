@@ -22,7 +22,7 @@ class UserPrincipalService(
                 AdminPrincipal.of(admin)
             }
 
-            "ADVERTISE" -> {
+            "ADVERTISER_COMMON" -> {
                 val advertiser = advertiserRepository.findByLoginId(loginId)
                 AdvertiserPrincipal.of(advertiser)
             }

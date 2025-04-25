@@ -29,7 +29,14 @@ class SecurityConfig(
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/test/**").permitAll()
-                    .requestMatchers("/valid-token").permitAll()
+                    .requestMatchers("/entry/**").permitAll()
+                    .requestMatchers("/validate-token").hasAnyRole(
+                        "ADVERTISER_COMMON",
+                        "ADMIN",
+                        "INFLUENCER"
+                    )
+                    .requestMatchers("/error").permitAll()
+                    .anyRequest().authenticated()
             }
             .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()

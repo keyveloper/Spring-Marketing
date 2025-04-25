@@ -1,5 +1,6 @@
 package org.example.marketing.controller
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.user.ValidateTokenResponse
 import org.example.marketing.dto.user.ValidateTokenResult
@@ -8,10 +9,12 @@ import org.example.marketing.dto.user.request.LoginAdvertiserRequest
 import org.example.marketing.dto.user.response.LoginAdminResponse
 import org.example.marketing.dto.user.response.LoginAdvertiserResponse
 import org.example.marketing.enums.FrontErrorCode
+import org.example.marketing.enums.UserType
 import org.example.marketing.service.AuthService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
@@ -21,7 +24,7 @@ class AuthController(
     private val authService: AuthService,
     private val webSecurityConfiguration: WebSecurityConfiguration
 ) {
-
+    private val logger = KotlinLogging.logger {}
     @PostMapping("/test/login/admin")
     fun loginAdmin(
         @RequestBody request: LoginAdminRequest
@@ -35,7 +38,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/test/entry/advertiser")
+    @PostMapping("/entry/advertiser")
     fun loginAdvertiser(
         @RequestBody request: LoginAdvertiserRequest
     ): ResponseEntity<LoginAdvertiserResponse> {
@@ -48,14 +51,18 @@ class AuthController(
         )
     }
 
-    @PostMapping("/valid-token")
+    @PostMapping("/validate-token")
     fun validateToken(
-        @AuthenticationPrincipal user: CustomUserPrincipal
+        @AuthenticationPrincipal user: UserDetails?
     ): ResponseEntity<ValidateTokenResponse> {
+        val principal = user as CustomUserPrincipal
+        logger.info { "user: $user" }
+        logger.info { "principal: $principal" }
+
         return ResponseEntity.ok().body(
             ValidateTokenResponse.of(
                 validateResult = ValidateTokenResult.of(
-                    user.userId,
+                    user.userId ,
                     user.userType,
                     true
                 ),

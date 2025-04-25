@@ -60,14 +60,13 @@ class JwtTokenProvider(
             .body
         val loginId = claims.subject
         val type = claims["type"] as? String
-        val authority = when(type) {
-            UserType.ADMIN.name -> SimpleGrantedAuthority("ROLE_ADMIN")
-            UserType.ADVERTISER_BRAND.name -> SimpleGrantedAuthority("ROLE_ADVERTISER_BRAMD")
-            UserType.ADVERTISER_COMMON.name -> SimpleGrantedAuthority("ROLE_ADVERTISER_COMMON")
-            UserType.INFLUENCER. name -> SimpleGrantedAuthority("ROLE_INFLUENCER")
-            else -> throw InvalidUserTypeException(logics = "jwtProvider-getAuthentication")
-        }
+            ?: throw InvalidUserTypeException(
+                logics = "JwtTokenProvider - getAuthentication"
+            )
+        logger.info { "Authentication: $loginId, $type" }
+
         val principal = authPrincipalService.loadUserByTypeAndLoginId(type, loginId)
-        return UsernamePasswordAuthenticationToken(principal, token, listOf(authority))
+        logger.info {"principal: $principal"}
+        return UsernamePasswordAuthenticationToken(principal, token, principal.authorities)
     }
 }

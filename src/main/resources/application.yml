@@ -17,6 +17,8 @@ spring:
       idle-timeout: 300000
       pool-name: marketingHikariCP
 
+
+
 jwt:
   secret: "fdasfjsdhfushfksdjfhsjdfhsudfhsddfjjisdfjisdjfisdjfisdfjisdjfisdjfijdsfljiefjildsjfdslfjsfsdffdfsdadsfsddf"
 
@@ -54,6 +56,11 @@ logging:
   level:
     reactor.netty.http.client: DEBUG
     org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+
+    org:
+      springframework:
+        security: DEBUG
+
 server:
   address: 0.0.0.0
   port: 8080
