@@ -71,6 +71,12 @@ class AdvertisementRepository {
         return advertisement
     }
 
+    fun findByIds(targetIds: List<Long>): List<AdvertisementEntity> {
+        return AdvertisementEntity.find {
+            AdvertisementsTable.id inList targetIds
+        }.toList()
+    }
+
     fun findFreshAll(): List<AdvertisementEntity> {
         val cutoffTime = System.currentTimeMillis() - 5 * 24 * 60 * 60 * 1000
         val advertisements = AdvertisementEntity.find {

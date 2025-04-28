@@ -1,11 +1,7 @@
 package org.example.marketing.domain.board
 
-import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.dao.board.AdvertisementEntity
-import org.example.marketing.dao.board.AdvertisementLocationEntity
-import org.example.marketing.dto.board.response.AdvertisementDeliveryCategories
 import org.example.marketing.enums.ChannelType
-import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
 
 data class AdvertisementGeneral(

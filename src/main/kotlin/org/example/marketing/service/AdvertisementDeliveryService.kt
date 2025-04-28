@@ -1,15 +1,12 @@
 package org.example.marketing.service
 
-import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.domain.board.AdvertisementDelivery
 import org.example.marketing.domain.board.AdvertisementDeliveryCategory
 import org.example.marketing.domain.board.AdvertisementGeneral
 import org.example.marketing.dto.board.request.GetDeliveryAdvertisementsTimelineByCategoryRequest
 import org.example.marketing.dto.board.request.MakeNewAdvertisementDeliveryRequest
 import org.example.marketing.dto.board.request.SaveAdvertisement
-import org.example.marketing.dto.board.response.AdvertisementDeliveryCategories
 import org.example.marketing.dto.user.request.SaveDeliveryCategory
-import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.TimeLineDirection
 import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
 import org.example.marketing.repository.board.AdvertisementRepository
@@ -42,11 +39,8 @@ class AdvertisementDeliveryService(
     fun findById(targetId: Long): AdvertisementDelivery {
         return transaction {
             val advertisementEntity = advertisementRepository.findById(targetId)
-            val categories = AdvertisementDeliveryCategories.of(
-                advertisementDeliveryCategoryRepository.findAllByAdvertisementId(targetId).map {
-                    AdvertisementDeliveryCategory.of(it)
-                }
-            )
+            val categories = advertisementDeliveryCategoryRepository
+                .findAllByAdvertisementId(targetId).map { it.category }
 
             AdvertisementDelivery.of(
                 AdvertisementGeneral.of(advertisementEntity),
@@ -99,11 +93,11 @@ class AdvertisementDeliveryService(
             val result = advertisementEntities.map { entity->
                 val matchedCategories = filteredCategory.filter {
                     it.advertisementId == entity.id.value
-                }.map { AdvertisementDeliveryCategory.of(it) }
+                }.map { it }
 
                 AdvertisementDelivery.of(
                     AdvertisementGeneral.of(entity),
-                    AdvertisementDeliveryCategories.of(matchedCategories)
+                    matchedCategories.map { it.category }
                 )
             }
 

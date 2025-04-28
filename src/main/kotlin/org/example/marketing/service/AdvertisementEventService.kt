@@ -4,7 +4,6 @@ import org.example.marketing.domain.board.AdvertisementDeliveryCategory
 import org.example.marketing.domain.board.AdvertisementGeneral
 import org.example.marketing.dto.board.request.GetAdvertisementRequestByChannels
 import org.example.marketing.dto.board.request.GetAdvertisementRequestByReviewTypes
-import org.example.marketing.dto.board.response.AdvertisementDeliveryCategories
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
 import org.example.marketing.repository.board.AdvertisementRepository

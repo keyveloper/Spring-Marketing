@@ -1,8 +1,6 @@
 package org.example.marketing.domain.board
 
-import org.example.marketing.dto.board.response.AdvertisementDeliveryCategories
 import org.example.marketing.enums.AdvertisementType
-import org.example.marketing.enums.AdvertiserType
 import org.example.marketing.enums.DeliveryCategory
 
 data class AdvertisementDelivery(
@@ -13,11 +11,11 @@ data class AdvertisementDelivery(
     companion object {
         fun of(
             advertisementGeneral: AdvertisementGeneral,
-            categories: AdvertisementDeliveryCategories
+            categories: List<DeliveryCategory>
         ): AdvertisementDelivery {
             return AdvertisementDelivery(
                 advertisementGeneral = advertisementGeneral,
-                categories = categories.categories
+                categories = categories
             )
         }
     }

@@ -19,6 +19,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     INVALID_JWT_TOKEN(40003, "this token is invalid!"),
     INVALID_USER_TYPE(40004, "this user type is invalid"),
     PASSWORD_NOT_MATCHER(40005, "password not matched"),
-
-
+    UNAUTHORIZED_INFLUENCER(40006, "this influencer User can't use this resource...."),
+    UNAUTHORIZED_ADVERTISER(40007, "this advertiser User can't use this resource...."),
+    NOT_MATCHED_EXPECTED_USER_TYPE(40008, "this user type is not matched what expected..."),
 }

@@ -1,14 +1,8 @@
 package org.example.marketing.service
 
-import org.example.marketing.dao.board.AdvertisementLocationEntity
-import org.example.marketing.domain.board.*
+import org.example.marketing.domain.board.AdvertisementGeneral
+import org.example.marketing.domain.board.AdvertisementGeneralForReturn
 import org.example.marketing.dto.board.request.*
-import org.example.marketing.dto.board.response.AdvertisementDeliveryCategories
-import org.example.marketing.dto.user.request.SaveDeliveryCategory
-import org.example.marketing.enums.AdvertisementStatus
-import org.example.marketing.enums.ReviewType
-import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
-import org.example.marketing.repository.board.AdvertisementLocationRepository
 import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service

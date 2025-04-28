@@ -23,7 +23,7 @@ class JwtTokenProvider(
     ) {
 
     private val logger = KotlinLogging.logger {}
-    private val exp = 3000000
+    private val exp = 3000000000
     private val key: Key = Keys.hmacShaKeyFor(secretKey.toByteArray())
 
     fun generateToken(userId: String, userType: UserType): String {
