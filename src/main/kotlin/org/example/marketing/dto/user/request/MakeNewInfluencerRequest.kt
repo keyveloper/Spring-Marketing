@@ -8,11 +8,7 @@ data class MakeNewInfluencerRequest(
 
     val password: String,
 
-    val email: String,
-
-    val name: String, // user real name
-
-    var birthday: LocalDateTime?,
+    var birthday: String,
 
     var blogUrl: String?,
 
@@ -21,6 +17,4 @@ data class MakeNewInfluencerRequest(
     var threadUrl: String?,
 
     var youtuberUrl: String?,
-
-    var howToCome: String,
 )

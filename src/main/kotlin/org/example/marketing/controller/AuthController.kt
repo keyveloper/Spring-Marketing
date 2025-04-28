@@ -39,7 +39,7 @@ class AuthController(
         )
     }
 
-    @PostMapping("/entry/advertiser")
+    @PostMapping("/entry/login-advertiser")
     fun loginAdvertiser(
         @RequestBody request: LoginAdvertiserRequest
     ): ResponseEntity<LoginAdvertiserResponse> {
@@ -52,18 +52,18 @@ class AuthController(
         )
     }
 
-//    @PostMapping("entry/influencer")
-//    fun loginInfluencer(
-//        @RequestBody request: LoginInfluencerReqeust
-//    ): ResponseEntity<LoginInfluencerResponse> {
-//        return ResponseEntity.ok().body(
-//            LoginInfluencerResponse.of(
-//                FrontErrorCode.OK.code,
-//                FrontErrorCode.OK.message,
-//                authService.loginInfluencer(request)
-//            )
-//        )
-//    }
+    @PostMapping("/entry/login-influencer")
+    fun loginInfluencer(
+        @RequestBody request: LoginInfluencerReqeust
+    ): ResponseEntity<LoginInfluencerResponse> {
+        return ResponseEntity.ok().body(
+            LoginInfluencerResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                authService.loginInfluencer(request)
+            )
+        )
+    }
 
     @PostMapping("/validate-token")
     fun validateToken(
