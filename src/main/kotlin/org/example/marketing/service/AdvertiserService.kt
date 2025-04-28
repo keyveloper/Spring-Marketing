@@ -1,5 +1,6 @@
 package org.example.marketing.service
 
+import org.example.marketing.dao.user.AdvertiserEntity
 import org.example.marketing.domain.user.Advertiser
 import org.example.marketing.domain.user.AdvertiserProfile
 import org.example.marketing.dto.user.request.MakeNewAdvertiserRequest

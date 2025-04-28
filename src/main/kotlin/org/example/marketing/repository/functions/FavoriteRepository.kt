@@ -26,29 +26,13 @@ class FavoriteRepository {
     }
 
     fun save(saveInfluencerFavoriteAd: SaveInfluencerFavoriteAd): InfluencerFavoriteAdEntity {
-        return try {
-            val favoriteEntity = InfluencerFavoriteAdEntity.new {
-                influencerId = saveInfluencerFavoriteAd.influencerId
-                advertisementId = saveInfluencerFavoriteAd.advertisementId
-                favoriteStatus = FavoriteStatus.FAVORITE
-            }
-            favoriteEntity
-        } catch (e: ExposedSQLException) {
-            val sqlEx = e.cause as? SQLException
-            if (sqlEx != null) {
-                when {
-                    sqlEx.errorCode == 1062 ->
-                        throw DuplicatedInfluencerFavoriteAdException(
-                            logics = "favorite-repo -save ",
-                            advertisementId = saveInfluencerFavoriteAd.advertisementId,
-                            influencerId = saveInfluencerFavoriteAd.influencerId
-                        )
-                    else -> throw e
-                }
-            } else {
-                throw e
-            }
+
+        val favoriteEntity = InfluencerFavoriteAdEntity.new {
+            influencerId = saveInfluencerFavoriteAd.influencerId
+            advertisementId = saveInfluencerFavoriteAd.advertisementId
+            favoriteStatus = FavoriteStatus.FAVORITE
         }
+        return favoriteEntity
     }
 
     fun findByInfluencerId(influencerId: Long): List<InfluencerFavoriteAdEntity> {

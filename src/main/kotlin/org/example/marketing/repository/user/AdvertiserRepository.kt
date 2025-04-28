@@ -7,6 +7,7 @@ import org.example.marketing.exception.DuplicatedAdvertiserException
 import org.example.marketing.exception.NotFoundAdvertiserException
 import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.exceptions.ExposedSQLException
+import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component
 import java.sql.SQLException
 
@@ -57,5 +58,14 @@ class AdvertiserRepository {
                 logics = "advertiser-findByLoginId"
             )
         return advertiser
+    }
+
+    fun findAllByIds(ids: List<Long>): List<AdvertiserEntity> {
+        val advertisers = AdvertiserEntity.find {
+            (AdvertisersTable.id inList ids) and
+                    (AdvertisersTable.status eq UserStatus.LIVE)
+        }.toList()
+
+        return advertisers
     }
 }
