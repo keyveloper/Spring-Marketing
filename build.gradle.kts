@@ -80,6 +80,10 @@ dependencies {
     // ai
     implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M7")) // ★
     implementation("org.springframework.ai:spring-ai-starter-model-openai")
+
+    // image signature
+    implementation("org.apache.tika:tika-core:2.9.0") // or latest
+
 }
 
 kotlin {

@@ -21,7 +21,7 @@ class AdvertisementGeneralService(
     fun save(request: MakeNewAdvertisementGeneralRequest): Long {
         return transaction {
             val advertisementEntity = advertisementRepository.save(
-                SaveAdvertisement.of(request, AdvertisementStatus.LIVE)
+                SaveAdvertisement.of(request)
             )
             advertisementEntity.id.value
         }

@@ -28,8 +28,6 @@ data class SaveAdvertisement(
 
     val endAt: Long,
 
-    val statsu: AdvertisementStatus,
-
     val siteUrl: String?,
 
     val itemInfo: String?,
@@ -37,7 +35,6 @@ data class SaveAdvertisement(
     companion object{
         fun of(
             request: MakeNewAdvertisementGeneralRequest,
-            status: AdvertisementStatus
         ): SaveAdvertisement {
             val zone = ZoneId.of("Asia/Seoul")
             return SaveAdvertisement(
@@ -54,7 +51,6 @@ data class SaveAdvertisement(
                 endAt = request.endAt.atZone(zone).toEpochSecond(),
                 siteUrl = request.siteUrl,
                 itemName = request.itemName,
-                statsu = status
                 )
         }
     }

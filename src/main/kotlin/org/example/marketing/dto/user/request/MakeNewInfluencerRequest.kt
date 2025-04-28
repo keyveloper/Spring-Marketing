@@ -12,8 +12,6 @@ data class MakeNewInfluencerRequest(
 
     val name: String, // user real name
 
-    val contact: String,
-
     var birthday: LocalDateTime?,
 
     var blogUrl: String?,

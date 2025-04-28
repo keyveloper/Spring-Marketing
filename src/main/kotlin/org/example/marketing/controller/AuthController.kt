@@ -6,10 +6,11 @@ import org.example.marketing.dto.user.ValidateTokenResponse
 import org.example.marketing.dto.user.ValidateTokenResult
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
+import org.example.marketing.dto.user.request.LoginInfluencerReqeust
 import org.example.marketing.dto.user.response.LoginAdminResponse
 import org.example.marketing.dto.user.response.LoginAdvertiserResponse
+import org.example.marketing.dto.user.response.LoginInfluencerResponse
 import org.example.marketing.enums.FrontErrorCode
-import org.example.marketing.enums.UserType
 import org.example.marketing.service.AuthService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration
@@ -50,6 +51,19 @@ class AuthController(
             )
         )
     }
+
+//    @PostMapping("entry/influencer")
+//    fun loginInfluencer(
+//        @RequestBody request: LoginInfluencerReqeust
+//    ): ResponseEntity<LoginInfluencerResponse> {
+//        return ResponseEntity.ok().body(
+//            LoginInfluencerResponse.of(
+//                FrontErrorCode.OK.code,
+//                FrontErrorCode.OK.message,
+//                authService.loginInfluencer(request)
+//            )
+//        )
+//    }
 
     @PostMapping("/validate-token")
     fun validateToken(

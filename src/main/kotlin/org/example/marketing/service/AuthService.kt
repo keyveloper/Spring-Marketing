@@ -17,7 +17,7 @@ class AuthService(
     private val adminRepository: AdminRepository,
     private val jwtTokenProvider: JwtTokenProvider,
     private val passwordEncoder: PasswordEncoder,
-    private val advertiserRepository: AdvertiserRepository
+    private val advertiserRepository: AdvertiserRepository,
 ) {
     fun loginAdmin(request: LoginAdminRequest): String = transaction {
         val admin = adminRepository.findByLoginId(request.loginId)
@@ -40,6 +40,5 @@ class AuthService(
         val jwtToken = jwtTokenProvider.generateToken(advertiser.loginId, UserType.ADVERTISER_COMMON)
         LoginAdvertiserResult.of(jwtToken, advertiser.id.value)
     }
-
 
 }

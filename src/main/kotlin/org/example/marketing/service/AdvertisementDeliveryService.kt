@@ -25,7 +25,7 @@ class AdvertisementDeliveryService(
     fun save(request: MakeNewAdvertisementDeliveryRequest): Long {
         return transaction {
             val advertisementEntity = advertisementRepository.save(
-                SaveAdvertisement.of(request.advertisementGeneralRequest, AdvertisementStatus.LIVE)
+                SaveAdvertisement.of(request.advertisementGeneralRequest)
             )
 
             advertisementDeliveryCategoryRepository.save(

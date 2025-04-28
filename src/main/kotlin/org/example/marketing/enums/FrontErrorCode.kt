@@ -8,7 +8,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     NOT_FOUND_ENTITY(40001, "Can't find this entity"),
     CANNOT_DELETE_ENTITY(40002, "Can't delete this entity"),
     ALREADY_DELETED_ENTITY(40003, "This entity is deleted already"),
-
+    INSERT_LIMIT_ENTITY(40004, "Database usable but can't insert entity anymore..."),
 
     // 50000 ~ : SERVER Error
     // Server Critical - not handle
@@ -19,4 +19,6 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     INVALID_JWT_TOKEN(40003, "this token is invalid!"),
     INVALID_USER_TYPE(40004, "this user type is invalid"),
     PASSWORD_NOT_MATCHER(40005, "password not matched"),
+
+
 }

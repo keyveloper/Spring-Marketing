@@ -31,7 +31,7 @@ class AdvertisementRepository {
             reviewStartAt = saveAdvertisement.reviewStartAt
             reviewEndAt = saveAdvertisement.reviewEndAt
             endAt = saveAdvertisement.endAt
-            status = saveAdvertisement.statsu
+            status = AdvertisementStatus.LIVE
             siteUrl = saveAdvertisement.siteUrl
             itemInfo = saveAdvertisement.itemInfo
         }
