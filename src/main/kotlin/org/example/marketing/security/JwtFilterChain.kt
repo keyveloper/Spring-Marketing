@@ -19,7 +19,8 @@ class JwtFilterChain(
         logger.info {"?"}
         val path = request.requestURI
 
-        val skip = path.startsWith("/test") || path.startsWith("/entry")
+        val skip = path.startsWith("/test") || path.startsWith("/entry") ||
+                path.startsWith("/open")
 
         return skip
     }

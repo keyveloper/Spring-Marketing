@@ -40,10 +40,7 @@ class FollowerRepository {
         }.toList()
     }
 
-    fun checkEntityExist(influencerId: Long, advertiserId: Long): AdvertiserFollowerEntity? {
-        return AdvertiserFollowerEntity.find {
-            (AdvertiserFollowersTable.influencerId eq influencerId) and
-                    (AdvertiserFollowersTable.advertiserId eq advertiserId)
-        }.singleOrNull()
+    fun checkEntityExist(advertiserId: Long, influencerId: Long): AdvertiserFollowerEntity? {
+        return AdvertiserFollowerEntity.findById(advertiserId)
     }
 }

@@ -1,13 +1,16 @@
 package org.example.marketing.repository.user
 
 import org.example.marketing.dao.user.InfluencerEntity
+import org.example.marketing.dto.functions.response.OfferingInfluencerInfo
 import org.example.marketing.dto.user.request.SaveInfluencer
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.exception.DuplicatedInfluencerException
 import org.example.marketing.exception.NotFoundInfluencerException
 import org.example.marketing.table.InfluencersTable
+import org.example.marketing.table.ReviewOffersTable
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.and
+import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Component
 import java.sql.SQLException
 
@@ -59,5 +62,12 @@ class InfluencerRepository {
             logics = "influencer repo - findByLoginId"
         )
         return targetEntity
+    }
+
+    fun findAllByIds(ids: List<Long>): List<InfluencerEntity> {
+        return InfluencerEntity.find {
+            (InfluencersTable.id inList ids) and
+                    (InfluencersTable.liveStatus eq EntityLiveStatus.LIVE)
+        }.toList()
     }
 }

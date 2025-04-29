@@ -30,6 +30,7 @@ class SecurityConfig(
                 auth
                     .requestMatchers("/test/**").permitAll()
                     .requestMatchers("/entry/**").permitAll()
+                    .requestMatchers("/open/**").permitAll()
                     .requestMatchers("/validate-token").hasAnyRole(
                         "ADVERTISER_COMMON",
                         "ADMIN",
