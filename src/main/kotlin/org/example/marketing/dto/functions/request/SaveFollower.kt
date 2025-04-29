@@ -6,7 +6,7 @@ data class SaveFollower(
     val influencerId: Long,
 ) {
     companion object {
-        fun of(request: FollowRequest, influencerId: Long): SaveFollower {
+        fun of(request: FollowAdvertiserRequest, influencerId: Long): SaveFollower {
             return SaveFollower(
                 advertiserId = request.advertiserId,
                 influencerId = influencerId

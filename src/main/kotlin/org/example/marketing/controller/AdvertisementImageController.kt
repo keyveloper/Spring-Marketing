@@ -1,14 +1,17 @@
 package org.example.marketing.controller
 
 import org.apache.tika.metadata.HttpHeaders
+import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
+import org.example.marketing.dto.board.response.GetAllMetadatResponse
 import org.example.marketing.dto.board.response.MakeNewAdvertisementImageResponse
 import org.example.marketing.dto.board.response.SetAdvertisementThumbnailResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementImageService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
@@ -17,11 +20,13 @@ class AdvertisementImageController(
     private val advertisementImageService: AdvertisementImageService
 ) {
 
+    //  ✅ check legal approach
     @PostMapping(
         "/advertisement/image",
         consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
     )
     fun save(
+        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
         @RequestPart("meta") meta: MakeNewAdvertisementImageRequest,
         @RequestPart("file") file: MultipartFile
     ): ResponseEntity<MakeNewAdvertisementImageResponse> {
@@ -29,17 +34,19 @@ class AdvertisementImageController(
             MakeNewAdvertisementImageResponse.of(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
-                advertisementImageService.save(meta, file)
+                advertisementImageService.save(advertiserPrincipal.userId, meta, file)
             )
         )
     }
 
+    // 🤔 should check every api call ???
     @PostMapping("/advertisement/image/thumbnail")
     fun setThumbNailById(
+        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
         @RequestBody request: SetAdvertisementThumbnailRequest,
     )
     :ResponseEntity<SetAdvertisementThumbnailResponse> {
-        advertisementImageService.setThumbnailImage(request)
+        advertisementImageService.setThumbnailImage(advertiserPrincipal.userId, request)
         return ResponseEntity.ok().body(
             SetAdvertisementThumbnailResponse.of(
                 FrontErrorCode.OK.code,
@@ -48,21 +55,29 @@ class AdvertisementImageController(
         )
     }
 
-    @GetMapping("/advertisement/image/thumbnail/url/{advertisementId}")
+    @GetMapping("/open/advertisement/image/thumbnail/url/{advertisementId}")
     fun getThumbnailUrlByAdvertisementId(
         @PathVariable("advertisementId") advertisementId: Long
     ) {}
 
-    @GetMapping("/advertisement/image/urls/{advertisementId}")
-    fun getAllUrlsByAdvertisementId(
+    @GetMapping("/open/advertisement/image/meta/{advertisementId}")
+    fun getAllMetadataByAdvertisementId(
         @PathVariable("advertisementId") advertisementId: Long
-    ) {}
+    ): ResponseEntity<GetAllMetadatResponse> {
+        return ResponseEntity.ok().body(
+            GetAllMetadatResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                advertisementImageService.findAllMetaDataByAdvertisementId(advertisementId)
+            )
+        )
+    }
 
-    @GetMapping("{imageUrl}")
+    @GetMapping("/open/advertisement/image/{imageUri}")
     fun getByIdentifiedUrl(
-        @PathVariable imageUrl: String
+        @PathVariable imageUri: String
     ): ResponseEntity<ByteArray> {
-        val result = advertisementImageService.findByIdentifiedUrl(imageUrl)
+        val result = advertisementImageService.findByIdentifiedUri(imageUri)
         return ResponseEntity.ok()
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,
@@ -70,4 +85,6 @@ class AdvertisementImageController(
             .contentType(MediaType.parseMediaType(result.imageType))
             .body(result.imageBytes)
     }
+
+
 }

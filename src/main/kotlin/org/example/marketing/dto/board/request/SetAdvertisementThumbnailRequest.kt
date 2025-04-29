@@ -2,5 +2,5 @@ package org.example.marketing.dto.board.request
 
 data class SetAdvertisementThumbnailRequest(
     val entityId: Long,
-    val advertisementLId: Long
+    val advertisementId: Long
 )

@@ -5,7 +5,7 @@ import org.example.marketing.dto.board.request.SaveAdvertisementLocation
 data class AdvertisementPackage(
     val advertisementGeneral: AdvertisementGeneral?,
     val advertisementDelivery: AdvertisementDelivery?,
-    val advertisementLocation: SaveAdvertisementLocation?
+    val advertisementLocation: AdvertisementGeneral? // -> 📌 have to change
 ) {
     companion object {
         fun generalOf(

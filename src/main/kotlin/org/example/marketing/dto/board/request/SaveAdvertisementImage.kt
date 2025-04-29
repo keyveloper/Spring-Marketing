@@ -4,7 +4,7 @@ data class SaveAdvertisementImage(
     val advertisementId: Long,
     val originalFileName: String,
     val convertedFileName: String,
-    val apiCallUrl: String,
+    val apiCallUri: String,
     val filePath: String,
     val fileSizeKB: Long,
     val fileType: String,
@@ -17,7 +17,7 @@ data class SaveAdvertisementImage(
             filePath: String,
             fileSizeKB: Long,
             fileType: String,
-            apiCallUrl: String
+            apiCallUri: String
         ): SaveAdvertisementImage {
             return SaveAdvertisementImage(
                 advertisementId = meta.advertisementId,
@@ -27,7 +27,7 @@ data class SaveAdvertisementImage(
                 fileSizeKB = fileSizeKB,
                 fileType = fileType,
                 isThumbnail = meta.isThumbnail,
-                apiCallUrl = apiCallUrl
+                apiCallUri = apiCallUri
             )
         }
     }

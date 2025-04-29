@@ -2,8 +2,8 @@ package org.example.marketing.controller
 
 import jakarta.validation.Valid
 import org.example.marketing.domain.user.InfluencerPrincipal
-import org.example.marketing.dto.functions.request.FollowRequest
-import org.example.marketing.dto.functions.response.FollowResponse
+import org.example.marketing.dto.functions.request.FollowAdvertiserRequest
+import org.example.marketing.dto.functions.response.FollowAdvertiserResponse
 import org.example.marketing.dto.functions.response.GetFollowingAdvertiserInfosResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.FollowAdvertiserService
@@ -22,14 +22,14 @@ class FollowController(
 ) {
     @PostMapping("/follow")
     fun follow(
-        @Valid @RequestBody followRequest: FollowRequest,
+        @Valid @RequestBody followAdvertiserRequest: FollowAdvertiserRequest,
         @AuthenticationPrincipal user: InfluencerPrincipal
-    ): ResponseEntity<FollowResponse> {
+    ): ResponseEntity<FollowAdvertiserResponse> {
         return ResponseEntity.ok().body(
-            FollowResponse.of(
+            FollowAdvertiserResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                result = followService.switchOrSave(followRequest, user)
+                result = followService.switchOrSave(followAdvertiserRequest, user)
             )
         )
     }

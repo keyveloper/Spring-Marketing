@@ -1,8 +1,6 @@
 package org.example.marketing.repository.board
 
-import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.dao.board.AdvertisementImageEntity
-import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.board.request.SaveAdvertisementImage
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.exception.NotFoundAdImageEntityException
@@ -18,7 +16,7 @@ class AdvertisementImageRepository {
             advertisementId = saveAdvertisementImage.advertisementId
             originalFileName = saveAdvertisementImage.originalFileName
             convertedFileName = saveAdvertisementImage.convertedFileName
-            apiCallUrl = saveAdvertisementImage.apiCallUrl
+            apiCallUri = saveAdvertisementImage.apiCallUri
             filePath = saveAdvertisementImage.filePath
             fileSizeKB = saveAdvertisementImage.fileSizeKB
             isThumbnail = saveAdvertisementImage.isThumbnail
@@ -83,9 +81,9 @@ class AdvertisementImageRepository {
         }
     }
 
-    fun findByApiCalUrl(url: String): AdvertisementImageEntity? {
+    fun findByApiCalUri(uri: String): AdvertisementImageEntity? {
         val entity = AdvertisementImageEntity.find {
-            (AdvertisementImagesTable.apiCallUrl eq url) and
+            (AdvertisementImagesTable.apiCallUri eq uri) and
                     (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
         }.singleOrNull() ?: throw NotFoundAdImageEntityException(
             logics = "advertisementImage repo - findByApiCalUrl"

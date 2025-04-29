@@ -6,30 +6,19 @@ import org.example.marketing.enums.ReviewType
 import java.time.ZoneId
 
 data class SaveAdvertisement(
+    val advertiserId : Long,
     val title: String,
-
     val reviewType: ReviewType,
-
     val channelType: ChannelType,
-
     val recruitmentNumber: Int,
-
     val itemName: String,
-
     val recruitmentStartAt: Long,
-
     val recruitmentEndAt: Long,
-
     val announcementAt: Long,
-
     val reviewStartAt: Long,
-
     val reviewEndAt: Long,
-
     val endAt: Long,
-
     val siteUrl: String?,
-
     val itemInfo: String?,
 ) {
     companion object{
@@ -38,6 +27,7 @@ data class SaveAdvertisement(
         ): SaveAdvertisement {
             val zone = ZoneId.of("Asia/Seoul")
             return SaveAdvertisement(
+                advertiserId = request.advertiserId,
                 title = request.title,
                 reviewType = request.reviewType,
                 channelType = request.channelType,

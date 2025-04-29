@@ -2,14 +2,17 @@ package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.tika.Tika
+import org.example.marketing.domain.board.AdvertisementImage
 import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
 import org.example.marketing.dto.board.request.SaveAdvertisementImage
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
 import org.example.marketing.dto.board.response.BinaryImageDataWithType
 import org.example.marketing.dto.board.response.MakeNewAdvertisementImageResult
+import org.example.marketing.exception.IllegalResourceUsageException
 import org.example.marketing.exception.InsertLimitationAdImageException
 import org.example.marketing.exception.NotFoundAdThumbnailEntityException
 import org.example.marketing.repository.board.AdvertisementImageRepository
+import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -20,14 +23,25 @@ import java.util.*
 
 @Service
 class AdvertisementImageService(
-    private val advertisementImageRepository: AdvertisementImageRepository
+    private val advertisementImageRepository: AdvertisementImageRepository,
+    private val advertisementRepository: AdvertisementRepository,
 ) {
     private val rootDirPath = "C:\\Users\\dideh\\Desktop\\Spring\\images\\advertisement"
     private val logger = KotlinLogging.logger {}
     fun save(
+        advertiserId: Long,
         meta: MakeNewAdvertisementImageRequest,
         file: MultipartFile
     ): MakeNewAdvertisementImageResult {
+        // check owner
+        val isLegal = advertisementRepository.checkOwner(advertiserId, meta.advertisementId)
+
+        if (!isLegal) {
+            throw IllegalResourceUsageException(
+                logics = "advertisementImage-svc: save"
+            )
+        }
+
         // check count first
         val tika = Tika()
         val realType = tika.detect(file.inputStream)
@@ -43,13 +57,13 @@ class AdvertisementImageService(
         val fileNameUuid = "${UUID.randomUUID()}.$extension"
         val filePath = dir.resolve(fileNameUuid)
         val apiUuid = UUID.randomUUID().toString()
-        val apiCalUrl = "/advertisement/image/$apiUuid"
+        val apiCalUri = "/advertisement/image/$apiUuid"
 
         logger.info {
             "filename: $fileNameUuid\n" +
                     "filePath: $filePath\n" +
                     "apiUuid: $apiUuid\n" +
-                    "apiCalUrl: $apiCalUrl\n" +
+                    "apiCalUrl: $apiCalUri\n" +
                     "extension : $extension"
         }
 
@@ -70,12 +84,12 @@ class AdvertisementImageService(
                         meta = meta,
                         convertedFileName = fileNameUuid,
                         filePath = filePath.toString(),
-                        apiCallUrl = apiCalUrl,
+                        apiCallUri = apiCalUri,
                         fileSizeKB = file.size / 1024,
                         fileType = realType
                     )
                 )
-                MakeNewAdvertisementImageResult.of(savedEntity.id.value, apiCalUrl)
+                MakeNewAdvertisementImageResult.of(savedEntity.id.value, apiCalUri)
             }
         } catch (ex: Exception) {
             runCatching { Files.deleteIfExists(filePath) }
@@ -83,27 +97,38 @@ class AdvertisementImageService(
         }
     }
 
-    fun findByIdentifiedUrl(url: String): BinaryImageDataWithType{
+    fun findByIdentifiedUri(uri: String): BinaryImageDataWithType{
+        return transaction {
+            val targetEntity = advertisementImageRepository.findByApiCalUri(uri)
+
+            // load file
+            val path = Paths.get(targetEntity!!.filePath) // not null -> throw ex in repo
+            val bytes = Files.readAllBytes(path)
+            val type = targetEntity.fileType
+
+            BinaryImageDataWithType.of(
+                bytes,
+                type
+            )
+        }
         // find entity
-        val uuidFromUrl = url.substringAfterLast("/")
-        val targetEntity = advertisementImageRepository.findByApiCalUrl(uuidFromUrl)
-
-        // load file
-        val path = Paths.get(targetEntity!!.filePath) // not null -> throw ex in repo
-        val bytes = Files.readAllBytes(path)
-        val type = targetEntity.fileType
-
-        return BinaryImageDataWithType.of(
-            bytes,
-            type
-        )
     }
 
-    fun setThumbnailImage(request: SetAdvertisementThumbnailRequest) {
+    fun setThumbnailImage(
+        advertiserId: Long,
+        request: SetAdvertisementThumbnailRequest) {
         return transaction {
+            // owner check
+            val isLegal = advertisementRepository.checkOwner(advertiserId, request.advertisementId)
+
+            if (!isLegal) {
+                throw IllegalResourceUsageException(
+                    logics =  "advertisementImage-svc : set Thumbnail Image")
+            }
+
             // if already have
             val oldThumbnailEntity = advertisementImageRepository
-                .checkUnexpectedThumbnailsByAdvertisementId(request.advertisementLId)
+                .checkUnexpectedThumbnailsByAdvertisementId(request.advertisementId)
             logger.info {"oldThumbnail: $oldThumbnailEntity"}
             if (oldThumbnailEntity.isNotEmpty()) {
                 advertisementImageRepository.withdrawThumbnail(oldThumbnailEntity)
@@ -114,14 +139,20 @@ class AdvertisementImageService(
 
     }
 
-    fun getThumbnailUrlByAdvertisementId(targetAdvertisementId: Long): String? {
-        return transaction {
-            val entity = advertisementImageRepository.findThumbnailImageByAdvertisementID(targetAdvertisementId)
+    fun findAllMetaDataByAdvertisementId(advertisementId: Long): List<AdvertisementImage> {
+        return transaction { advertisementImageRepository.findAllByAdvertisementId(advertisementId)
+            .map { AdvertisementImage.of(it) }
+        }
+    }
 
-            entity?.apiCallUrl
+    fun findThumbnailUrlByAdvertisementId(advertisementId: Long): String? {
+        return transaction {
+            val entity = advertisementImageRepository.findThumbnailImageByAdvertisementID(advertisementId)
+
+            entity?.apiCallUri
                 ?: throw NotFoundAdThumbnailEntityException(
                     logics = "AdImageService - getThumbnailUrl\n " +
-                            "why this advertisementId: $targetAdvertisementId doesn't have thumbnail ?? "
+                            "why this advertisementId: $advertisementId doesn't have thumbnail ?? "
                 )
         }
     }

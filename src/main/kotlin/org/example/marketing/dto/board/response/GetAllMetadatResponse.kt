@@ -1,26 +1,24 @@
-package org.example.marketing.dto.functions.response
+package org.example.marketing.dto.board.response
 
+import org.example.marketing.domain.board.AdvertisementImage
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dto.functions.request.FollowRequest
-import org.example.marketing.enums.FollowStatus
+import org.example.marketing.enums.FrontErrorCode
 
-data class FollowResponse(
+data class GetAllMetadatResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val result: FollowResult
+    val result: List<AdvertisementImage>
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            result: FollowResult
-        ): FollowResponse {
-            return FollowResponse(
+            result: List<AdvertisementImage>
+        ): GetAllMetadatResponse =
+            GetAllMetadatResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
                 result = result
             )
-        }
     }
 }
-

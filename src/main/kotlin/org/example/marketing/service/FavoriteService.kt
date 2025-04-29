@@ -56,7 +56,6 @@ class FavoriteService(
     }
 
     fun findAllAdByInfluencerId(
-        request: GetFavoriteAdsRequest,
         userPrincipal: CustomUserPrincipal
     ): List<AdvertisementPackage> {
         // check validation
@@ -66,14 +65,14 @@ class FavoriteService(
             }
 
             val influencer = influencerRepository.findByLoginId(userPrincipal.loginId)
-            if (influencer.id.value != request.influencerId) {
+            if (influencer.id.value != userPrincipal.userId) {
                 throw UnauthorizedInfluencerException(
                     logics = "favorite-svc : findAllAdByInfluencerID"
                 )
             }
 
             val advertisementIds = favoriteRepository
-                .findByInfluencerId(request.influencerId).map { it.advertisementId }
+                .findByInfluencerId(userPrincipal.userId).map { it.advertisementId }
 
             val packages = advertisementPackageService.findAllByIds(advertisementIds)
 

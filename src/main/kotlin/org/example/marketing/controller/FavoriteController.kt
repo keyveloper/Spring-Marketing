@@ -34,7 +34,6 @@ class FavoriteController(
 
     @GetMapping("/favorite/ads")
     fun getAllAds(
-        @Valid @RequestBody request: GetFavoriteAdsRequest,
         @AuthenticationPrincipal user: UserDetails?
     ): ResponseEntity<GetFavoriteAdsResponse> {
         val userPrincipal = user as CustomUserPrincipal
@@ -43,7 +42,6 @@ class FavoriteController(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 packages = favoriteService.findAllAdByInfluencerId(
-                    request,
                     userPrincipal
                 )
             )

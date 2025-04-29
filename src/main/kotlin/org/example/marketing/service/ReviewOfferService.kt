@@ -18,13 +18,13 @@ class ReviewOfferService(
         return transaction {
             val existing = reviewOfferRepository.checkLiveEntityExist(
                 request.advertisementId,
-                request.influencerId
-            )
+                influencerId
+                )
 
             if (existing) {
                 throw DuplicatedReviewOfferException(
                     advertisementId = request.advertisementId,
-                    influencerId = request.influencerId,
+                    influencerId = influencerId,
                     logics = "reviewOffer svc = save()"
                 )
             } else {

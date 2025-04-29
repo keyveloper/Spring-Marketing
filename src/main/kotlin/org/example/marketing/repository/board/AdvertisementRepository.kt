@@ -20,6 +20,7 @@ class AdvertisementRepository {
 
     fun save(saveAdvertisement: SaveAdvertisement): AdvertisementEntity {
         return  AdvertisementEntity.new {
+            advertiserId = saveAdvertisement.advertiserId
             title = saveAdvertisement.title
             reviewType = saveAdvertisement.reviewType
             channelType = saveAdvertisement.channelType
@@ -58,6 +59,21 @@ class AdvertisementRepository {
         updateDto.itemInfo?.let { advertisement.itemInfo = it }
 
         return advertisement
+    }
+
+    fun findAllByAdvertiserId(advertiserId: Long): List<AdvertisementEntity> {
+        return AdvertisementEntity.find {
+            (AdvertisementsTable.advertiserId eq advertiserId) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+        }.toList()
+    }
+
+    fun checkOwner(advertiserId: Long, advertisementId: Long): Boolean {
+        return AdvertisementEntity.find {
+            (AdvertisementsTable.advertiserId eq advertiserId) and
+                    (AdvertisementsTable.id eq advertisementId) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+        }.empty()
     }
 
     fun deleteById(targetId: Long): AdvertisementEntity {

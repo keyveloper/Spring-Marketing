@@ -1,6 +1,5 @@
 package org.example.marketing.dto.functions.request
 
-data class FollowRequest(
+data class FollowAdvertiserRequest(
     val advertiserId: Long,
-    val influencerId: Long?
 )
