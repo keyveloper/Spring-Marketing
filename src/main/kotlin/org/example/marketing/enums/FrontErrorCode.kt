@@ -9,6 +9,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     CANNOT_DELETE_ENTITY(40002, "Can't delete this entity"),
     ALREADY_DELETED_ENTITY(40003, "This entity is deleted already"),
     INSERT_LIMIT_ENTITY(40004, "Database usable but can't insert entity anymore..."),
+    NOT_FOUND_FILE(40005, "File not found"),
 
     // 50000 ~ : SERVER Error
     // Server Critical - not handle

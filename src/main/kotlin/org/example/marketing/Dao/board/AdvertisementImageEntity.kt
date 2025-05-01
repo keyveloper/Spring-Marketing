@@ -11,10 +11,11 @@ class AdvertisementImageEntity(id: EntityID<Long>) : BaseDateEntity(id, Advertis
     var advertisementId by AdvertisementImagesTable.advertisementId
     var originalFileName by AdvertisementImagesTable.originalFileName
     var convertedFileName by AdvertisementImagesTable.convertedFileName
-    var apiCallUrl by AdvertisementImagesTable.apiCallUrl
+    var apiCallUri by AdvertisementImagesTable.apiCallUri
     var filePath by AdvertisementImagesTable.filePath
     var fileSizeKB by AdvertisementImagesTable.fileSizeKB
     var fileType by AdvertisementImagesTable.fileType
     var isThumbnail by AdvertisementImagesTable.isThumbnail
     var liveStatus by AdvertisementImagesTable.liveStatus
+    var draftId by AdvertisementImagesTable.draftId
 }

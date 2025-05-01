@@ -7,8 +7,6 @@ import org.example.marketing.enums.ReviewType
 import java.time.LocalDateTime
 
 data class MakeNewAdvertisementGeneralRequest(
-    val advertiserId: Long,
-
     @field:NotEmpty
     val title: String,
     val reviewType: ReviewType,
@@ -17,12 +15,12 @@ data class MakeNewAdvertisementGeneralRequest(
 
     @field: NotEmpty
     val itemName: String,
-    val recruitmentStartAt: LocalDateTime,
-    val recruitmentEndAt: LocalDateTime,
-    val announcementAt: LocalDateTime,
-    val reviewStartAt: LocalDateTime,
-    val reviewEndAt: LocalDateTime,
-    val endAt: LocalDateTime,
+    val recruitmentStartAt: Long,
+    val recruitmentEndAt: Long,
+    val announcementAt: Long,
+    val reviewStartAt: Long,
+    val reviewEndAt: Long,
+    val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
 )

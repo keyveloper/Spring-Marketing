@@ -4,17 +4,11 @@ import org.example.marketing.enums.AdvertiserType
 
 class SaveAdvertiser(
     val loginId: String, //not entity id
-
     val encodePassword: String,
-
     val email: String,
-
     val contact: String,
-
     var homepageUrl: String?,
-
     var companyName: String,
-
     val advertiserType: AdvertiserType
 ) {
     companion object {

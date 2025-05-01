@@ -4,7 +4,8 @@ import org.apache.tika.metadata.HttpHeaders
 import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
-import org.example.marketing.dto.board.response.GetAllMetadatResponse
+import org.example.marketing.dto.board.response.DeleteAdImageResponse
+import org.example.marketing.dto.board.response.GetAllAdImageMetadataResponse
 import org.example.marketing.dto.board.response.MakeNewAdvertisementImageResponse
 import org.example.marketing.dto.board.response.SetAdvertisementThumbnailResponse
 import org.example.marketing.enums.FrontErrorCode
@@ -39,6 +40,23 @@ class AdvertisementImageController(
         )
     }
 
+    @DeleteMapping("/advertisement/image/{metaId}")
+    fun deleteById(
+        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
+        @PathVariable metaId: Long
+    ): ResponseEntity<DeleteAdImageResponse> {
+        advertisementImageService.deleteById(
+            advertiserPrincipal.userId,
+            metaId
+        )
+        return ResponseEntity.ok().body(
+            DeleteAdImageResponse(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message
+            )
+        )
+    }
+
     // 🤔 should check every api call ???
     @PostMapping("/advertisement/image/thumbnail")
     fun setThumbNailById(
@@ -63,9 +81,9 @@ class AdvertisementImageController(
     @GetMapping("/open/advertisement/image/meta/{advertisementId}")
     fun getAllMetadataByAdvertisementId(
         @PathVariable("advertisementId") advertisementId: Long
-    ): ResponseEntity<GetAllMetadatResponse> {
+    ): ResponseEntity<GetAllAdImageMetadataResponse> {
         return ResponseEntity.ok().body(
-            GetAllMetadatResponse.of(
+            GetAllAdImageMetadataResponse.of(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
                 advertisementImageService.findAllMetaDataByAdvertisementId(advertisementId)
@@ -85,6 +103,4 @@ class AdvertisementImageController(
             .contentType(MediaType.parseMediaType(result.imageType))
             .body(result.imageBytes)
     }
-
-
 }

@@ -1,6 +1,7 @@
 package org.example.marketing.controller
 
 import jakarta.validation.Valid
+import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.request.GetDeliveryAdvertisementsTimelineByCategoryRequest
 import org.example.marketing.dto.board.request.MakeNewAdvertisementDeliveryRequest
 import org.example.marketing.dto.board.response.GetAdvertisementDeliveryResponse
@@ -9,6 +10,7 @@ import org.example.marketing.dto.board.response.MakeNewAdvertisementDeliveryResp
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementDeliveryService
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -20,15 +22,19 @@ class AdvertisementDeliveryController(
     private val advertisementDeliveryService: AdvertisementDeliveryService
 ) {
 
-    @PostMapping("/test/advertisement/delivery")
+    @PostMapping("/advertisement/delivery")
     fun save(
+        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
         @Valid @RequestBody request: MakeNewAdvertisementDeliveryRequest
     ): ResponseEntity<MakeNewAdvertisementDeliveryResponse> {
         return ResponseEntity.ok().body(
             MakeNewAdvertisementDeliveryResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                createdId = advertisementDeliveryService.save(request)
+                createdId = advertisementDeliveryService.save(
+                    advertiserPrincipal.userId,
+                    request
+                )
             )
         )
     }

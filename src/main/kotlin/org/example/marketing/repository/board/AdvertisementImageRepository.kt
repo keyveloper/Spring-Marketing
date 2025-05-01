@@ -91,4 +91,13 @@ class AdvertisementImageRepository {
 
         return entity
     }
+
+    fun deleteByIdWithOwnerChecking(advertiserId: Long, id: Long) {
+        // check owner
+
+        val entity = AdvertisementImageEntity.findById(id)
+            ?: throw NotFoundAdImageEntityException(logics = "advertisementImage repo - deleteById")
+
+        entity.liveStatus = EntityLiveStatus.DEAD
+    }
 }

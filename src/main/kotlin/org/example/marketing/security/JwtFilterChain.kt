@@ -31,6 +31,8 @@ class JwtFilterChain(
         filterChain: FilterChain
     ) {
         val logger = KotlinLogging.logger {}
+        logger.info { "Authorization: ${request.getHeader("Authorization")}" }
+
 
         if (shouldNotFilter(request)) {
             logger.info {"\uD83D\uDD13 Skipping JWT filter for: ${request.requestURI}"}

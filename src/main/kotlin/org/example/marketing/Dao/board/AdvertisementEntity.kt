@@ -7,6 +7,7 @@ import org.jetbrains.exposed.dao.id.EntityID
 
 class AdvertisementEntity(id: EntityID<Long>) : BaseDateEntity(id, AdvertisementsTable) {
     companion object : BaseDateEntityClass<AdvertisementEntity>(AdvertisementsTable)
+    var advertiserId by AdvertisementsTable.advertiserId
     var title by AdvertisementsTable.title
     var reviewType by AdvertisementsTable.reviewType
     var channelType by AdvertisementsTable.channelType
@@ -21,4 +22,5 @@ class AdvertisementEntity(id: EntityID<Long>) : BaseDateEntity(id, Advertisement
     var status by AdvertisementsTable.status
     var siteUrl by AdvertisementsTable.siteUrl
     var itemInfo by AdvertisementsTable.itemInfo
+    var draftId by AdvertisementsTable.draftId
 }

@@ -23,25 +23,25 @@ data class SaveAdvertisement(
 ) {
     companion object{
         fun of(
+            advertiserId: Long,
             request: MakeNewAdvertisementGeneralRequest,
         ): SaveAdvertisement {
-            val zone = ZoneId.of("Asia/Seoul")
             return SaveAdvertisement(
-                advertiserId = request.advertiserId,
+                advertiserId = advertiserId,
                 title = request.title,
                 reviewType = request.reviewType,
                 channelType = request.channelType,
                 recruitmentNumber = request.recruitmentNumber,
                 itemInfo = request.itemInfo,
-                recruitmentStartAt = request.recruitmentStartAt.atZone(zone).toEpochSecond(),
-                recruitmentEndAt = request.recruitmentEndAt.atZone(zone).toEpochSecond(),
-                announcementAt = request.announcementAt.atZone(zone).toEpochSecond(),
-                reviewStartAt = request.reviewStartAt.atZone(zone).toEpochSecond(),
-                reviewEndAt = request.reviewEndAt.atZone(zone).toEpochSecond(),
-                endAt = request.endAt.atZone(zone).toEpochSecond(),
+                recruitmentStartAt = request.recruitmentStartAt,
+                recruitmentEndAt = request.recruitmentEndAt,
+                announcementAt = request.announcementAt,
+                reviewStartAt = request.reviewStartAt,
+                reviewEndAt = request.reviewEndAt,
+                endAt = request.endAt,
                 siteUrl = request.siteUrl,
                 itemName = request.itemName,
-                )
+            )
         }
     }
 }

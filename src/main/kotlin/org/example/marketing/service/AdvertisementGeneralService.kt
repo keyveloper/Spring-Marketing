@@ -12,10 +12,10 @@ class AdvertisementGeneralService(
     private val advertisementRepository: AdvertisementRepository,
 ) {
 
-    fun save(request: MakeNewAdvertisementGeneralRequest): Long {
+    fun save(advertiserId: Long, request: MakeNewAdvertisementGeneralRequest): Long {
         return transaction {
             val advertisementEntity = advertisementRepository.save(
-                SaveAdvertisement.of(request)
+                SaveAdvertisement.of(advertiserId, request)
             )
             advertisementEntity.id.value
         }

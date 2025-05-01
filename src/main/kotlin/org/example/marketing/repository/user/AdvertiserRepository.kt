@@ -24,7 +24,6 @@ class AdvertiserRepository {
                 homepageUrl = saveAdvertiser.homepageUrl
                 companyName = saveAdvertiser.companyName
                 advertiserType = saveAdvertiser.advertiserType
-
             }
             advertiserEntity
         } catch (e: ExposedSQLException) {

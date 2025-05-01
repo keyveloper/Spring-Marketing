@@ -15,4 +15,5 @@ object AdvertisementImagesTable: BaseDateLongIdTable("advertisement_images") {
     val isThumbnail: Column<Boolean> = bool("is_thumbnail").index()
     val liveStatus: Column<EntityLiveStatus> =
         enumerationByName("live_status", 255, EntityLiveStatus::class).index()
+    val draftId: Column<Long> = long("draft_id").index()
 }
