@@ -5,7 +5,7 @@ import org.jetbrains.exposed.dao.id.LongIdTable
 import org.jetbrains.exposed.sql.Column
 
 object AdvertisementImagesTable: BaseDateLongIdTable("advertisement_images") {
-    val advertisementId: Column<Long> = long("advertisement_id").index()
+    val advertisementId: Column<Long?> = long("advertisement_id").index().nullable()
     val originalFileName: Column<String> = varchar("original_file_name", 255)
     val convertedFileName: Column<String> = varchar("converted_file_name", 255) // UUID
     val apiCallUri: Column<String> = varchar("api_call_uri", 255).uniqueIndex() // use another URL

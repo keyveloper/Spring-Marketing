@@ -1,9 +1,9 @@
 package org.example.marketing.dto.board.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
-import org.example.marketing.dto.user.response.MakeNewAdvertiserResponse
+import org.example.marketing.enums.FrontErrorCode
 
-data class DeleteAdvertisementResponse(
+data class SetImageAdvertisementIdResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
@@ -11,11 +11,9 @@ data class DeleteAdvertisementResponse(
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-        ): DeleteAdvertisementResponse {
-            return DeleteAdvertisementResponse(
-                frontErrorCode = frontErrorCode,
-                errorMessage = errorMessage,
-            )
-        }
+        ): SetImageAdvertisementIdResponse = SetImageAdvertisementIdResponse(
+            frontErrorCode = frontErrorCode,
+            errorMessage = errorMessage,
+        )
     }
 }

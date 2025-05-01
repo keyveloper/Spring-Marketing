@@ -23,5 +23,5 @@ object AdvertisementsTable: BaseDateLongIdTable("advertisements") {
         enumerationByName("status", 255, AdvertisementStatus::class).index()
     val siteUrl: Column<String?> = text("site_url").nullable()
     val itemInfo: Column<String?> = varchar("item_info", 255).nullable()
-    val draftId: Column<Long?> = long("draft_id").nullable().index()
+    val draftId: Column<Long?> = long("draft_id").nullable().uniqueIndex()
 }

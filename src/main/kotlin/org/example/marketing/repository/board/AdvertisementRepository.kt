@@ -35,6 +35,7 @@ class AdvertisementRepository {
             status = AdvertisementStatus.LIVE
             siteUrl = saveAdvertisement.siteUrl
             itemInfo = saveAdvertisement.itemInfo
+            draftId = saveAdvertisement.draftId
         }
     }
 
@@ -115,6 +116,15 @@ class AdvertisementRepository {
             )
 
         return advertisement
+    }
+
+    fun findByDraftId(targetDraftId: Long): AdvertisementEntity? {
+        val targetEntity = AdvertisementEntity.find {
+            (AdvertisementsTable.draftId eq targetDraftId) and
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+        }.firstOrNull()
+
+        return targetEntity
     }
 
     fun findAllByReviewTypesExceptVisit(reviewTypes: List<ReviewType>): List<AdvertisementEntity> {

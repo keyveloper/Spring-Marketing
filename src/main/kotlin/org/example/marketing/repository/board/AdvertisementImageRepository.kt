@@ -13,13 +13,12 @@ class AdvertisementImageRepository {
 
     fun save(saveAdvertisementImage: SaveAdvertisementImage): AdvertisementImageEntity {
         val newEntity = AdvertisementImageEntity.new {
-            advertisementId = saveAdvertisementImage.advertisementId
             originalFileName = saveAdvertisementImage.originalFileName
             convertedFileName = saveAdvertisementImage.convertedFileName
             apiCallUri = saveAdvertisementImage.apiCallUri
             filePath = saveAdvertisementImage.filePath
             fileSizeKB = saveAdvertisementImage.fileSizeKB
-            isThumbnail = saveAdvertisementImage.isThumbnail
+            isThumbnail = false
             liveStatus = EntityLiveStatus.LIVE
             fileType = saveAdvertisementImage.fileType
         }
@@ -37,6 +36,13 @@ class AdvertisementImageRepository {
     fun findAllByAdvertisementId(targetAdvertisementId: Long): List<AdvertisementImageEntity> {
         return AdvertisementImageEntity.find {
             (AdvertisementImagesTable.advertisementId eq targetAdvertisementId) and
+                    (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
+        }.toList()
+    }
+
+    fun findAllByDraftId(targetDraftId: Long): List<AdvertisementImageEntity> {
+        return AdvertisementImageEntity.find {
+            (AdvertisementImagesTable.draftId eq targetDraftId) and
                     (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
         }.toList()
     }

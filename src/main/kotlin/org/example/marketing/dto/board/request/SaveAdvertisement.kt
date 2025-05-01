@@ -20,6 +20,7 @@ data class SaveAdvertisement(
     val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
+    val draftId: Long,
 ) {
     companion object{
         fun of(
@@ -41,6 +42,7 @@ data class SaveAdvertisement(
                 endAt = request.endAt,
                 siteUrl = request.siteUrl,
                 itemName = request.itemName,
+                draftId = request.draftId
             )
         }
     }

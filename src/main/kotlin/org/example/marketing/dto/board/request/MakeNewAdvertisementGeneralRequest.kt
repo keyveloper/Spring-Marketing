@@ -23,4 +23,7 @@ data class MakeNewAdvertisementGeneralRequest(
     val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
+
+    // ----- draft -------
+    val draftId: Long,
 )

@@ -2,20 +2,19 @@ package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.apache.tika.Tika
+import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.domain.board.AdvertisementImage
 import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
 import org.example.marketing.dto.board.request.SaveAdvertisementImage
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
 import org.example.marketing.dto.board.response.BinaryImageDataWithType
-import org.example.marketing.dto.board.response.MakeNewAdvertisementImageResult
-import org.example.marketing.exception.IllegalResourceUsageException
-import org.example.marketing.exception.InsertLimitationAdImageException
-import org.example.marketing.exception.NotFoundAdThumbnailEntityException
+import org.example.marketing.exception.*
 import org.example.marketing.repository.board.AdvertisementImageRepository
 import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -25,6 +24,7 @@ import java.util.*
 class AdvertisementImageService(
     private val advertisementImageRepository: AdvertisementImageRepository,
     private val advertisementRepository: AdvertisementRepository,
+    private val advertisementDraftService: AdvertisementDraftService
 ) {
     private val rootDirPath = "C:\\Users\\dideh\\Desktop\\Spring\\images\\advertisement"
     private val logger = KotlinLogging.logger {}
@@ -32,17 +32,9 @@ class AdvertisementImageService(
         advertiserId: Long,
         meta: MakeNewAdvertisementImageRequest,
         file: MultipartFile
-    ): MakeNewAdvertisementImageResult {
-        // check owner
-        val isLegal = advertisementRepository.checkOwner(advertiserId, meta.advertisementId)
+    ): AdvertisementImage {
 
-        if (!isLegal) {
-            throw IllegalResourceUsageException(
-                logics = "advertisementImage-svc: save"
-            )
-        }
-
-        // check count first
+        // extract meta data
         val tika = Tika()
         val realType = tika.detect(file.inputStream)
         // save file
@@ -67,16 +59,31 @@ class AdvertisementImageService(
                     "extension : $extension"
         }
 
+        // 🙄 orphan file ...
         file.inputStream.use {
             Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING)
         }
 
         try {
             return transaction {
-                val count = advertisementImageRepository.findAllByAdvertisementId(meta.advertisementId)
+                // draft validation check
+                val draft = advertisementDraftService.findById(meta.draftId)
+
+                // limitation check
+                val count = advertisementImageRepository.findAllByAdvertisementId(meta.draftId)
                     .size
                 if (count >= 5) {
                     throw InsertLimitationAdImageException()
+                }
+
+                // expired check
+                val apiCallAt = System.currentTimeMillis() / 1000
+                if (draft.expiredAt < apiCallAt) {
+                    throw ExpiredDraftException(
+                        logics = "advertisementDraft svc - save - draft expried checking",
+                        expiredAt = CustomDateTimeFormatter.epochToString(draft.expiredAt),
+                        apiCallAt = CustomDateTimeFormatter.epochToString(apiCallAt)
+                    )
                 }
 
                 val savedEntity = advertisementImageRepository.save(
@@ -89,7 +96,7 @@ class AdvertisementImageService(
                         fileType = realType
                     )
                 )
-                MakeNewAdvertisementImageResult.of(savedEntity.id.value, apiCalUri)
+                AdvertisementImage.of(savedEntity)
             }
         } catch (ex: Exception) {
             runCatching { Files.deleteIfExists(filePath) }
@@ -99,7 +106,9 @@ class AdvertisementImageService(
 
     fun findByIdentifiedUri(uri: String): BinaryImageDataWithType{
         return transaction {
-            val targetEntity = advertisementImageRepository.findByApiCalUri(uri)
+            val recoveredOriginalUri = StringBuilder().append("/advertisement/image/").append(uri).toString()
+            logger.info { "recoveredOriginalUri: $recoveredOriginalUri" }
+            val targetEntity = advertisementImageRepository.findByApiCalUri(recoveredOriginalUri)
 
             // load file
             val path = Paths.get(targetEntity!!.filePath) // not null -> throw ex in repo
@@ -154,6 +163,27 @@ class AdvertisementImageService(
                     logics = "AdImageService - getThumbnailUrl\n " +
                             "why this advertisementId: $advertisementId doesn't have thumbnail ?? "
                 )
+        }
+    }
+
+    fun deleteById(advertiserId: Long, metaId: Long) {
+        return transaction {
+            // find with owner info ->
+            val targetEntity = advertisementImageRepository.findById(metaId)
+            val savedFilePath = targetEntity!!.filePath
+            val file = File(savedFilePath)
+
+            if (file.exists()) {
+                file.delete()
+            } else {
+                throw NotExistFileException(
+                    logics = "advertisementImage-svc : delete file not found",
+                    filePath = savedFilePath
+                )
+            }
+            advertisementImageRepository.deleteByIdWithOwnerChecking(advertiserId, metaId)
+            //  👉 fix logic - owner check !!
+
         }
     }
 }
