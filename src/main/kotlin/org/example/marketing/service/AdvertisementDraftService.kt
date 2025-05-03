@@ -3,7 +3,6 @@ package org.example.marketing.service
 import org.example.marketing.dao.board.AdvertisementDraftEntity
 import org.example.marketing.domain.board.AdvertisementDraft
 import org.example.marketing.dto.board.request.IssueAdvertisementDraft
-import org.example.marketing.dto.board.request.IssueNewAdvertisementDraftRequest
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.exception.NotFoundAdDraftEntityException
 import org.example.marketing.repository.board.AdvertisementDraftRepository
@@ -16,10 +15,10 @@ import org.springframework.stereotype.Service
 class AdvertisementDraftService(
     private val advertisementDraftRepository: AdvertisementDraftRepository
 ) {
-    fun issueDraft(request: IssueNewAdvertisementDraftRequest): AdvertisementDraft {
+    fun issueDraft(advertiserId: Long): AdvertisementDraft {
         return transaction {
             val newEntity = advertisementDraftRepository.save(
-                IssueAdvertisementDraft.of(request)
+                IssueAdvertisementDraft.of(advertiserId)
             )
 
             AdvertisementDraft.of(newEntity)

@@ -6,7 +6,7 @@ import org.example.marketing.dto.user.ValidateTokenResponse
 import org.example.marketing.dto.user.ValidateTokenResult
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
-import org.example.marketing.dto.user.request.LoginInfluencerReqeust
+import org.example.marketing.dto.user.request.LoginInfluencerRequest
 import org.example.marketing.dto.user.response.LoginAdminResponse
 import org.example.marketing.dto.user.response.LoginAdvertiserResponse
 import org.example.marketing.dto.user.response.LoginInfluencerResponse
@@ -54,7 +54,7 @@ class AuthController(
 
     @PostMapping("/entry/login-influencer")
     fun loginInfluencer(
-        @RequestBody request: LoginInfluencerReqeust
+        @RequestBody request: LoginInfluencerRequest
     ): ResponseEntity<LoginInfluencerResponse> {
         return ResponseEntity.ok().body(
             LoginInfluencerResponse.of(

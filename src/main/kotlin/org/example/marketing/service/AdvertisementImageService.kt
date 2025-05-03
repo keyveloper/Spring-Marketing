@@ -135,15 +135,7 @@ class AdvertisementImageService(
                     logics =  "advertisementImage-svc : set Thumbnail Image")
             }
 
-            // if already have
-            val oldThumbnailEntity = advertisementImageRepository
-                .checkUnexpectedThumbnailsByAdvertisementId(request.advertisementId)
-            logger.info {"oldThumbnail: $oldThumbnailEntity"}
-            if (oldThumbnailEntity.isNotEmpty()) {
-                advertisementImageRepository.withdrawThumbnail(oldThumbnailEntity)
-            }
-
-            advertisementImageRepository.setThumbnailById(request.entityId)
+            advertisementImageRepository.setThumbnailById(request.imageId)
         }
 
     }
@@ -154,7 +146,7 @@ class AdvertisementImageService(
         }
     }
 
-    fun findThumbnailUrlByAdvertisementId(advertisementId: Long): String? {
+    fun findThumbnailUrlByAdvertisementId(advertisementId: Long): String {
         return transaction {
             val entity = advertisementImageRepository.findThumbnailImageByAdvertisementID(advertisementId)
 

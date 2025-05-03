@@ -4,7 +4,7 @@ data class IssueAdvertisementDraft(
     val advertiserId: Long,
 ) {
     companion object {
-        fun of(request: IssueNewAdvertisementDraftRequest): IssueAdvertisementDraft =
-            IssueAdvertisementDraft(advertiserId = request.advertiserId)
+        fun of(advertiserId: Long): IssueAdvertisementDraft =
+            IssueAdvertisementDraft(advertiserId = advertiserId)
     }
 }

@@ -74,7 +74,7 @@ class AdvertisementRepository {
             (AdvertisementsTable.advertiserId eq advertiserId) and
                     (AdvertisementsTable.id eq advertisementId) and
                     (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.empty()
+        }.any()
     }
 
     fun deleteById(targetId: Long): AdvertisementEntity {
@@ -94,16 +94,6 @@ class AdvertisementRepository {
         }.toList()
     }
 
-    fun findFreshAll(): List<AdvertisementEntity> {
-        val cutoffTime = System.currentTimeMillis() - 5 * 24 * 60 * 60 * 1000
-        val advertisements = AdvertisementEntity.find {
-            (AdvertisementsTable.createdAt lessEq cutoffTime) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.orderBy(Pair(AdvertisementsTable.createdAt, SortOrder.DESC))
-            .toList()
-
-        return advertisements
-    }
 
 
     fun findById(targetId: Long): AdvertisementEntity {

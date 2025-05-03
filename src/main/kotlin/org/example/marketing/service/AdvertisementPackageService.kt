@@ -1,35 +1,31 @@
 package org.example.marketing.service
 
+import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.domain.board.AdvertisementDelivery
 import org.example.marketing.domain.board.AdvertisementGeneral
 import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
 import org.example.marketing.repository.board.AdvertisementLocationRepository
-import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
 class AdvertisementPackageService(
-    private val advertisementRepository: AdvertisementRepository,
     private val advertisementDeliveryCategoryRepository: AdvertisementDeliveryCategoryRepository,
     private val advertisementLocationRepository: AdvertisementLocationRepository
 ){ // for total advertisements
 
-    fun findById(targetId: Long): AdvertisementPackage {
-
+    fun toPackage(entity: AdvertisementEntity): AdvertisementPackage {
         return transaction {
-            val targetEntity = advertisementRepository.findById(targetId)
-
-            when (targetEntity.reviewType){
+            when (entity.reviewType){
                 ReviewType.DELIVERY -> {
                     val categories = advertisementDeliveryCategoryRepository
-                        .findAllByAdvertisementId(targetEntity.id.value).map { it.category }
+                        .findAllByAdvertisementId(entity.id.value).map { it.category }
 
                     AdvertisementPackage.deliveryOf(
                         AdvertisementDelivery.of(
-                            AdvertisementGeneral.of(targetEntity),
+                            AdvertisementGeneral.of(entity),
                             categories
                         )
                     )
@@ -38,23 +34,22 @@ class AdvertisementPackageService(
                 ReviewType.VISITED -> {
                     // have to change !
                     AdvertisementPackage.generalOf(
-                        AdvertisementGeneral.of(targetEntity)
+                        AdvertisementGeneral.of(entity)
                     )
                 }
 
                 else -> {
                     AdvertisementPackage.generalOf(
-                        AdvertisementGeneral.of(targetEntity)
+                        AdvertisementGeneral.of(entity)
                     )
                 }
             }
         }
     }
 
-    fun findAllByIds(ids: List<Long>): List<AdvertisementPackage> {
+    fun toPackages(entities: List<AdvertisementEntity>): List<AdvertisementPackage> {
         return transaction {
-            val targetEntities = advertisementRepository.findByIds(ids)
-            targetEntities.map { entity ->
+            entities.map { entity ->
                 when(entity.reviewType) {
                     ReviewType.DELIVERY -> {
                         val categories = advertisementDeliveryCategoryRepository

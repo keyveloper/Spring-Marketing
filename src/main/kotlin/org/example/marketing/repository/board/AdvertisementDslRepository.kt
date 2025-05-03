@@ -1,9 +1,7 @@
 package org.example.marketing.repository.board
 
 import org.example.marketing.dao.board.AdvertisementDraftEntity
-import org.example.marketing.domain.board.AdvertisementDraft
 import org.example.marketing.table.AdvertisementDraftsTable
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.lessEq
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -23,14 +21,15 @@ class AdvertisementDslRepository {
         }
     }
 
-    fun deleteDraftAndImagesByDraftId(targetDraftId: Long) {
+    fun deleteDraftAndImagesByDraftId(targetDraftId: Long, advertiserId: Long) {
         transaction {
             exec(
                 """
                     DELETE d, i 
                     FROM advertisement_drafts d
                     JOIN advertisement_images i ON d.id = i.draft_id
-                    WHERE d.id = $targetDraftId AND d.draft_status = 'DRAFT' 
+                    WHERE d.id = $targetDraftId AND d.draft_status = 'DRAFT' AND d.advertisement_id = $advertiserId
+                   
                 """.trimIndent()
             )
         }

@@ -2,7 +2,7 @@ package org.example.marketing.service
 
 import org.example.marketing.dto.user.request.LoginAdminRequest
 import org.example.marketing.dto.user.request.LoginAdvertiserRequest
-import org.example.marketing.dto.user.request.LoginInfluencerReqeust
+import org.example.marketing.dto.user.request.LoginInfluencerRequest
 import org.example.marketing.dto.user.response.LoginAdvertiserResult
 import org.example.marketing.dto.user.response.LoginInfluencerResult
 import org.example.marketing.enums.UserType
@@ -45,7 +45,7 @@ class AuthService(
         LoginAdvertiserResult.of(jwtToken, advertiser.id.value)
     }
 
-    fun loginInfluencer(request: LoginInfluencerReqeust): LoginInfluencerResult = transaction {
+    fun loginInfluencer(request: LoginInfluencerRequest): LoginInfluencerResult = transaction {
         val influencer = influencerRepository.findByLoginId(request.loginId)
 
         if (!passwordEncoder.matches(request.password, influencer.password)) {

@@ -1,5 +1,6 @@
 package org.example.marketing.controller
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
 import org.apache.tika.metadata.HttpHeaders
 import org.example.marketing.domain.user.AdvertiserPrincipal
@@ -20,7 +21,7 @@ class AdvertisementImageController(
     private val advertisementImageService: AdvertisementImageService,
     private val advertisementDslService: AdvertisementDslService
 ) {
-
+    val logger = KotlinLogging.logger {}
     //  ✅ check legal approach
     @PostMapping(
         "/advertisement/image",
@@ -64,6 +65,7 @@ class AdvertisementImageController(
         @RequestBody request: SetAdvertisementThumbnailRequest,
     )
     :ResponseEntity<SetAdvertisementThumbnailResponse> {
+
         advertisementImageService.setThumbnailImage(advertiserPrincipal.userId, request)
         return ResponseEntity.ok().body(
             SetAdvertisementThumbnailResponse.of(
@@ -73,7 +75,7 @@ class AdvertisementImageController(
         )
     }
 
-    @GetMapping("/advertisement/image/publisher/{draftId}")
+    @PostMapping("/advertisement/image/publisher/{draftId}")
     fun setAdvertisementId(
         @Valid @PathVariable draftId: Long,
     ): ResponseEntity<SetImageAdvertisementIdResponse> {
@@ -86,10 +88,18 @@ class AdvertisementImageController(
         )
     }
 
-    @GetMapping("/open/advertisement/image/thumbnail/url/{advertisementId}")
+    @GetMapping("/open/advertisement/image/thumbnail/{advertisementId}")
     fun getThumbnailUrlByAdvertisementId(
         @PathVariable("advertisementId") advertisementId: Long
-    ) {}
+    ): ResponseEntity<GetAdThumbnailUrlResponse> {
+        return ResponseEntity.ok().body(
+            GetAdThumbnailUrlResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                advertisementImageService.findThumbnailUrlByAdvertisementId(advertisementId)
+            )
+        )
+    }
 
     @GetMapping("/open/advertisement/image/meta/{advertisementId}")
     fun getAllMetadataByAdvertisementId(

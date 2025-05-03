@@ -21,6 +21,7 @@ class AdvertisementImageRepository {
             isThumbnail = false
             liveStatus = EntityLiveStatus.LIVE
             fileType = saveAdvertisementImage.fileType
+            draftId = saveAdvertisementImage.draftId
         }
 
         return newEntity

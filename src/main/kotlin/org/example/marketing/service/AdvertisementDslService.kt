@@ -14,9 +14,9 @@ class AdvertisementDslService(
         }
     }
 
-    fun withdrawDraft(targetDaftId: Long) {
+    fun withdrawDraft(advertiserId: Long, targetDaftId: Long) {
         return transaction {
-            advertisementDslRepository.deleteDraftAndImagesByDraftId(targetDaftId)
+            advertisementDslRepository.deleteDraftAndImagesByDraftId(targetDaftId, advertiserId)
         }
     }
 
