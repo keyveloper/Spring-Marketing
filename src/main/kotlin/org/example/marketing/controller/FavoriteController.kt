@@ -1,13 +1,11 @@
 package org.example.marketing.controller
 
-import jakarta.validation.Valid
 import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.functions.request.FavoriteAdRequest
-import org.example.marketing.dto.functions.request.GetFavoriteAdsRequest
 import org.example.marketing.dto.functions.response.FavoriteAdResponse
 import org.example.marketing.dto.functions.response.GetFavoriteAdsResponse
 import org.example.marketing.enums.FrontErrorCode
-import org.example.marketing.service.FavoriteService
+import org.example.marketing.service.AdvertisementFavoriteService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.core.userdetails.UserDetails
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class FavoriteController(
-    private val favoriteService: FavoriteService
+    private val advertisementFavoriteService: AdvertisementFavoriteService
 ) {
     @PostMapping("/favorite")
     fun favoriteAd(
@@ -27,7 +25,7 @@ class FavoriteController(
             FavoriteAdResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                result = favoriteService.switchOrSave(request, userPrincipal)
+                result = advertisementFavoriteService.switchOrSave(request, userPrincipal)
             )
         )
     }
@@ -41,7 +39,7 @@ class FavoriteController(
             GetFavoriteAdsResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                packages = favoriteService.findAllAdByInfluencerId(
+                packages = advertisementFavoriteService.findAllAdByInfluencerId(
                     userPrincipal
                 )
             )

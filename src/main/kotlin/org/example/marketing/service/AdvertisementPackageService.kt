@@ -1,81 +1,44 @@
 package org.example.marketing.service
 
-import org.example.marketing.dao.board.AdvertisementEntity
-import org.example.marketing.domain.board.AdvertisementDelivery
-import org.example.marketing.domain.board.AdvertisementGeneral
+import org.example.marketing.domain.board.AdvertisementGeneralFields
 import org.example.marketing.domain.board.AdvertisementPackage
-import org.example.marketing.enums.ReviewType
-import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
-import org.example.marketing.repository.board.AdvertisementLocationRepository
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.example.marketing.domain.board.AdvertisementPackageDomain
+import org.example.marketing.exception.NotFoundAdvertisementException
+import org.example.marketing.repository.board.AdvertisementPackageRepository
 import org.springframework.stereotype.Service
 
 @Service
 class AdvertisementPackageService(
-    private val advertisementDeliveryCategoryRepository: AdvertisementDeliveryCategoryRepository,
-    private val advertisementLocationRepository: AdvertisementLocationRepository
+    private val advertisementPackageRepository: AdvertisementPackageRepository
 ){ // for total advertisements
+    companion object {
+        fun groupToPackage(domains: List<AdvertisementPackageDomain>): List<AdvertisementPackage> {
+            return domains.groupBy { it.id }
+                .map { (advertisementId, groupedRows) ->
+                    val advertisement = groupedRows.first()
+                    val imageUris = groupedRows.map { it.imageUri }.distinct()
+                    val category = groupedRows.map { it.category }.distinct()
 
-    fun toPackage(entity: AdvertisementEntity): AdvertisementPackage {
-        return transaction {
-            when (entity.reviewType){
-                ReviewType.DELIVERY -> {
-                    val categories = advertisementDeliveryCategoryRepository
-                        .findAllByAdvertisementId(entity.id.value).map { it.category }
-
-                    AdvertisementPackage.deliveryOf(
-                        AdvertisementDelivery.of(
-                            AdvertisementGeneral.of(entity),
-                            categories
-                        )
-                    )
+                    val generalFields = AdvertisementGeneralFields.of(advertisement, imageUris)
+                    AdvertisementPackage.of(generalFields, category)
                 }
-
-                ReviewType.VISITED -> {
-                    // have to change !
-                    AdvertisementPackage.generalOf(
-                        AdvertisementGeneral.of(entity)
-                    )
-                }
-
-                else -> {
-                    AdvertisementPackage.generalOf(
-                        AdvertisementGeneral.of(entity)
-                    )
-                }
-            }
         }
     }
 
-    fun toPackages(entities: List<AdvertisementEntity>): List<AdvertisementPackage> {
-        return transaction {
-            entities.map { entity ->
-                when(entity.reviewType) {
-                    ReviewType.DELIVERY -> {
-                        val categories = advertisementDeliveryCategoryRepository
-                            .findAllByAdvertisementId(entity.id.value).map { it.category }
-                        AdvertisementPackage.deliveryOf(
-                            AdvertisementDelivery.of(
-                                AdvertisementGeneral.of(entity),
-                                categories
-                            )
+    fun findByAdvertisementId(advertisementId: Long): AdvertisementPackage {
+        val packagesDomain = advertisementPackageRepository.findPackageByAdvertisement(advertisementId)
 
-                        )
-                    }
+        val original = packagesDomain.firstOrNull()
+            ?: throw NotFoundAdvertisementException(logics = "adPackageSvc-findByAdvertiserId: $advertisementId")
+        val imageUris = packagesDomain.map { it.imageUri}
 
-                    ReviewType.VISITED -> {
-                        AdvertisementPackage.generalOf(
-                            AdvertisementGeneral.of(entity)
-                        )
-                    }
+        val generalFields = AdvertisementGeneralFields.of(
+            domain = original,
+            imageUris = imageUris
+        )
 
-                    else -> {
-                        AdvertisementPackage.generalOf(
-                            AdvertisementGeneral.of(entity)
-                        )
-                    }
-                }
-            }
-        }
+        val categories = packagesDomain.map { it.category }
+
+        return AdvertisementPackage.of(generalFields, categories)
     }
 }

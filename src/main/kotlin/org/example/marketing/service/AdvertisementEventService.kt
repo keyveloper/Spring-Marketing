@@ -8,20 +8,19 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertisementEventService(
     private val advertisementEventRepository: AdvertisementEventRepository,
-    private val advertisementPackageService: AdvertisementPackageService
 ) {
 
     fun findFreshAll(): List<AdvertisementPackage> {
         return transaction {
-            val entities = advertisementEventRepository.findFreshAll()
-            advertisementPackageService.toPackages(entities)
+            val packageDomains = advertisementEventRepository.findFreshAll()
+            AdvertisementPackageService.groupToPackage(packageDomains)
         }
     }
 
     fun findDeadlineAll(): List<AdvertisementPackage> {
         return transaction {
-            val entities = advertisementEventRepository.findDeadlineAll()
-            advertisementPackageService.toPackages(entities)
+            val packageDomains = advertisementEventRepository.findDeadlineAll()
+            AdvertisementPackageService.groupToPackage(packageDomains)
         }
     }
 }

@@ -5,16 +5,18 @@ import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.dto.board.response.*
 import org.example.marketing.enums.FrontErrorCode
-import org.example.marketing.service.AdvertisementDslService
+import org.example.marketing.service.AdvertisementImageDslService
 import org.example.marketing.service.AdvertisementGeneralService
+import org.example.marketing.service.AdvertisementPackageService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class AdvertisementGeneralController( // only for general advertisement
+class AdvertisementCRUDlController( // only for general advertisement
     private val advertisementService: AdvertisementGeneralService,
-    private val advertisementDslService: AdvertisementDslService
+    private val advertisementPackageService: AdvertisementPackageService,
+    private val advertisementImageDslService: AdvertisementImageDslService
 ) {
     @PostMapping("/advertisement/general")
     fun save(
@@ -42,7 +44,7 @@ class AdvertisementGeneralController( // only for general advertisement
             GetAdvertisementGeneralResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                advertisement = advertisementService.findById(targetId)
+                advertisement = advertisementPackageService.findByAdvertisementId(targetId)
             )
         )
     }
@@ -65,7 +67,7 @@ class AdvertisementGeneralController( // only for general advertisement
     fun delete(
         @Valid @RequestBody request: DeleteAdvertisementRequest
     ): ResponseEntity<DeleteAdvertisementResponse> {
-        advertisementDslService.deleteAdvertisement(request.targetId)
+        advertisementImageDslService.deleteAdvertisement(request.targetId)
         return ResponseEntity.ok().body(
             DeleteAdvertisementResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,

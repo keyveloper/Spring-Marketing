@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component
 import java.time.Instant
 
 @Component
-class AdvertisementDslRepository {
+class AdvertisementImageDslRepository {
     fun setImageAdvertisementIdByDraftId(targetDraftId: Long) {
         transaction {
             exec(

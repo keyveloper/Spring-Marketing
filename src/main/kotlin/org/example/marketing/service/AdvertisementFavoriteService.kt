@@ -3,7 +3,6 @@ package org.example.marketing.service
 import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.functions.request.FavoriteAdRequest
-import org.example.marketing.dto.functions.request.GetFavoriteAdsRequest
 import org.example.marketing.dto.functions.request.SaveInfluencerFavoriteAd
 import org.example.marketing.dto.functions.response.FavoriteAdResult
 import org.example.marketing.enums.UserType
@@ -15,9 +14,8 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class FavoriteService(
+class AdvertisementFavoriteService(
     private val favoriteRepository: FavoriteRepository,
-    private val advertisementPackageService: AdvertisementPackageService,
     private val influencerRepository: InfluencerRepository
 ) {
 
@@ -64,6 +62,7 @@ class FavoriteService(
                 throw NotMatchedUserTypeException(logics = "favorite service - findAllAdsByInfluencerId")
             }
 
+            // 📌 change using inner -> is it necessary??
             val influencer = influencerRepository.findByLoginId(userPrincipal.loginId)
             if (influencer.id.value != userPrincipal.userId) {
                 throw UnauthorizedInfluencerException(
@@ -71,12 +70,8 @@ class FavoriteService(
                 )
             }
 
-            val advertisementIds = favoriteRepository
-                .findByInfluencerId(userPrincipal.userId).map { it.advertisementId }
-
-            val packages = advertisementPackageService.findAllByIds(advertisementIds)
-
-            packages
+            val packageDomains = favoriteRepository.findAllAdPackageByInfluencerId(userPrincipal.userId)
+            AdvertisementPackageService.groupToPackage(packageDomains)
         }
     }
 }

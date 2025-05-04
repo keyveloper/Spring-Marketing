@@ -1,14 +1,17 @@
 package org.example.marketing.repository.functions
 
+import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.dao.functions.InfluencerFavoriteAdEntity
+import org.example.marketing.domain.board.AdvertisementPackage
+import org.example.marketing.domain.board.AdvertisementPackageDomain
 import org.example.marketing.dto.functions.request.SaveInfluencerFavoriteAd
+import org.example.marketing.enums.AdvertisementStatus
+import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.enums.FavoriteStatus
-import org.example.marketing.exception.DuplicatedInfluencerFavoriteAdException
-import org.example.marketing.table.InfluencerFavoritesAdTable
-import org.jetbrains.exposed.exceptions.ExposedSQLException
-import org.jetbrains.exposed.sql.and
+import org.example.marketing.table.*
+import org.jetbrains.exposed.sql.*
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.springframework.stereotype.Component
-import java.sql.SQLException
 
 @Component
 class FavoriteRepository {
@@ -48,4 +51,36 @@ class FavoriteRepository {
                     (InfluencerFavoritesAdTable.advertisementId eq advertisementId)
         }.singleOrNull()
     }
+
+    fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementPackageDomain> {
+        val joinedTables: ColumnSet = AdvertisementsTable
+            .join(
+                otherTable = AdvertisementImagesTable,
+                joinType = JoinType.INNER,
+                onColumn = AdvertisementsTable.id,
+                otherColumn = AdvertisementImagesTable.advertisementId,
+                additionalConstraint = {
+                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
+                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
+                }
+            ).join(
+                AdvertisementDeliveryCategoriesTable,
+                JoinType.LEFT,
+                onColumn = AdvertisementsTable.id,
+                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
+            ).join(
+                otherTable = InfluencerFavoritesAdTable,
+                joinType = JoinType.INNER,
+                onColumn = InfluencerFavoritesAdTable.advertisementId,
+                otherColumn = AdvertisementsTable.advertiserId,
+                additionalConstraint = {
+                    (InfluencerFavoritesAdTable.favoriteStatus eq FavoriteStatus.FAVORITE)
+                }
+            )
+
+        return joinedTables
+            .selectAll()
+            .map(AdvertisementPackageDomain::fromRow)
+    }
 }
+

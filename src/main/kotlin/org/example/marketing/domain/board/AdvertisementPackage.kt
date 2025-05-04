@@ -1,38 +1,20 @@
 package org.example.marketing.domain.board
 
-import org.example.marketing.dto.board.request.SaveAdvertisementLocation
+import org.example.marketing.enums.DeliveryCategory
 
 data class AdvertisementPackage(
-    val advertisementGeneral: AdvertisementGeneral?,
-    val advertisementDelivery: AdvertisementDelivery?,
-    val advertisementLocation: AdvertisementGeneral? // -> 📌 have to change
+    val advertisementGeneralFields: AdvertisementGeneralFields,
+    val categories: List<DeliveryCategory>,
+    // -> 📌 add location fields -> dti로 만들 것
 ) {
     companion object {
-        fun generalOf(
-            advertisementGeneral: AdvertisementGeneral
+        fun of(
+            advertisementGeneralFields: AdvertisementGeneralFields,
+            categories: List<DeliveryCategory>
         ): AdvertisementPackage {
             return AdvertisementPackage(
-                advertisementGeneral = advertisementGeneral,
-                null,
-                null
-            )
-        }
-
-        fun deliveryOf(
-            advertisementDelivery: AdvertisementDelivery
-        ): AdvertisementPackage {
-            return AdvertisementPackage(
-                advertisementGeneral = null,
-                advertisementDelivery = advertisementDelivery,
-                advertisementLocation = null
-            )
-        }
-
-        // Must Change!!
-        fun locationOf(
-        ): AdvertisementPackage {
-            return AdvertisementPackage(
-                null, null,null
+                advertisementGeneralFields = advertisementGeneralFields,
+                categories = categories
             )
         }
     }

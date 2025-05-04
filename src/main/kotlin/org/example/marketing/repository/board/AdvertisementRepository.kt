@@ -3,14 +3,9 @@ package org.example.marketing.repository.board
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dao.board.AdvertisementEntity
 import org.example.marketing.dto.board.request.*
-import org.example.marketing.enums.AdvertisementStatus
-import org.example.marketing.enums.ChannelType
-import org.example.marketing.enums.DeliveryCategory
-import org.example.marketing.enums.ReviewType
+import org.example.marketing.enums.*
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.table.AdvertisementsTable
-import org.jetbrains.exposed.sql.SortOrder
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.greaterEq
 import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component
 
@@ -62,13 +57,6 @@ class AdvertisementRepository {
         return advertisement
     }
 
-    fun findAllByAdvertiserId(advertiserId: Long): List<AdvertisementEntity> {
-        return AdvertisementEntity.find {
-            (AdvertisementsTable.advertiserId eq advertiserId) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.toList()
-    }
-
     fun checkOwner(advertiserId: Long, advertisementId: Long): Boolean {
         return AdvertisementEntity.find {
             (AdvertisementsTable.advertiserId eq advertiserId) and
@@ -93,7 +81,6 @@ class AdvertisementRepository {
             AdvertisementsTable.id inList targetIds
         }.toList()
     }
-
 
 
     fun findById(targetId: Long): AdvertisementEntity {
@@ -132,38 +119,4 @@ class AdvertisementRepository {
         }.toList()
     }
 
-    fun findAllDeliveryByIdsAndTimelineInit(ids: List<Long>): List<AdvertisementEntity> {
-        val initPivot = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
-        return AdvertisementEntity.find {
-            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY) and
-                    (AdvertisementsTable.id inList ids) and
-                    (AdvertisementsTable.createdAt greaterEq initPivot) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-            }
-            .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-            .toList()
-    }
-
-    fun findAllDeliveryByIdsAndPivotTimeAfter(ids: List<Long>, pivotTime: Long): List<AdvertisementEntity> {
-        return AdvertisementEntity.find {
-            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY) and
-                    (AdvertisementsTable.id inList ids) and
-                    (AdvertisementsTable.createdAt greater pivotTime) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-            .toList()
-    }
-
-    fun findAllDeliveryByIdsAndPivotTImeBefore(ids: List<Long>, pivotTime: Long): List<AdvertisementEntity> {
-        return AdvertisementEntity.find {
-            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY) and
-                    (AdvertisementsTable.id inList ids) and
-                    (AdvertisementsTable.createdAt less pivotTime) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-            .toList()
-    }
 }

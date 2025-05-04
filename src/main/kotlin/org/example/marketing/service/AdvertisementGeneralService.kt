@@ -1,8 +1,8 @@
 package org.example.marketing.service
 
 import org.example.marketing.config.CustomDateTimeFormatter
-import org.example.marketing.domain.board.AdvertisementGeneral
-import org.example.marketing.domain.board.AdvertisementGeneralForReturn
+import org.example.marketing.domain.board.AdvertisementGeneralFields
+import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.exception.ExpiredDraftException
@@ -13,7 +13,8 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertisementGeneralService(
     private val advertisementRepository: AdvertisementRepository,
-    private val advertisementDraftService: AdvertisementDraftService
+    private val advertisementDraftService: AdvertisementDraftService,
+    private val advertisementPackageService: AdvertisementPackageService
 ) {
 
     fun save(advertiserId: Long, request: MakeNewAdvertisementGeneralRequest): Long {
@@ -56,14 +57,4 @@ class AdvertisementGeneralService(
         }.id.value
     }
 
-
-    fun findById(targetId: Long): AdvertisementGeneralForReturn {
-        return transaction {
-            val entity = advertisementRepository.findById(targetId)
-
-            AdvertisementGeneralForReturn.of(
-                AdvertisementGeneral.of(entity)
-            )
-        }
-    }
 }

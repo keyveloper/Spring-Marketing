@@ -8,7 +8,7 @@ import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
 import org.example.marketing.dto.board.response.*
 import org.example.marketing.enums.FrontErrorCode
-import org.example.marketing.service.AdvertisementDslService
+import org.example.marketing.service.AdvertisementImageDslService
 import org.example.marketing.service.AdvertisementImageService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 class AdvertisementImageController(
     private val advertisementImageService: AdvertisementImageService,
-    private val advertisementDslService: AdvertisementDslService
+    private val advertisementImageDslService: AdvertisementImageDslService
 ) {
     val logger = KotlinLogging.logger {}
     //  ✅ check legal approach
@@ -79,7 +79,7 @@ class AdvertisementImageController(
     fun setAdvertisementId(
         @Valid @PathVariable draftId: Long,
     ): ResponseEntity<SetImageAdvertisementIdResponse> {
-        advertisementDslService.setImageAdvertisementIdByDraftId(draftId)
+        advertisementImageDslService.setImageAdvertisementIdByDraftId(draftId)
         return ResponseEntity.ok().body(
             SetImageAdvertisementIdResponse.of(
                 FrontErrorCode.OK.code,
