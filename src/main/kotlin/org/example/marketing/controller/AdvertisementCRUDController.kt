@@ -13,7 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
 
 @RestController
-class AdvertisementCRUDlController( // only for general advertisement
+class AdvertisementCRUDController( // only for general advertisement
     private val advertisementService: AdvertisementGeneralService,
     private val advertisementPackageService: AdvertisementPackageService,
     private val advertisementImageDslService: AdvertisementImageDslService
@@ -36,7 +36,7 @@ class AdvertisementCRUDlController( // only for general advertisement
     }
 
 
-    @GetMapping("/advertisement/general/{targetId}")
+    @GetMapping("/open/advertisement/general/{targetId}")
     fun getById(
         @PathVariable targetId: Long
     ): ResponseEntity<GetAdvertisementGeneralResponse> {
@@ -48,7 +48,6 @@ class AdvertisementCRUDlController( // only for general advertisement
             )
         )
     }
-    
 
     @PostMapping("/advertisement/general/update")
     fun update(

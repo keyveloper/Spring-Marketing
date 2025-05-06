@@ -1,5 +1,6 @@
 package org.example.marketing.repository.board
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.domain.board.AdvertisementPackageDomain
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.DeliveryCategory
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AdvertisementDeliveryDslRepository {
+    val logger = KotlinLogging.logger {}
     fun findAllDeliveryByCategoryAndTimelineInit(categories: List<DeliveryCategory>)
     : List<AdvertisementPackageDomain> {
         val initPivot = System.currentTimeMillis() - (7 * 24 * 60 * 60 * 1000)
@@ -35,11 +37,18 @@ class AdvertisementDeliveryDslRepository {
                     (AdvertisementDeliveryCategoriesTable.category inList categories)
                 }
             )
-        return joinedTables
+
+        val query:Query  = joinedTables
             .selectAll()
             .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
             .limit(20)
-            .map(AdvertisementPackageDomain::fromRow)
+
+        val results = query.map { row ->
+            logger.info { "\"Row contents: $row\"" }
+            AdvertisementPackageDomain.fromRow(row)
+        }
+
+        return results
     }
 
     fun findAllDeliveryByCategoriesAndPivotTimeAfter(
@@ -97,10 +106,16 @@ class AdvertisementDeliveryDslRepository {
                     (AdvertisementDeliveryCategoriesTable.category inList categories)
                 }
             )
-        return joinedTables
+        val query:Query  = joinedTables
             .selectAll()
             .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
             .limit(20)
-            .map(AdvertisementPackageDomain::fromRow)
+
+        val results = query.map { row ->
+            logger.info { "\"Row contents: $row\"" }
+            AdvertisementPackageDomain.fromRow(row)
+        }
+
+        return results
     }
 }

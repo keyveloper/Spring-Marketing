@@ -35,7 +35,7 @@ class AdvertisementDeliveryController(
         )
     }
 
-    @PostMapping("/test/advertisement/deliveries-timeline/by-category")
+    @PostMapping("/open/advertisement/deliveries-timeline/by-category")
     fun getAllTimelineByCategory(
        @RequestBody request: GetDeliveryAdvertisementsTimelineByCategoryRequest
     ): ResponseEntity<GetDeliveryAdvertisementsTimelineByCategoryResponse> {

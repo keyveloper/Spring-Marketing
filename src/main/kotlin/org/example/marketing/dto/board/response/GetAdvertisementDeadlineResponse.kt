@@ -6,7 +6,7 @@ import org.example.marketing.dto.error.FrontErrorResponse
 data class GetAdvertisementDeadlineResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val advertisements: List<AdvertisementPackage>
+    val packages: List<AdvertisementPackage>
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
@@ -17,7 +17,7 @@ data class GetAdvertisementDeadlineResponse(
             return GetAdvertisementDeadlineResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                advertisements = advertisements
+                packages = advertisements
             )
         }
     }

@@ -1,6 +1,5 @@
 package org.example.marketing.dto.board.response
 
-import org.example.marketing.domain.board.AdvertisementGeneralForReturn
 import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.dto.error.FrontErrorResponse
 

@@ -26,7 +26,8 @@ data class AdvertisementPackageDomain(
     val createdAt: Long,
     val updatedAt: Long,
     val imageUri: String,
-    val category: DeliveryCategory,
+    val isThumbnail: Boolean,
+    val category: DeliveryCategory?,
     // 📌 location info
 ) {
     companion object {
@@ -49,6 +50,7 @@ data class AdvertisementPackageDomain(
                 createdAt = row[AdvertisementsTable.createdAt],
                 updatedAt = row[AdvertisementsTable.updatedAt],
                 imageUri = row[AdvertisementImagesTable.apiCallUri],
+                isThumbnail = row[AdvertisementImagesTable.isThumbnail],
                 category = row[AdvertisementDeliveryCategoriesTable.category]
             )
         }

@@ -1,5 +1,6 @@
 package org.example.marketing.repository.board
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.domain.board.AdvertisementPackageDomain
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class AdvertisementEventRepository {
+    private val logger = KotlinLogging.logger {}
     fun findFreshAll(): List<AdvertisementPackageDomain> {
         val cutoffTime = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
         val joinedTables: ColumnSet = AdvertisementsTable
@@ -54,9 +56,15 @@ class AdvertisementEventRepository {
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
             )
-        return joinedTables
+
+        val query:Query  = joinedTables
             .selectAll()
             .orderBy(Pair(AdvertisementsTable.announcementAt, SortOrder.DESC))
-            .map(AdvertisementPackageDomain::fromRow)
+
+        val results = query.map { row ->
+            logger.info { "\"Row contents: $row\"" }
+            AdvertisementPackageDomain.fromRow(row)
+        }
+        return results
     }
 }
