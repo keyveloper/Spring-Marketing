@@ -1,7 +1,7 @@
 package org.example.marketing.repository.board
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.domain.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageDomain
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType

@@ -2,7 +2,7 @@ package org.example.marketing.service
 
 import org.example.marketing.domain.board.AdvertisementGeneralFields
 import org.example.marketing.domain.board.AdvertisementPackage
-import org.example.marketing.domain.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageDomain
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.repository.board.AdvertisementPackageRepository
 import org.jetbrains.exposed.sql.transactions.transaction

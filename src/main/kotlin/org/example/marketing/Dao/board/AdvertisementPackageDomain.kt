@@ -1,4 +1,4 @@
-package org.example.marketing.domain.board
+package org.example.marketing.dao.board
 
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.DeliveryCategory

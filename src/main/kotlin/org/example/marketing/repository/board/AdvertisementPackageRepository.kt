@@ -1,6 +1,6 @@
 package org.example.marketing.repository.board
 
-import org.example.marketing.domain.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageDomain
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable

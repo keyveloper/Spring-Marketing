@@ -1,6 +1,6 @@
 package org.example.marketing.exception
 
-class NotFoundAdvertiserProfileException(
+data class NotFoundInfluencerImageException(
     override val logics: String
 ): NotFoundEntityException(
     logics = logics

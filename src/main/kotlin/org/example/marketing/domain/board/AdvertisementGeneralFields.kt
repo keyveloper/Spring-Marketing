@@ -1,5 +1,6 @@
 package org.example.marketing.domain.board
 
+import org.example.marketing.dao.board.AdvertisementPackageDomain
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 

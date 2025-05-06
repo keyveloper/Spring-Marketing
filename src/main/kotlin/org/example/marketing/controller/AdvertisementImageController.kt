@@ -65,7 +65,6 @@ class AdvertisementImageController(
         @RequestBody request: SetAdvertisementThumbnailRequest,
     )
     :ResponseEntity<SetAdvertisementThumbnailResponse> {
-
         advertisementImageService.setThumbnailImage(advertiserPrincipal.userId, request)
         return ResponseEntity.ok().body(
             SetAdvertisementThumbnailResponse.of(

@@ -43,7 +43,7 @@ class AdvertisementDeliveryController(
             GetDeliveryAdvertisementsTimelineByCategoryResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                advertisements = advertisementDeliveryService.findAllByCategoryAndTimelineDirection(
+                packages = advertisementDeliveryService.findAllByCategoryAndTimelineDirection(
                     request
                 )
             )
