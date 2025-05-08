@@ -11,5 +11,5 @@ class ReviewOfferEntity(id: EntityID<Long>) : BaseDateEntity(id, ReviewOffersTab
     var advertisementId by ReviewOffersTable.advertisementId
     var influencerId by ReviewOffersTable.influencerId
     var offer by ReviewOffersTable.offer
-    var liveStatus by ReviewOffersTable.liveStatus
+    var offerStatus by ReviewOffersTable.offerStatus
 }

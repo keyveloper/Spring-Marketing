@@ -1,6 +1,7 @@
 package org.example.marketing.service
 
 import org.example.marketing.domain.board.AdvertisementPackage
+import org.example.marketing.domain.functions.InfluencerFavoriteAdWithThumbnail
 import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.functions.request.FavoriteAdRequest
 import org.example.marketing.dto.functions.request.SaveInfluencerFavoriteAd
@@ -8,6 +9,7 @@ import org.example.marketing.dto.functions.response.FavoriteAdResult
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.NotMatchedUserTypeException
 import org.example.marketing.exception.UnauthorizedInfluencerException
+import org.example.marketing.repository.functions.FavoriteDslRepository
 import org.example.marketing.repository.functions.FavoriteRepository
 import org.example.marketing.repository.user.InfluencerRepository
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -16,7 +18,8 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertisementFavoriteService(
     private val favoriteRepository: FavoriteRepository,
-    private val influencerRepository: InfluencerRepository
+    private val influencerRepository: InfluencerRepository,
+    private val favoriteDslRepository: FavoriteDslRepository
 ) {
 
     fun switchOrSave(reqeust: FavoriteAdRequest, userPrincipal: CustomUserPrincipal): FavoriteAdResult {
@@ -72,6 +75,21 @@ class AdvertisementFavoriteService(
 
             val packageDomains = favoriteRepository.findAllAdPackageByInfluencerId(userPrincipal.userId)
             AdvertisementPackageService.groupToPackage(packageDomains)
+        }
+    }
+
+    fun findAllAdWithThumbnailByInfluencerId(influencerId: Long): List<InfluencerFavoriteAdWithThumbnail> {
+        return transaction {
+            val entities = favoriteDslRepository.findAllFavoriteAdByInfluencerId(influencerId)
+
+            entities
+                .groupBy { it.advertisementId }
+                .mapNotNull { (_, group) ->
+                    val thumbnailEntity = group.find { it.isThumbnail }
+                    thumbnailEntity?.let {
+                        InfluencerFavoriteAdWithThumbnail.of(it)
+                    }
+                }
         }
     }
 }

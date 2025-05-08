@@ -62,7 +62,6 @@ class AdvertisementEventRepository {
             .orderBy(Pair(AdvertisementsTable.announcementAt, SortOrder.DESC))
 
         val results = query.map { row ->
-            logger.info { "\"Row contents: $row\"" }
             AdvertisementPackageDomain.fromRow(row)
         }
         return results

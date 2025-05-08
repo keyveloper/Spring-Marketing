@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.example.marketing.domain.user.InfluencerPrincipal
 import org.example.marketing.dto.functions.request.NewOfferReviewRequest
 import org.example.marketing.dto.functions.response.GetOfferingInfluencerInfosResponse
+import org.example.marketing.dto.functions.response.GetValidReviewOfferAdResponse
 import org.example.marketing.dto.functions.response.NewOfferReviewResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.ReviewOfferService
@@ -39,6 +40,19 @@ class ReviewOfferController(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 infos = reviewOfferService.findOfferingInfluencerInfos(advertisementId)
+            )
+        )
+    }
+
+    @GetMapping("/review-offers/influencer-valid")
+    fun getValidOfferByInfluencerId(
+        @AuthenticationPrincipal influencerPrincipal: InfluencerPrincipal
+    ): ResponseEntity<GetValidReviewOfferAdResponse> {
+        return ResponseEntity.ok().body(
+            GetValidReviewOfferAdResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                result = reviewOfferService.findAllValidAdsByInfluencerId(influencerPrincipal.userId)
             )
         )
     }

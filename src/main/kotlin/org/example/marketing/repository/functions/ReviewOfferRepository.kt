@@ -3,14 +3,12 @@ package org.example.marketing.repository.functions
 import org.example.marketing.dao.functions.ReviewOfferEntity
 import org.example.marketing.dto.functions.request.SaveReviewOffer
 import org.example.marketing.dto.functions.response.OfferingInfluencerInfo
-import org.example.marketing.enums.EntityLiveStatus
+import org.example.marketing.enums.ReviewOfferStatus
 import org.example.marketing.table.InfluencersTable
 import org.example.marketing.table.ReviewOffersTable
 import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.jetbrains.exposed.sql.varPop
 import org.springframework.stereotype.Component
 
 @Component
@@ -20,7 +18,7 @@ class ReviewOfferRepository {
             advertisementId = saveReviewOffer.advertisementId
             influencerId = saveReviewOffer.influencerId
             offer = saveReviewOffer.offer
-            liveStatus = EntityLiveStatus.LIVE
+            offerStatus = ReviewOfferStatus.OFFER
         }
 
         return reviewOfferEntity
@@ -30,14 +28,14 @@ class ReviewOfferRepository {
         return ReviewOfferEntity.find {
             (ReviewOffersTable.influencerId eq influencerId) and
                     (ReviewOffersTable.advertisementId eq advertisementId) and
-                    (ReviewOffersTable.liveStatus eq EntityLiveStatus.LIVE)
+                    (ReviewOffersTable.offerStatus eq ReviewOfferStatus.OFFER)
         }.any()
     }
 
     fun findByAdvertisementId(advertisementId: Long): List<ReviewOfferEntity> {
         return ReviewOfferEntity.find {
             (ReviewOffersTable.advertisementId eq advertisementId) and
-                    (ReviewOffersTable.liveStatus eq EntityLiveStatus.LIVE)
+                    (ReviewOffersTable.offerStatus eq ReviewOfferStatus.OFFER)
         }.toList()
     }
 
