@@ -83,7 +83,7 @@ class AdvertisementFavoriteService(
             val entities = favoriteDslRepository.findAllFavoriteAdByInfluencerId(influencerId)
 
             entities
-                .groupBy { it.advertisementId }
+                .groupBy { it.advertisementId } //📌  혹시 두개일 수도 있어서
                 .mapNotNull { (_, group) ->
                     val thumbnailEntity = group.find { it.isThumbnail }
                     thumbnailEntity?.let {

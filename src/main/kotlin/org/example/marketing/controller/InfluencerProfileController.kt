@@ -91,7 +91,7 @@ class InfluencerProfileController(
             GetInfluencerProfileResponse.of(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
-                influencerProfileService.findProfileInfoById(influencerId)
+                influencerProfileService.findProfileInfoByInfluencerId(influencerId)
             )
         )
     }

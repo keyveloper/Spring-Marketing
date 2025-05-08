@@ -23,13 +23,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 class AuthController(
     private val authService: AuthService,
-    private val webSecurityConfiguration: WebSecurityConfiguration
 ) {
     private val logger = KotlinLogging.logger {}
     @PostMapping("/test/login/admin")
     fun loginAdmin(
         @RequestBody request: LoginAdminRequest
-    ): ResponseEntity<LoginAdminResponse> {
+    ): ResponseEntity<LoginAdminResponse> {A
         return ResponseEntity.ok().body(
             LoginAdminResponse.of(
                 FrontErrorCode.OK.code,

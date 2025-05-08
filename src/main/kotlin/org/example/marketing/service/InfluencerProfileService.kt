@@ -20,7 +20,7 @@ class InfluencerProfileService(
         ).id.value }
     }
 
-    fun findProfileInfoById(influencerId: Long): InfluencerJoinedProfileInfo {
+    fun findProfileInfoByInfluencerId(influencerId: Long): InfluencerJoinedProfileInfo {
         return transaction {
             influencerProfileDslRepository.findJoinedProfileInfoByInfluencerId(influencerId)
         }

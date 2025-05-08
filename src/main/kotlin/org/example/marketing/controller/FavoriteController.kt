@@ -1,9 +1,11 @@
 package org.example.marketing.controller
 
 import org.example.marketing.domain.user.CustomUserPrincipal
+import org.example.marketing.domain.user.InfluencerPrincipal
 import org.example.marketing.dto.functions.request.FavoriteAdRequest
 import org.example.marketing.dto.functions.response.FavoriteAdResponse
 import org.example.marketing.dto.functions.response.GetFavoriteAdsResponse
+import org.example.marketing.dto.functions.response.GetInfluencerPersonalFavoriteAdsResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementFavoriteService
 import org.springframework.http.ResponseEntity
@@ -41,6 +43,21 @@ class FavoriteController(
                 errorMessage = FrontErrorCode.OK.message,
                 packages = advertisementFavoriteService.findAllAdByInfluencerId(
                     userPrincipal
+                )
+            )
+        )
+    }
+
+    @GetMapping("/favorite/ads/influencer-personal")
+    fun getAllAdsWithThumbnail(
+        @AuthenticationPrincipal influencerPrincipal: InfluencerPrincipal
+    ): ResponseEntity<GetInfluencerPersonalFavoriteAdsResponse> {
+        return ResponseEntity.ok().body(
+            GetInfluencerPersonalFavoriteAdsResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                result  = advertisementFavoriteService.findAllAdWithThumbnailByInfluencerId(
+                    influencerPrincipal.userId
                 )
             )
         )
