@@ -1,85 +1,61 @@
 package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.coroutines.delay
+import org.example.marketing.domain.keyword.DugKeywordCandidate
 import org.example.marketing.dto.keyword.*
+import org.example.marketing.enums.FrontErrorCode
+import org.example.marketing.exception.BusinessException
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import kotlin.math.log
 
 @Service
 class GoldenKeywordService(
     private val naverOpenAPIService: NaverOpenAPIService,
-    private val naverScraperService: NaverScraperService
+    private val naverScraperService: NaverScraperService,
+    private val openApiService: OpenAIApiService
 ) {
     private val logger = KotlinLogging.logger {}
-    suspend fun getGoldenKeywords(request: GetGoldenKeywordsRequest): List<GoldenKeywordStat> {
-        val hintKeywordFormat = request.keyword.replace("\\s".toRegex(), "")
-        val relatedKeywordStats = naverOpenAPIService.fetchRelatedKeyword(
-            NaverAdApiParameter(
-                hintKeyword = hintKeywordFormat,
-                event = null
-            )
-        )
 
-        val filteredKeywords = filterGoldenKeywordCandidate(
-            originalKeyword = hintKeywordFormat,
-            relatedKeywordStats
-        )
-        logger.info { "🚀 relatedKeyword From ad API (filtered): $filteredKeywords" }
+    suspend fun digCandidates(request: DigKeywordCandidatesRequest): List<DugKeywordCandidate> {
+        val combinations = openApiService.fetchKeywordCombinations(request.keyword, request.context)
+        val originalCandidates  = mutableListOf<RelatedKeywordStat>()
 
-
-        val top10KeywordsWihOriginal = filteredKeywords.map { it.relKeyword }
-
-        // ✅ scrapping starts
-        val scrapedDataList = naverScraperService.fetchScrapedData(top10KeywordsWihOriginal)
-        logger.info { "👋 Scrapped Data: $scrapedDataList" }
-
-        return filteredKeywords.mapNotNull { keywordStat ->
-            val matchedScrap = scrapedDataList.find { it.keyword == keywordStat.relKeyword }
-            matchedScrap?.let {
-                GoldenKeywordStat.of(keywordStat, it)
+        logger.info { "comb: $combinations" }
+        combinations?.let {
+            for (keyword in combinations) {
+                delay(500)
+                val rawCandidates = naverOpenAPIService.fetchRelatedKeyword(
+                    NaverAdApiParameter.of(keyword)
+                )
+                originalCandidates += rawCandidates
             }
+
+            val candidates = originalCandidates.filter {
+                it.compIdx == "낮음" || it.compIdx == "중간"
+            }
+                .sortedByDescending { it.monthlyMobileQcCnt + it.monthlyPcQcCnt } // 📌 search volume
+                .distinctBy { it.relKeyword }
+                .take(50)
+
+            return candidates.map { DugKeywordCandidate.of(it) }
         }
+        return listOf()
     }
 
-    // write filter here !
-    private fun filterGoldenKeywordCandidate(
-        originalKeyword: String,
-        keywords: List<RelatedKeywordFromNaverAdServer>
-    ): List<RelatedKeywordFromNaverAdServer> {
-        val original = keywords.find { it.relKeyword == originalKeyword }
-        val originalChars = originalKeyword.replace(" ", "").toSet()
-        val competitionFiltered = keywords.filter {
-            it.relKeyword != originalKeyword && ( it.compIdx == "낮음" || it.compIdx == "높음")
-        }
+    suspend fun scrapTopBloggerStat(request: GetScrappedKeywordDetailStatRequest):
+            ScrappedTopBLoggerStatFromScrapperServer {
+        val scrappedStat: ScrappedTopBLoggerStatFromScrapperServer? =
+            naverScraperService.fetchScrappedTop10BloggerStat(request.keyword)
 
-        val top10Pairs = competitionFiltered.map { dto ->
-            val bonus = dto.relKeyword.replace(" ", "")
-                .count { it in originalChars } * 50
-
-            val volume = ( dto.monthlyMobileQcCnt.toIntOrNull() ?: 1 )+ ( dto.monthlyPcQcCnt.toIntOrNull() ?: 1 )
-            val competitionPoint = if (dto.compIdx == "낮음") 2 else 1
-            val final = if (bonus != 0) (volume + bonus) * competitionPoint else 0
-
-            dto to final
-        }
-            .sortedByDescending { it.second }
-            .map { it.first }
-            .take(5)
-
-        return buildList {
-            if (original != null) add(original) // ✅ add original at the top
-            addAll(top10Pairs)                  // ✅ then top 10 others
-        }
-    }
-
-    suspend fun testNaverAdApi(parameter: NaverAdApiParameter): List<RelatedKeywordFromNaverAdServer> {
-        val hintKeywordFormat = parameter.hintKeyword.replace("\\s".toRegex(), "")
-        logger.info {"search : $hintKeywordFormat"}
-        return naverOpenAPIService.fetchRelatedKeyword(
-            NaverAdApiParameter(
-                hintKeyword = hintKeywordFormat,
-                event = null
+        return if (scrappedStat == null) {
+            throw BusinessException(
+                frontErrorCode = FrontErrorCode.UNEXPECTED_MSA_SERVER_ERROR.code,
+                message = FrontErrorCode.UNEXPECTED_MSA_SERVER_ERROR.message,
+                httpStatus = HttpStatus.NOT_FOUND,
+                logics = "golden-keyword svc: scrap Top Blogger Stat..."
             )
-        )
+        } else scrappedStat
     }
+
 }

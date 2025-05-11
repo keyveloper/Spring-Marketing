@@ -84,6 +84,10 @@ dependencies {
     // image signature
     implementation("org.apache.tika:tika-core:2.9.0") // or latest
 
+    // json
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
+
+
 }
 
 kotlin {

@@ -1,5 +1,5 @@
 package org.example.marketing.dto.keyword
 
-data class GetGoldenKeywordsRequest(
+data class GetScrappedKeywordDetailStatRequest(
     val keyword: String,
 )

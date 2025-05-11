@@ -36,8 +36,8 @@ class AdvertiserProfileImageRepository {
     fun findByUnifiedCode(unifiedCode: String): AdvertiserProfileImageEntity? {
         val targetEntity = AdvertiserProfileImageEntity.find {
             (AdvertiserProfileImagesTable.unifiedCode eq unifiedCode) and
-                    (InfluencerProfileImagesTable.commitStatus eq ImageCommitStatus.COMMIT) and
-                    (InfluencerProfileImagesTable.liveStatus eq EntityLiveStatus.LIVE)
+                    (AdvertiserProfileImagesTable.commitStatus eq ImageCommitStatus.COMMIT) and
+                    (AdvertiserProfileImagesTable.liveStatus eq EntityLiveStatus.LIVE)
         }
 
         return targetEntity.firstOrNull()

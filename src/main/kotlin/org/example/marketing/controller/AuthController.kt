@@ -28,7 +28,7 @@ class AuthController(
     @PostMapping("/test/login/admin")
     fun loginAdmin(
         @RequestBody request: LoginAdminRequest
-    ): ResponseEntity<LoginAdminResponse> {A
+    ): ResponseEntity<LoginAdminResponse> {
         return ResponseEntity.ok().body(
             LoginAdminResponse.of(
                 FrontErrorCode.OK.code,

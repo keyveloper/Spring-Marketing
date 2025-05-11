@@ -1,5 +1,3 @@
-@file:Suppress("UNREACHABLE_CODE")
-
 package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -8,7 +6,8 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.example.marketing.dto.keyword.Prompts.BASE_PROMPT
+import kotlinx.serialization.json.Json
+import org.example.marketing.dto.keyword.Prompts.KEYWORD_COMBINATION_PROMPT
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.stereotype.Service
 
@@ -25,16 +24,26 @@ class OpenAIApiService(
     suspend fun fetchKeywordCombinations(
         keyword: String,
         context: String
-    ): String? {
-        val rule = BASE_PROMPT
+    ): List<String>? {
+        val rule = KEYWORD_COMBINATION_PROMPT
         return try {
             circuitBreaker.executeSuspendFunction {
                 withContext(Dispatchers.IO) {          // ★ blocking → IO thread
-                    chatClient.prompt()
+                    val rawString = chatClient.prompt()
                         .system(rule)
                         .user("keyword: $keyword + context: $context")
                         .call()                        // 동기 호출
-                        .content()                    // String 응답
+                        .content()                    // String 응답\
+
+                    rawString?.let {
+                        val result: List<String> = Json.decodeFromString(
+                            rawString
+                                .removePrefix("```json")
+                                .removePrefix("```")
+                                .removeSuffix("```")
+                        )
+                        result
+                    }
                 }
             }
         } catch (ex: Throwable) {

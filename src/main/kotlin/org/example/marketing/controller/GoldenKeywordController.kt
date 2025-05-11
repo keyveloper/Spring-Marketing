@@ -2,83 +2,80 @@ package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
-import kotlinx.coroutines.runBlocking
-import org.example.marketing.dto.keyword.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asContextElement
+import kotlinx.coroutines.withContext
+import org.example.marketing.dto.keyword.DigKeywordCandidatesRequest
+import org.example.marketing.dto.keyword.DigKeywordCandidatesResponse
+import org.example.marketing.dto.keyword.GetScrappedKeywordDetailStatRequest
+import org.example.marketing.dto.keyword.GetScrappedKeywordDetailStatResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.GoldenKeywordService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
-import org.springframework.web.context.request.async.WebAsyncTask
-import java.util.concurrent.Callable
 
 @RestController
 class GoldenKeywordController(
     private val goldenKeywordService: GoldenKeywordService
 ) {
     private val logger = KotlinLogging.logger {}
-    @GetMapping("/test/keywords/golden")
-    suspend fun getGoldenKeyword(
-        @Valid @RequestBody request: GetGoldenKeywordsRequest
-    ): WebAsyncTask<ResponseEntity<GetGoldenKeywordsResponse>> {
-        val timeoutInMillis = 5 * 60 * 1000L // 5분
 
-        val task = Callable {
-            runBlocking {
-                try {
-                    val result = goldenKeywordService.getGoldenKeywords(request)
-                    ResponseEntity.ok(
-                        GetGoldenKeywordsResponse.of(
-                            frontErrorCode = FrontErrorCode.OK.code,
-                            errorMessage = FrontErrorCode.OK.message,
-                            goldenKeywords = result
-                        )
+    @PostMapping("/test/golden/candidates")
+    suspend fun getDugCandidates(
+        @Valid @RequestBody request: DigKeywordCandidatesRequest
+    ): ResponseEntity<DigKeywordCandidatesResponse> {
+        // 1. Capture the current SecurityContext
+        val currentContext: SecurityContext = SecurityContextHolder.getContext()
+
+        // 2. Put it into a ThreadLocal
+        val threadLocalContext = ThreadLocal<SecurityContext>().apply {
+            set(currentContext)
+        }
+
+        // 3. Convert that ThreadLocal into a coroutine context element
+        val securityElement = threadLocalContext.asContextElement()
+
+        // 4. Run your logic in a coroutine context that includes BOTH the dispatcher and the security element
+        return withContext(Dispatchers.Default + securityElement) {
+            try {
+                val candidates = goldenKeywordService.digCandidates(request)
+                ResponseEntity.ok(
+                    DigKeywordCandidatesResponse.of(
+                        frontErrorCode = FrontErrorCode.OK.code,
+                        errorMessage   = FrontErrorCode.OK.message,
+                        candidates     = candidates
                     )
-                } catch (e: Exception) {
-                    ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                        GetGoldenKeywordsResponse.of(
+                )
+            } catch (e: Exception) {
+                ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                        DigKeywordCandidatesResponse.of(
                             frontErrorCode = FrontErrorCode.SERVER_CRITICAL.code,
-                            errorMessage = FrontErrorCode.SERVER_CRITICAL.message,
-                            goldenKeywords = emptyList()
+                            errorMessage   = FrontErrorCode.SERVER_CRITICAL.message,
+                            candidates     = emptyList()
                         )
                     )
-                }
             }
         }
-
-        val asyncTask = WebAsyncTask(timeoutInMillis, task)
-
-        asyncTask.onTimeout {
-            ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(
-                GetGoldenKeywordsResponse.of(
-                    frontErrorCode = FrontErrorCode.SERVER_CRITICAL.code,
-                    errorMessage = FrontErrorCode.SERVER_CRITICAL.message,
-                    goldenKeywords = emptyList()
-                )
-            )
-        }
-
-        asyncTask.onError {
-            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                GetGoldenKeywordsResponse.of(
-                    frontErrorCode = FrontErrorCode.SERVER_CRITICAL.code,
-                    errorMessage = FrontErrorCode.SERVER_CRITICAL.message,
-                    goldenKeywords = emptyList()
-                )
-            )
-        }
-
-        return asyncTask
     }
 
-    @GetMapping("/test/naver-ad")
-    suspend fun adApiTest(
-        @RequestBody parameter: NaverAdApiParameter
-    ): ResponseEntity<List<RelatedKeywordFromNaverAdServer>> {
+    @PostMapping("/test/golden/top-blogger")
+    suspend fun getScrappedDetailsStat(
+        @Valid @RequestBody request: GetScrappedKeywordDetailStatRequest
+    ): ResponseEntity<GetScrappedKeywordDetailStatResponse> {
+        val stat = goldenKeywordService.scrapTopBloggerStat(request)
         return ResponseEntity.ok().body(
-            goldenKeywordService.testNaverAdApi(parameter)
+            GetScrappedKeywordDetailStatResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage  = FrontErrorCode.OK.message,
+                topBloggerStat = stat
+            )
         )
     }
 }

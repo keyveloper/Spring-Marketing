@@ -3,7 +3,7 @@ spring:
     import: application-secret.yml
   profiles:
     group:
-      local: secret
+      local: [secret]
   servlet:
     multipart:
       max-file-size: 15MB

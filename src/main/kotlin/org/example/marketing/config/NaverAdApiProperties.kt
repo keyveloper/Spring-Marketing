@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties(prefix = "naver.ad")
+@ConfigurationProperties(prefix = "spring.naver.ad")
 data class NaverAdApiProperties(
     var apiKey: String = "",
     var customerId: String = "",

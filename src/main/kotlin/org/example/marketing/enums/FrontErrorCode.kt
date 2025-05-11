@@ -24,5 +24,8 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     UNAUTHORIZED_INFLUENCER(40006, "this influencer User can't use this resource...."),
     UNAUTHORIZED_ADVERTISER(40007, "this advertiser User can't use this resource...."),
     NOT_MATCHED_EXPECTED_USER_TYPE(40008, "this user type is not matched what expected..."),
-    UNAUTHORIZED_USER(40009, "this user can't use this resource...")
+    UNAUTHORIZED_USER(40009, "this user can't use this resource..."),
+
+    // 70000 ~ MSA
+    UNEXPECTED_MSA_SERVER_ERROR(70000, "unexpected MSA server error"),
 }

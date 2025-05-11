@@ -1,18 +1,16 @@
 package org.example.marketing.service
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.config.NaverAdApiProperties
-import org.example.marketing.dto.keyword.RelatedKeywordFromNaverAdServer
 import org.example.marketing.dto.keyword.NaverAdApiParameter
+import org.example.marketing.dto.keyword.RelatedKeywordStat
 import org.example.marketing.dto.keyword.RelatedKeywordResponseFromNaverAdServer
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
-import reactor.core.publisher.Mono
 import java.util.*
 import javax.crypto.Mac
 import javax.crypto.spec.SecretKeySpec
@@ -31,7 +29,7 @@ class NaverOpenAPIService(
     )
     suspend fun fetchRelatedKeyword(
         parameter: NaverAdApiParameter
-    ): List<RelatedKeywordFromNaverAdServer> {
+    ): List<RelatedKeywordStat> {
         val timeStamp = System.currentTimeMillis().toString()
         val path = "/keywordstool"
         val method = "GET"
@@ -53,7 +51,10 @@ class NaverOpenAPIService(
                 client.get()
                    .uri { uriBuilder ->
                        uriBuilder.path(path)
-                           .queryParam("hintKeywords", parameter.hintKeyword)
+                           .queryParam(
+                               "hintKeywords",
+                               parameter.hintKeyword.replace("\\s".toRegex(), "")
+                           )
                            .queryParam("showDetail", "1")
                            .apply {
                                parameter.event?.let { queryParam("event", it) }
@@ -66,7 +67,7 @@ class NaverOpenAPIService(
                    .keywordList
            }
        } catch (ex: Throwable) {
-           logger.error { "fetchScrapedData circuit error: ${ex.message}" }
+           logger.error { "fetch related circuit error: ${ex.message}" }
            return emptyList()
        }
     }
@@ -76,7 +77,7 @@ class NaverOpenAPIService(
     fun fetchRelatedKeywordFallbackMethod(
         parameter: NaverAdApiParameter,
         throwable: Throwable
-    ): List<RelatedKeywordFromNaverAdServer> {
+    ): List<RelatedKeywordStat> {
         return listOf()
     }
 

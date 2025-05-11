@@ -1,6 +1,6 @@
 package org.example.marketing.dto.keyword
 
-data class RelatedKeywordFromNaverAdServer(
+data class RelatedKeywordStat(
     val relKeyword: String,
     val compIdx: String,
     val monthlyPcQcCnt: String,
