@@ -21,7 +21,6 @@ class OpenAiController(
     ): ResponseEntity<GenerateSeoOptimizedTitlesResponse> {
         val titles = openAIApiService.fetchGeneratedOptimizedTitles(request)
 
-
         return ResponseEntity.ok().body(
             GenerateSeoOptimizedTitlesResponse(
                 FrontErrorCode.OK.code,

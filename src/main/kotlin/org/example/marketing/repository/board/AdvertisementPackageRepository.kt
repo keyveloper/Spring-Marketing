@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component
 @Component
 class AdvertisementPackageRepository {
     // 🎮 common find
-    fun findPackageByAdvertisement(advertisementId: Long): List<AdvertisementPackageDomain> {
+    fun findPackageByAdvertisementId(advertisementId: Long): List<AdvertisementPackageDomain> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,

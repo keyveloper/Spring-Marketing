@@ -64,11 +64,11 @@ class GoldenKeywordController(
 
     @PostMapping("/test/golden/top-blogger")
     suspend fun getScrappedTopBlogVisitStat(
-        @Valid @RequestBody request: GetScrappedTopBlogVistStatRequest
-    ): ResponseEntity<GetScrappedTopBlogVistStatResponse> {
+        @Valid @RequestBody request: GetScrappedTopBlogVisitStatRequest
+    ): ResponseEntity<GetScrappedTopBlogVisitStatResponse> {
         val stat = goldenKeywordService.scrapTopBloggerStat(request)
         return ResponseEntity.ok().body(
-            GetScrappedTopBlogVistStatResponse.of(
+            GetScrappedTopBlogVisitStatResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage  = FrontErrorCode.OK.message,
                 topBloggerStat = stat

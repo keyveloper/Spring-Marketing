@@ -2,6 +2,8 @@ package org.example.marketing.controller
 
 import org.apache.tika.metadata.HttpHeaders
 import org.example.marketing.domain.user.AdvertiserPrincipal
+import org.example.marketing.dto.board.response.GetOwnedExpiredAdvertisementsResponse
+import org.example.marketing.dto.board.response.GetOwnedLiveAdvertisementsResponse
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileImageRequest
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileInfoRequest
 import org.example.marketing.dto.user.response.CommitAdvertiserProfileImageResponse
@@ -62,6 +64,7 @@ class AdvertiserProfileController(
         )
     }
 
+    // 📌 do not use !
     @GetMapping("/open/advertiser/image/profile/{unifiedCode}")
     fun getProfileImage(
         @PathVariable("unifiedCode") unifiedCode: String,
@@ -101,4 +104,31 @@ class AdvertiserProfileController(
             )
         )
     }
+
+    @GetMapping("/open/advertiser/profile/live-ads/{advertiserId}")
+    fun getAllLiveAdvertisements(
+        @PathVariable("advertiserId") advertiserId: Long,
+    ): ResponseEntity<GetOwnedLiveAdvertisementsResponse> {
+        return ResponseEntity.ok().body(
+            GetOwnedLiveAdvertisementsResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                advertiserProfileInfoService.findLiveAllAdsByAdvertisements(advertiserId)
+            )
+        )
+    }
+
+    @GetMapping("/open/advertiser/profile/expired-ads/{advertiserId}")
+    fun getAllExpiredAdvertisements(
+        @PathVariable("advertiserId") advertiserId: Long,
+    ): ResponseEntity<GetOwnedExpiredAdvertisementsResponse> {
+        return ResponseEntity.ok().body(
+            GetOwnedExpiredAdvertisementsResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                advertiserProfileInfoService.findExpiredAllAdsByAdvertisements(advertiserId)
+            )
+        )
+    }
+
 }

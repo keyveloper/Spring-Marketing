@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service
 class AdvertisementGeneralService(
     private val advertisementRepository: AdvertisementRepository,
     private val advertisementDraftService: AdvertisementDraftService,
-    private val advertisementPackageService: AdvertisementPackageService
 ) {
 
     fun save(advertiserId: Long, request: MakeNewAdvertisementGeneralRequest): Long {

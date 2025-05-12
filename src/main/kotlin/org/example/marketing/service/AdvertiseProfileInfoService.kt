@@ -1,5 +1,6 @@
 package org.example.marketing.service
 
+import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.domain.user.AdvertiserProfileInfo
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileInfoRequest
 import org.example.marketing.dto.user.request.SaveAdvertiserProfileInfo
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertiseProfileInfoService(
     private val advertiserProfileInfoRepository: AdvertiserProfileInfoRepository,
-    private val advertiserProfileDslRepository: AdvertiserProfileDslRepository
+    private val advertiserProfileDslRepository: AdvertiserProfileDslRepository,
 ) {
     fun saveAdditionalInfo(advertiserId: Long, request: MakeNewAdvertiserProfileInfoRequest): Long {
         return transaction {
@@ -42,6 +43,20 @@ class AdvertiseProfileInfoService(
                 profileUnifiedCode = profileUnifiedCode,
                 backgroundUnifiedCode = backgroundUnifiedCode
             )
+        }
+    }
+
+    fun findLiveAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
+        return transaction {
+            val packageDomains = advertiserProfileDslRepository.findLiveAllAdsByAdvertiserId(advertiserId)
+            AdvertisementPackageService.groupToPackage(packageDomains)
+        }
+    }
+
+    fun findExpiredAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
+        return transaction {
+            val packageDomains = advertiserProfileDslRepository.findExpiredAllAdsByAdvertiserId(advertiserId)
+            AdvertisementPackageService.groupToPackage(packageDomains)
         }
     }
 }

@@ -34,7 +34,7 @@ class AdvertisementPackageService(
     // 📌 perfect
     fun findByAdvertisementId(advertisementId: Long): AdvertisementPackage {
         return transaction {
-            val packagesDomain = advertisementPackageRepository.findPackageByAdvertisement(advertisementId)
+            val packagesDomain = advertisementPackageRepository.findPackageByAdvertisementId(advertisementId)
 
             val original = packagesDomain.firstOrNull()
                 ?: throw NotFoundAdvertisementException(logics = "adPackageSvc-findByAdvertiserId: $advertisementId")
