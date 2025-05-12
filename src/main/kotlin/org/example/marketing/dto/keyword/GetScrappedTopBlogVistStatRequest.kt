@@ -1,5 +1,5 @@
 package org.example.marketing.dto.keyword
 
-data class GetScrappedKeywordDetailStatRequest(
+data class GetScrappedTopBlogVistStatRequest(
     val keyword: String,
 )

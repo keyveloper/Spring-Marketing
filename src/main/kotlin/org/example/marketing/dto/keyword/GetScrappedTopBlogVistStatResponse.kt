@@ -2,7 +2,7 @@ package org.example.marketing.dto.keyword
 
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class GetScrappedKeywordDetailStatResponse(
+data class GetScrappedTopBlogVistStatResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val topBloggerStat: ScrappedTopBLoggerStatFromScrapperServer,
@@ -12,8 +12,8 @@ data class GetScrappedKeywordDetailStatResponse(
             frontErrorCode: Int,
             errorMessage: String,
             topBloggerStat: ScrappedTopBLoggerStatFromScrapperServer
-        ): GetScrappedKeywordDetailStatResponse {
-            return GetScrappedKeywordDetailStatResponse(
+        ): GetScrappedTopBlogVistStatResponse {
+            return GetScrappedTopBlogVistStatResponse(
                 frontErrorCode,
                 errorMessage,
                 topBloggerStat

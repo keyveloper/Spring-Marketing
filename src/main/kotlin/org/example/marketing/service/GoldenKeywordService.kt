@@ -43,7 +43,7 @@ class GoldenKeywordService(
         return listOf()
     }
 
-    suspend fun scrapTopBloggerStat(request: GetScrappedKeywordDetailStatRequest):
+    suspend fun scrapTopBloggerStat(request: GetScrappedTopBlogVistStatRequest):
             ScrappedTopBLoggerStatFromScrapperServer {
         val scrappedStat: ScrappedTopBLoggerStatFromScrapperServer? =
             naverScraperService.fetchScrappedTop10BloggerStat(request.keyword)
@@ -57,5 +57,4 @@ class GoldenKeywordService(
             )
         } else scrappedStat
     }
-
 }

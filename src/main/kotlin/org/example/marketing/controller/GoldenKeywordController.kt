@@ -5,10 +5,7 @@ import jakarta.validation.Valid
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.asContextElement
 import kotlinx.coroutines.withContext
-import org.example.marketing.dto.keyword.DigKeywordCandidatesRequest
-import org.example.marketing.dto.keyword.DigKeywordCandidatesResponse
-import org.example.marketing.dto.keyword.GetScrappedKeywordDetailStatRequest
-import org.example.marketing.dto.keyword.GetScrappedKeywordDetailStatResponse
+import org.example.marketing.dto.keyword.*
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.GoldenKeywordService
 import org.springframework.http.HttpStatus
@@ -21,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class GoldenKeywordController(
-    private val goldenKeywordService: GoldenKeywordService
+    private val goldenKeywordService: GoldenKeywordService,
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -66,12 +63,12 @@ class GoldenKeywordController(
     }
 
     @PostMapping("/test/golden/top-blogger")
-    suspend fun getScrappedDetailsStat(
-        @Valid @RequestBody request: GetScrappedKeywordDetailStatRequest
-    ): ResponseEntity<GetScrappedKeywordDetailStatResponse> {
+    suspend fun getScrappedTopBlogVisitStat(
+        @Valid @RequestBody request: GetScrappedTopBlogVistStatRequest
+    ): ResponseEntity<GetScrappedTopBlogVistStatResponse> {
         val stat = goldenKeywordService.scrapTopBloggerStat(request)
         return ResponseEntity.ok().body(
-            GetScrappedKeywordDetailStatResponse.of(
+            GetScrappedTopBlogVistStatResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage  = FrontErrorCode.OK.message,
                 topBloggerStat = stat
