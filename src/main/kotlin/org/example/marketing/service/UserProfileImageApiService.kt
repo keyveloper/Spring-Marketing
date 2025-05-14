@@ -1,66 +1,45 @@
 package org.example.marketing.service
 
-import org.apache.tika.Tika
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.AdvertiserProfileImage
 import org.example.marketing.dto.board.response.BinaryImageDataWithType
-import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileImageRequest
-import org.example.marketing.dto.user.request.SaveAdvertiserProfileImage
+import org.example.marketing.dto.user.request.MakeNewProfileImageApiRequest
+import org.example.marketing.enums.UserType
 import org.example.marketing.exception.NotFoundAdvertiserImageException
-import org.example.marketing.repository.user.AdvertiserProfileImageRepository
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.client.WebClient
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import java.util.*
 
 @Service
 class AdvertiserProfileImageService(
-    private val advertiserProfileImageRepository: AdvertiserProfileImageRepository
+    @Qualifier("marketingApiClient") private val marketingApiClient: WebClient,
+    private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) {
-    private val rootDirPath = "C:\\Users\\dideh\\Desktop\\Spring\\images\\user\\advertiser"
+    private val logger = KotlinLogging.logger {}
+    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
-    fun save(
-        advertiserId: Long,
-        meta: MakeNewAdvertiserProfileImageRequest,
+    @CircuitBreaker(name = "marketingApiCircuitBreaker", fallbackMethod = "uploadToImageServerFallback")
+    fun uploadToImageServer(
+        userId: Long,
+        userType: UserType,
         file: MultipartFile
     ): AdvertiserProfileImage {
-        val tika = Tika()
-        val realType = tika.detect(file.inputStream)
-        // save file
-        val dir = Paths.get(rootDirPath)
-        Files.createDirectories(dir)
+        logger.info { "Uploading image to image-api-server for user: $userId, type: ${UserType}" }
 
-        val extension = when (realType.lowercase(Locale.getDefault())) {
-            "image/png" -> "png"
-            "image/jpeg" -> "jpg"
-            else -> "bin"
-        }
-        val unifiedUuid = UUID.randomUUID().toString()
-        val filePath = dir.resolve("${meta.originalFileName}.$extension")
-
-        file.inputStream.use {
-            Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING)
-        }
-
-        try {
-            return transaction {
-                val savedEntity= advertiserProfileImageRepository.save(
-                    SaveAdvertiserProfileImage.of(
-                        advertiserId = advertiserId,
-                        request = meta,
-                        filePath = filePath.toString(),
-                        fileType = realType,
-                        unifiedCode = unifiedUuid
-                    )
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val apiReqeust = MakeNewProfileImageApiRequest.of(
+                    userType, userId,
                 )
-
-                AdvertiserProfileImage.of(savedEntity)
             }
-        } catch (ex: Exception) {
-            runCatching { Files.deleteIfExists(filePath) }
-            throw ex
         }
     }
 
