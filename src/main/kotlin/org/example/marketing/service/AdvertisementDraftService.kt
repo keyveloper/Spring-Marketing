@@ -28,7 +28,6 @@ class AdvertisementDraftService(
     fun findById(targetId: Long): AdvertisementDraft {
         return transaction {
             val targetEntity = advertisementDraftRepository.findById(targetId)
-
             if (targetEntity == null) {
                 throw NotFoundAdDraftEntityException("adDraftSvc-exist")
             } else AdvertisementDraft.of(targetEntity)
@@ -41,5 +40,13 @@ class AdvertisementDraftService(
         }
 
         return changedRow
+    }
+
+    fun findByIp(targetId: Long): AdvertisementDraft {
+        val entity = advertisementDraftRepository.findById(targetId)
+        if (entity == null) {
+            throw NotFoundAdDraftEntityException("adDraftSvc-findById")
+        }
+        return AdvertisementDraft.of(entity)
     }
 }

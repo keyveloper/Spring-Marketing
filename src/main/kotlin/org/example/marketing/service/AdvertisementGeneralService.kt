@@ -21,6 +21,7 @@ class AdvertisementGeneralService(
             // check
             val draftDomain = advertisementDraftService.findById(request.draftId)
 
+
             // expired check
             val apiCallAt = System.currentTimeMillis() / 1000
             if (draftDomain.expiredAt < apiCallAt) {
@@ -50,10 +51,14 @@ class AdvertisementGeneralService(
         }
     }
 
+
+
     fun deleteById(request: DeleteAdvertisementRequest): Long {
         return transaction {
             advertisementRepository.deleteById(request.targetId)
         }.id.value
     }
+
+
 
 }

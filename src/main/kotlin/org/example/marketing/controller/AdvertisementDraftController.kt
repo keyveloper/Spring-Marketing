@@ -2,6 +2,7 @@ package org.example.marketing.controller
 
 import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.response.DeleteAdDraftResponse
+import org.example.marketing.dto.board.response.GetDraftResponse
 import org.example.marketing.dto.board.response.IssueNewAdvertisementDraftResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementDraftService
@@ -23,6 +24,20 @@ class AdvertisementDraftController(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 advertisementDraft = advertisementDraftService.issueDraft(advertiserPrincipal.userId)
+            )
+        )
+    }
+
+
+    @GetMapping("/advertisement/draft/{draftId}")
+    fun getDraftById(
+        @PathVariable("draftId") draftId: Long
+    ): ResponseEntity<GetDraftResponse> {
+        return ResponseEntity.ok().body(
+            GetDraftResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                advertisementDraft = advertisementDraftService.findById(draftId)
             )
         )
     }

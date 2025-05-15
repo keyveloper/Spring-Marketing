@@ -10,7 +10,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     ALREADY_DELETED_ENTITY(40003, "This entity is deleted already"),
     INSERT_LIMIT_ENTITY(40004, "Database usable but can't insert entity anymore..."),
     NOT_FOUND_FILE(40005, "File not found"),
-    EXPIRED_DRAFT_EXCEPTION(40006, "The entity has been exceeded"),
+    EXPIRED_DRAFT_EXCEPTION(40006, "The draft has been exceeded"),
 
     // 50000 ~ : SERVER Error
     // Server Critical - not handle
