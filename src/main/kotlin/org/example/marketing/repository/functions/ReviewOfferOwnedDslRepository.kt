@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Component
 
 @Component
-class ReviewOfferDslRepository {
+class ReviewOfferOwnedDslRepository {
     fun findAllValidOfferByInfluencerId(influencerId: Long): List<InfluencerValidReviewOfferAdEntity> {
         val joinedTable: ColumnSet = ReviewOffersTable
             .join(

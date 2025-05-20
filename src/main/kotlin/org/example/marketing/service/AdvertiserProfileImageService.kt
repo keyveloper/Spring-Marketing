@@ -32,7 +32,7 @@ class AdvertiserProfileImageService(
         val dir = Paths.get(rootDirPath)
         Files.createDirectories(dir)
 
-        val extension = when (realType) {
+        val extension = when (realType.lowercase(Locale.getDefault())) {
             "image/png" -> "png"
             "image/jpeg" -> "jpg"
             else -> "bin"

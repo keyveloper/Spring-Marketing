@@ -1,12 +1,15 @@
 package org.example.marketing.domain.board
 
 import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.functions.AdvertisementPackageWithAdvertiserEntity
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 
 data class AdvertisementGeneralFields(
     val id: Long,
     val title: String,
+    val advertiserId: Long,
+    val advertiserLoginId: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
     val recruitmentNumber: Int,
@@ -33,6 +36,8 @@ data class AdvertisementGeneralFields(
             return AdvertisementGeneralFields(
                 id = domain.id,
                 title = domain.title,
+                advertiserId = domain.advertiserId,
+                advertiserLoginId = domain.advertiserLoginId,
                 reviewType = domain.reviewType,
                 channelType = domain.channelType,
                 recruitmentNumber = domain.recruitmentNumber,
@@ -51,5 +56,6 @@ data class AdvertisementGeneralFields(
                 thumbnailUri = thumbnailUri
             )
         }
+
     }
 }

@@ -1,12 +1,15 @@
 package org.example.marketing.repository.board
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import kotlinx.datetime.*
 import org.example.marketing.dao.board.AdvertisementPackageDomain
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
+import org.example.marketing.enums.UserStatus
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
 import org.example.marketing.table.AdvertisementImagesTable
 import org.example.marketing.table.AdvertisementsTable
+import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Component
 
@@ -14,7 +17,10 @@ import org.springframework.stereotype.Component
 class AdvertisementEventRepository {
     private val logger = KotlinLogging.logger {}
     fun findFreshAll(): List<AdvertisementPackageDomain> {
-        val cutoffTime = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
+        // val cutoffTime = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
+        val now = Clock.System.now()
+        val systemTZ = TimeZone.currentSystemDefault()
+        val cutoffTime = now.minus(7, DateTimeUnit.DAY, systemTZ).toEpochMilliseconds()
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -31,6 +37,14 @@ class AdvertisementEventRepository {
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
+            ).join(
+                AdvertisersTable,
+                JoinType.INNER,
+                onColumn = AdvertisersTable.id,
+                otherColumn = AdvertisementsTable.advertiserId,
+                additionalConstraint = {
+                    (AdvertisersTable.status eq UserStatus.LIVE)
+                }
             )
         return joinedTables
             .selectAll()

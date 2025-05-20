@@ -9,9 +9,9 @@ import org.springframework.stereotype.Component
 
 @Component
 class FollowerRepository {
-    fun switchById(targetId: Long): AdvertiserFollowerEntity {
+    fun switchById(entityId: Long): AdvertiserFollowerEntity {
         val followerEntity = AdvertiserFollowerEntity.find {
-            AdvertiserFollowersTable.id eq targetId
+            AdvertiserFollowersTable.id eq entityId
         }.single()
 
         if (followerEntity.followStatus == FollowStatus.FOLLOW) {
@@ -41,6 +41,9 @@ class FollowerRepository {
     }
 
     fun checkEntityExist(advertiserId: Long, influencerId: Long): AdvertiserFollowerEntity? {
-        return AdvertiserFollowerEntity.findById(advertiserId)
+        return AdvertiserFollowerEntity.find  {
+            (AdvertiserFollowersTable.advertiserId eq advertiserId) and
+                    (AdvertiserFollowersTable.influencerId eq influencerId)
+        }.firstOrNull()
     }
 }

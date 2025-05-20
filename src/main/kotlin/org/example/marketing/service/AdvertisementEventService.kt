@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service
 class AdvertisementEventService(
     private val advertisementEventRepository: AdvertisementEventRepository,
 ) {
-
     fun findFreshAll(): List<AdvertisementPackage> {
         return transaction {
             val packageDomains = advertisementEventRepository.findFreshAll()

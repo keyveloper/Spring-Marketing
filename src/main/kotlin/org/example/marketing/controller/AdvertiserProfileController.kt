@@ -2,8 +2,8 @@ package org.example.marketing.controller
 
 import org.apache.tika.metadata.HttpHeaders
 import org.example.marketing.domain.user.AdvertiserPrincipal
-import org.example.marketing.dto.board.response.GetOwnedExpiredAdvertisementsResponse
-import org.example.marketing.dto.board.response.GetOwnedLiveAdvertisementsResponse
+import org.example.marketing.dto.functions.response.GetOwnedExpiredAdvertisementsResponse
+import org.example.marketing.dto.functions.response.GetOwnedLiveAdvertisementsResponse
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileImageRequest
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileInfoRequest
 import org.example.marketing.dto.user.response.CommitAdvertiserProfileImageResponse

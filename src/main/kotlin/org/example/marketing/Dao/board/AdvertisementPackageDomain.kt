@@ -6,10 +6,13 @@ import org.example.marketing.enums.ReviewType
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
 import org.example.marketing.table.AdvertisementImagesTable
 import org.example.marketing.table.AdvertisementsTable
+import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.ResultRow
 
 data class AdvertisementPackageDomain(
     val id: Long,
+    val advertiserId: Long,
+    val advertiserLoginId: String,
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
@@ -34,6 +37,8 @@ data class AdvertisementPackageDomain(
         fun fromRow(row: ResultRow): AdvertisementPackageDomain {
             return AdvertisementPackageDomain(
                 id = row[AdvertisementsTable.id].value,
+                advertiserId = row[AdvertisementsTable.advertiserId],
+                advertiserLoginId = row[AdvertisersTable.loginId],
                 title = row[AdvertisementsTable.title],
                 reviewType = row[AdvertisementsTable.reviewType],
                 channelType = row[AdvertisementsTable.channelType],

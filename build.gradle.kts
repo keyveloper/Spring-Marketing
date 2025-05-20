@@ -87,6 +87,8 @@ dependencies {
     // json
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0")
 
+    // kotlin date time
+    implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 
 }
 

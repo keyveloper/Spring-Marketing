@@ -1,12 +1,11 @@
-package org.example.marketing.dto.functions.response
+package org.example.marketing.dao.functions
 
-import org.example.marketing.dao.functions.ReviewOfferEntity
-import org.example.marketing.dao.user.InfluencerEntity
+import org.example.marketing.table.InfluencerProfileImagesTable
 import org.example.marketing.table.InfluencersTable
 import org.example.marketing.table.ReviewOffersTable
 import org.jetbrains.exposed.sql.ResultRow
 
-data class OfferingInfluencerInfo(
+data class OfferingInfluencerEntity(
     val influencerId: Long,
     val influencerLoginId: String,
     val influencerMainProfileImageUrl: String?,
@@ -14,11 +13,11 @@ data class OfferingInfluencerInfo(
     val offerCreatedAt: Long,
 ) {
     companion object {
-        fun fromRow(row: ResultRow): OfferingInfluencerInfo =
-            OfferingInfluencerInfo(
+        fun fromRow(row: ResultRow): OfferingInfluencerEntity =
+            OfferingInfluencerEntity(
                 influencerId  = row[ReviewOffersTable.influencerId],
                 influencerLoginId = row[InfluencersTable.loginId],
-                influencerMainProfileImageUrl = null,
+                influencerMainProfileImageUrl = row[InfluencerProfileImagesTable.unifiedCode],
                 offer         = row[ReviewOffersTable.offer],
                 offerCreatedAt = row[ReviewOffersTable.createdAt]
             )

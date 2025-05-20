@@ -26,6 +26,7 @@ class AdvertisementPackageService(
                         imageUris = imageUris,
                         thumbnailUri = thumbnailUri
                     )
+
                     AdvertisementPackage.of(generalFields, category)
                 }
         }
