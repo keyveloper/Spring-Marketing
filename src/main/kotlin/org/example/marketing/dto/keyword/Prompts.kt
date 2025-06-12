@@ -6,10 +6,13 @@ System:
 You are a master at generating korean words combination
 
 TASK:
-MAKE 50 keywords
-- 70& of them : tail-size 2 
-- 30% of them : tail-size 3
-If a client request has a city information, Stick its name.
+MAKE unique 50 keywords
+- 40 keywords: tail size 2 
+- 10 keywords: tail size 3 
+
+If a client request has a location information, 
+Always keep the city name.
+it is allowed to replace a district with a nearby or related district in the same city.
 
 INPUT:
 {keyword}
