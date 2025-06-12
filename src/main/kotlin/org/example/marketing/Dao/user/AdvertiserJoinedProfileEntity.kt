@@ -16,8 +16,8 @@ data class AdvertiserJoinedProfileEntity(
     val createdAt: Long ,
     val unifiedImageCode: String,
     val profileImageType: ProfileImageType,
-    val serviceInfo: String,
-    val locationBrief: String,
+    val serviceInfo: String?,
+    val locationBrief: String?,
     val introduction: String?
 ) {
     companion object {

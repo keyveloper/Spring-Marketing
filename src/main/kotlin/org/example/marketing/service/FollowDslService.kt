@@ -20,14 +20,14 @@ class FollowDslService(
             val entities = followDslRepository
                 .findAllFollowingAdsAndAdvertiserInfoByInfluencerId(influenceId)
 
-            entities.groupBy { it.advertisementPackageDomain.id }
+            entities.groupBy { it.advertisementPackageEntity.id }
                 .map { (advertisementId, groupedRows) ->
                     val entityRow = groupedRows.first()
-                    val advertisementDomainRow = entityRow.advertisementPackageDomain
-                    val imageUris = groupedRows.map { it.advertisementPackageDomain.imageUri }.distinct()
-                    val thumbnailUri = groupedRows.find { it.advertisementPackageDomain.isThumbnail }
-                        ?.advertisementPackageDomain?.imageUri
-                    val categories =groupedRows.map { it.advertisementPackageDomain.category }.distinct()
+                    val advertisementDomainRow = entityRow.advertisementPackageEntity
+                    val imageUris = groupedRows.map { it.advertisementPackageEntity.imageUri }.distinct()
+                    val thumbnailUri = groupedRows.find { it.advertisementPackageEntity.isThumbnail }
+                        ?.advertisementPackageEntity?.imageUri
+                    val categories =groupedRows.map { it.advertisementPackageEntity.category }.distinct()
 
                     val generalFields = AdvertisementGeneralFields.of(
                         domain = advertisementDomainRow,

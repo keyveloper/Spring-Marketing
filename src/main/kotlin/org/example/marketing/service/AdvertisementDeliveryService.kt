@@ -1,5 +1,9 @@
 package org.example.marketing.service
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
 import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.dto.board.request.GetDeliveryAdvertisementsTimelineByCategoryRequest
 import org.example.marketing.dto.board.request.MakeNewAdvertisementDeliveryRequest
@@ -17,7 +21,7 @@ class AdvertisementDeliveryService(
     private val advertisementRepository: AdvertisementRepository,
     private val advertisementDeliveryCategoryRepository: AdvertisementDeliveryCategoryRepository,
     private val advertisementDeliveryDslRepository: AdvertisementDeliveryDslRepository,
-
+    private val advertisementPackageService: AdvertisementPackageService
 ) {
 
     fun save(advertisementId: Long, request: MakeNewAdvertisementDeliveryRequest): Long {
@@ -43,9 +47,13 @@ class AdvertisementDeliveryService(
         request: GetDeliveryAdvertisementsTimelineByCategoryRequest
     ): List<AdvertisementPackage> {
         return transaction {
-            val packageDomains = when (request.timeLineDirection) {
+            val packageDomains = when (request.timelineDirection) {
                 TimeLineDirection.INIT -> {
+                    val now = Clock.System.now()
+                    val systemTZ = TimeZone.currentSystemDefault()
+                    val cutoffTime = now.minus(7, DateTimeUnit.DAY, systemTZ).toEpochMilliseconds()
                     advertisementDeliveryDslRepository.findAllDeliveryByCategoryAndTimelineInit(
+                        cutoffTime = cutoffTime,
                         categories = request.deliveryCategories
                     )
                 }
@@ -65,7 +73,7 @@ class AdvertisementDeliveryService(
                 }
             }
 
-            AdvertisementPackageService.groupToPackage(packageDomains)
+            advertisementPackageService.groupToPackage(packageDomains)
         }
     }
 }

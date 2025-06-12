@@ -3,7 +3,7 @@ package org.example.marketing.dto.board.response
 import org.example.marketing.domain.board.AdvertisementPackage
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class GetAdvertisementFreshResponse(
+data class GetHotAdvertisementResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val packages: List<AdvertisementPackage>
@@ -12,12 +12,12 @@ data class GetAdvertisementFreshResponse(
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            packages: List<AdvertisementPackage>
-        ): GetAdvertisementFreshResponse {
-            return GetAdvertisementFreshResponse(
+            advertisements: List<AdvertisementPackage>
+        ): GetAdvertisementDeadlineResponse {
+            return GetAdvertisementDeadlineResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                packages = packages
+                packages = advertisements
             )
         }
     }

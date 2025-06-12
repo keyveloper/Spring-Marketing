@@ -1,6 +1,6 @@
 package org.example.marketing.repository.functions
 
-import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.dao.functions.AdvertisementPackageWithAdvertiserEntity
 import org.example.marketing.enums.*
 import org.example.marketing.table.*
@@ -65,10 +65,10 @@ class FollowDslRepository {
             .selectAll()
 
         return rows.map {
-            val advertisementPackageDomain = AdvertisementPackageDomain.fromRow(it)
+            val advertisementPackageEntity = AdvertisementPackageEntity.fromRow(it)
 
             AdvertisementPackageWithAdvertiserEntity.fromRowWithPkgDomain(
-                advertisementPackageDomain,
+                advertisementPackageEntity,
                 it
             )
         }

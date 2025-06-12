@@ -1,6 +1,7 @@
 package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import org.example.marketing.domain.functions.AdvertiserFollowerInfo
 import org.example.marketing.dto.functions.response.FollowingAdvertiserInfo
 import org.example.marketing.repository.functions.FollowerRepository
 import org.example.marketing.repository.user.AdvertiserRepository
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service
 @Service
 class FollowAdvertiserService(
     private val advertiserRepository: AdvertiserRepository,
-    private val followRepository: FollowerRepository
+    private val followRepository: FollowerRepository,
 ) {
     private val logger = KotlinLogging.logger {}
     fun findAllAdvertiserInfosByInfluencerId(
@@ -28,6 +29,23 @@ class FollowAdvertiserService(
                     it
                 )
             }
+        }
+    }
+
+    fun findAllFollowerInfoByInfluencerId(
+        advertiserId: Long,
+        influencerId: Long
+    ): AdvertiserFollowerInfo {
+        return transaction {
+            val entities = followRepository.findAllByAdvertiserId(advertiserId)
+            val requestingEntity = entities.firstOrNull { it.influencerId == influencerId }
+
+            AdvertiserFollowerInfo.of(
+                requestingInfluencerId = influencerId,
+                requestingInfluencerFollowStatus = requestingEntity?.followStatus,
+                targetAdvertiserId = advertiserId,
+                targetAdvertiserFollowerCount = entities.size.toLong()
+            )
         }
     }
 }

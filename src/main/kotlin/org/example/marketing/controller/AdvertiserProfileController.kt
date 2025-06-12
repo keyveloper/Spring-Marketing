@@ -6,10 +6,7 @@ import org.example.marketing.dto.functions.response.GetOwnedExpiredAdvertisement
 import org.example.marketing.dto.functions.response.GetOwnedLiveAdvertisementsResponse
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileImageRequest
 import org.example.marketing.dto.user.request.MakeNewAdvertiserProfileInfoRequest
-import org.example.marketing.dto.user.response.CommitAdvertiserProfileImageResponse
-import org.example.marketing.dto.user.response.GetAdvertiserProfileResponse
-import org.example.marketing.dto.user.response.MakeNewAdvertiserProfileImageResponse
-import org.example.marketing.dto.user.response.MakeNewAdvertiserProfileInfoResponse
+import org.example.marketing.dto.user.response.*
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertiseProfileInfoService
 import org.example.marketing.service.AdvertiserProfileImageService
@@ -88,6 +85,19 @@ class AdvertiserProfileController(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
                 advertiserProfileInfoService.saveAdditionalInfo(advertiserPrincipal.userId, request)
+            )
+        )
+    }
+
+    @GetMapping("/advertiser/profile/owned")
+    fun getOwnedProfileInfo(
+        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal
+    ): ResponseEntity<GetAdvertiserOwnedProfileResponse> {
+        return ResponseEntity.ok().body(
+            GetAdvertiserOwnedProfileResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                advertiserProfileInfoService.findProfileInfoByAdvertiserId(advertiserPrincipal.userId)
             )
         )
     }

@@ -13,7 +13,7 @@ Use the user’s “keyword” and “context” as a starting point,
 but feel free to imagine and add related terms that fit the intent.
 
 Guidelines:
-1. Produce exactㅌly  two-syllable keywords and 3 three-syllable keywords.  
+1. Produce exactLy  two-syllable keywords and 3 three-syllable keywords.  
 2. Example:  
    - Input:  
      keyword = “창원 상남동 맛집”  

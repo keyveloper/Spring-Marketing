@@ -1,7 +1,6 @@
 package org.example.marketing.domain.board
 
-import org.example.marketing.dao.board.AdvertisementPackageDomain
-import org.example.marketing.dao.functions.AdvertisementPackageWithAdvertiserEntity
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 
@@ -29,7 +28,7 @@ data class AdvertisementGeneralFields(
 ) {
     companion object {
         fun of(
-            domain: AdvertisementPackageDomain,
+            domain: AdvertisementPackageEntity,
             imageUris: List<String?>,
             thumbnailUri: String?
         ): AdvertisementGeneralFields {

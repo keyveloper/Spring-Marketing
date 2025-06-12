@@ -1,7 +1,7 @@
 package org.example.marketing.repository.functions
 
 import org.example.marketing.dao.functions.InfluencerFavoriteAdEntity
-import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.dto.functions.request.SaveInfluencerFavoriteAd
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
@@ -49,7 +49,7 @@ class FavoriteRepository {
         }.singleOrNull()
     }
 
-    fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementPackageDomain> {
+    fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -77,7 +77,7 @@ class FavoriteRepository {
 
         return joinedTables
             .selectAll()
-            .map(AdvertisementPackageDomain::fromRow)
+            .map(AdvertisementPackageEntity::fromRow)
     }
 }
 

@@ -12,12 +12,12 @@ data class GetAdvertisementDeadlineResponse(
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            advertisements: List<AdvertisementPackage>
+            packages: List<AdvertisementPackage>
         ): GetAdvertisementDeadlineResponse {
             return GetAdvertisementDeadlineResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                packages = advertisements
+                packages = packages
             )
         }
     }

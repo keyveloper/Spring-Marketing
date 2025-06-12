@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service
 class AdvertisementFavoriteService(
     private val favoriteRepository: FavoriteRepository,
     private val influencerRepository: InfluencerRepository,
-    private val favoriteDslRepository: FavoriteDslRepository
+    private val favoriteDslRepository: FavoriteDslRepository,
+    private val advertisementPackageService: AdvertisementPackageService
 ) {
 
     fun switchOrSave(reqeust: FavoriteAdRequest, userPrincipal: CustomUserPrincipal): FavoriteAdResult {
@@ -74,7 +75,7 @@ class AdvertisementFavoriteService(
             }
 
             val packageDomains = favoriteRepository.findAllAdPackageByInfluencerId(userPrincipal.userId)
-            AdvertisementPackageService.groupToPackage(packageDomains)
+            advertisementPackageService.groupToPackage(packageDomains)
         }
     }
 

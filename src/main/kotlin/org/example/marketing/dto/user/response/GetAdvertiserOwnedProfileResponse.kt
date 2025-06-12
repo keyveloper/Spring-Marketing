@@ -1,24 +1,25 @@
-package org.example.marketing.dto.board.response
+package org.example.marketing.dto.user.response
 
-import org.example.marketing.domain.board.AdvertisementPackage
+import org.example.marketing.domain.user.AdvertiserProfileInfo
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class GetAdvertisementFreshResponse(
+data class GetAdvertiserOwnedProfileResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val packages: List<AdvertisementPackage>
+    val result: AdvertiserProfileInfo
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            packages: List<AdvertisementPackage>
-        ): GetAdvertisementFreshResponse {
-            return GetAdvertisementFreshResponse(
+            result: AdvertiserProfileInfo
+        ): GetAdvertiserOwnedProfileResponse {
+            return GetAdvertiserOwnedProfileResponse(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                packages = packages
+                result = result
             )
         }
     }
 }
+

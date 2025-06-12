@@ -2,6 +2,7 @@ package org.example.marketing.controller
 
 import org.example.marketing.dto.board.response.GetAdvertisementDeadlineResponse
 import org.example.marketing.dto.board.response.GetAdvertisementFreshResponse
+import org.example.marketing.dto.board.response.GetHotAdvertisementResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementEventService
 import org.springframework.http.ResponseEntity
@@ -18,7 +19,7 @@ class AdvertisementEventController(
             GetAdvertisementFreshResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                advertisements = advertisementEventService.findFreshAll()
+                packages = advertisementEventService.findFreshAll()
             )
         )
     }
@@ -29,7 +30,7 @@ class AdvertisementEventController(
             GetAdvertisementDeadlineResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                advertisements = advertisementEventService.findDeadlineAll()
+                packages = advertisementEventService.findDeadlineAll()
             )
         )
     }

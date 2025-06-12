@@ -5,6 +5,6 @@ import org.example.marketing.enums.TimeLineDirection
 
 data class GetDeliveryAdvertisementsTimelineByCategoryRequest(
     val pivotTime: Long,
-    val timeLineDirection: TimeLineDirection,
+    val timelineDirection: TimeLineDirection,
     val deliveryCategories: List<DeliveryCategory>
 )

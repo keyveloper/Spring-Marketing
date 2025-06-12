@@ -2,14 +2,12 @@ package org.example.marketing.dao.board
 
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.DeliveryCategory
+import org.example.marketing.enums.FavoriteStatus
 import org.example.marketing.enums.ReviewType
-import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
-import org.example.marketing.table.AdvertisementImagesTable
-import org.example.marketing.table.AdvertisementsTable
-import org.example.marketing.table.AdvertisersTable
+import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.ResultRow
 
-data class AdvertisementPackageDomain(
+data class AdvertisementPackageEntity(
     val id: Long,
     val advertiserId: Long,
     val advertiserLoginId: String,
@@ -34,8 +32,8 @@ data class AdvertisementPackageDomain(
     // 📌 location info
 ) {
     companion object {
-        fun fromRow(row: ResultRow): AdvertisementPackageDomain {
-            return AdvertisementPackageDomain(
+        fun fromRow(row: ResultRow): AdvertisementPackageEntity {
+            return AdvertisementPackageEntity(
                 id = row[AdvertisementsTable.id].value,
                 advertiserId = row[AdvertisementsTable.advertiserId],
                 advertiserLoginId = row[AdvertisersTable.loginId],
@@ -56,7 +54,7 @@ data class AdvertisementPackageDomain(
                 updatedAt = row[AdvertisementsTable.updatedAt],
                 imageUri = row[AdvertisementImagesTable.apiCallUri],
                 isThumbnail = row[AdvertisementImagesTable.isThumbnail],
-                category = row[AdvertisementDeliveryCategoriesTable.category]
+                category = row[AdvertisementDeliveryCategoriesTable.category],
             )
         }
     }

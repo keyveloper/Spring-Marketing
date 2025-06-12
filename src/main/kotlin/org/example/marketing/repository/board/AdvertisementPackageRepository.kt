@@ -1,6 +1,6 @@
 package org.example.marketing.repository.board
 
-import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.enums.UserStatus
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component
 @Component
 class AdvertisementPackageRepository {
     // 🎮 common find
-    fun findPackageByAdvertisementId(advertisementId: Long): List<AdvertisementPackageDomain> {
+    fun findPackageByAdvertisementId(advertisementId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -46,6 +46,6 @@ class AdvertisementPackageRepository {
 
         return joinedTables
             .selectAll()
-            .map(AdvertisementPackageDomain::fromRow)
+            .map(AdvertisementPackageEntity::fromRow)
     }
 }

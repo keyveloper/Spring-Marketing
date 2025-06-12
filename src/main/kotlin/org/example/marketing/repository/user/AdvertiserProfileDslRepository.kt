@@ -1,15 +1,11 @@
 package org.example.marketing.repository.user
 
-import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.dao.user.AdvertiserJoinedProfileEntity
-import org.example.marketing.enums.AdvertisementStatus
-import org.example.marketing.enums.EntityLiveStatus
-import org.example.marketing.enums.ImageCommitStatus
-import org.example.marketing.enums.UserStatus
+import org.example.marketing.enums.*
 import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.ColumnSet
 import org.jetbrains.exposed.sql.JoinType
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.and
 import org.jetbrains.exposed.sql.selectAll
 import org.springframework.stereotype.Component
@@ -44,7 +40,7 @@ class AdvertiserProfileDslRepository {
         return result
     }
 
-    fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageDomain> {
+    fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -62,16 +58,32 @@ class AdvertiserProfileDslRepository {
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
+            ).join(
+                otherTable = AdvertisementDraftsTable,
+                joinType = JoinType.INNER,
+                onColumn = AdvertisementsTable.id,
+                otherColumn = AdvertisementDraftsTable.id,
+                additionalConstraint = {
+                    AdvertisementDraftsTable.draftStatus eq DraftStatus.SAVED
+                }
+            ).join(
+                AdvertisersTable,
+                JoinType.INNER,
+                onColumn = AdvertisersTable.id,
+                otherColumn = AdvertisementsTable.advertiserId,
+                additionalConstraint = {
+                    (AdvertisersTable.status eq UserStatus.LIVE)
+                }
             )
 
         return joinedTables
             .selectAll()
             .map { row ->
-                AdvertisementPackageDomain.fromRow(row)
+                AdvertisementPackageEntity.fromRow(row)
             }
     }
 
-    fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageDomain> {
+    fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -88,12 +100,28 @@ class AdvertiserProfileDslRepository {
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
+            ).join(
+                otherTable = AdvertisementDraftsTable,
+                joinType = JoinType.INNER,
+                onColumn = AdvertisementsTable.id,
+                otherColumn = AdvertisementDraftsTable.id,
+                additionalConstraint = {
+                    AdvertisementDraftsTable.draftStatus eq DraftStatus.SAVED
+                }
+            ).join(
+                AdvertisersTable,
+                JoinType.INNER,
+                onColumn = AdvertisersTable.id,
+                otherColumn = AdvertisementsTable.advertiserId,
+                additionalConstraint = {
+                    (AdvertisersTable.status eq UserStatus.LIVE)
+                }
             )
 
         return joinedTables
             .selectAll()
             .map { row ->
-                AdvertisementPackageDomain.fromRow(row)
+                AdvertisementPackageEntity.fromRow(row)
             }
     }
 }

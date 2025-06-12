@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service
 class AdvertiseProfileInfoService(
     private val advertiserProfileInfoRepository: AdvertiserProfileInfoRepository,
     private val advertiserProfileDslRepository: AdvertiserProfileDslRepository,
+    private val advertisementPackageService: AdvertisementPackageService
 ) {
     fun saveAdditionalInfo(advertiserId: Long, request: MakeNewAdvertiserProfileInfoRequest): Long {
         return transaction {
@@ -49,14 +50,14 @@ class AdvertiseProfileInfoService(
     fun findLiveAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
         return transaction {
             val packageDomains = advertiserProfileDslRepository.findLiveAllAdsByAdvertiserId(advertiserId)
-            AdvertisementPackageService.groupToPackage(packageDomains)
+            advertisementPackageService.groupToPackage(packageDomains)
         }
     }
 
     fun findExpiredAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
         return transaction {
             val packageDomains = advertiserProfileDslRepository.findExpiredAllAdsByAdvertiserId(advertiserId)
-            AdvertisementPackageService.groupToPackage(packageDomains)
+            advertisementPackageService.groupToPackage(packageDomains)
         }
     }
 }

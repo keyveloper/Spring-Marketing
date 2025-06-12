@@ -1,24 +1,23 @@
 package org.example.marketing.dto.functions.response
 
-import org.example.marketing.domain.functions.InfluencerValidReviewOfferAd
+import org.example.marketing.domain.functions.AdvertiserFollowerInfo
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class GetValidReviewOfferAdResponse(
+data class GetAdvertiserFollowerInfoResponse(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val result: List<InfluencerValidReviewOfferAd>
+    val info: AdvertiserFollowerInfo
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            result: List<InfluencerValidReviewOfferAd>
-        ): GetValidReviewOfferAdResponse =
-            GetValidReviewOfferAdResponse(
+            info: AdvertiserFollowerInfo
+        ): GetAdvertiserFollowerInfoResponse =
+            GetAdvertiserFollowerInfoResponse(
                 frontErrorCode,
                 errorMessage,
-                result
+                info
             )
     }
 }
-

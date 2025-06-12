@@ -2,21 +2,19 @@ package org.example.marketing.repository.board
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import kotlinx.datetime.*
-import org.example.marketing.dao.board.AdvertisementPackageDomain
+import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
+import org.example.marketing.enums.FavoriteStatus
 import org.example.marketing.enums.UserStatus
-import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
-import org.example.marketing.table.AdvertisementImagesTable
-import org.example.marketing.table.AdvertisementsTable
-import org.example.marketing.table.AdvertisersTable
+import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.*
 import org.springframework.stereotype.Component
 
 @Component
 class AdvertisementEventRepository {
     private val logger = KotlinLogging.logger {}
-    fun findFreshAll(): List<AdvertisementPackageDomain> {
+    fun findFreshAll(): List<AdvertisementPackageEntity> {
         // val cutoffTime = System.currentTimeMillis() - 7 * 24 * 60 * 60 * 1000
         val now = Clock.System.now()
         val systemTZ = TimeZone.currentSystemDefault()
@@ -49,11 +47,11 @@ class AdvertisementEventRepository {
         return joinedTables
             .selectAll()
             .orderBy(Pair(AdvertisementsTable.createdAt, SortOrder.DESC))
-            .map(AdvertisementPackageDomain::fromRow)
+            .map(AdvertisementPackageEntity::fromRow)
     }
 
     // 🤔 pivot?
-    fun findDeadlineAll(): List<AdvertisementPackageDomain> {
+    fun findDeadlineAll(): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 otherTable = AdvertisementImagesTable,
@@ -69,6 +67,14 @@ class AdvertisementEventRepository {
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
+            ).join(
+                AdvertisersTable,
+                JoinType.INNER,
+                onColumn = AdvertisersTable.id,
+                otherColumn = AdvertisementsTable.advertiserId,
+                additionalConstraint = {
+                    (AdvertisersTable.status eq UserStatus.LIVE)
+                }
             )
 
         val query:Query  = joinedTables
@@ -76,8 +82,9 @@ class AdvertisementEventRepository {
             .orderBy(Pair(AdvertisementsTable.announcementAt, SortOrder.DESC))
 
         val results = query.map { row ->
-            AdvertisementPackageDomain.fromRow(row)
+            AdvertisementPackageEntity.fromRow(row)
         }
         return results
     }
+
 }

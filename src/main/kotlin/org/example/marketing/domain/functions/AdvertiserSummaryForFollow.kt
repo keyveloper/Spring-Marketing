@@ -4,7 +4,6 @@ import org.example.marketing.dao.functions.AdvertisementPackageWithAdvertiserEnt
 import org.example.marketing.enums.AdvertiserType
 
 data class AdvertiserSummaryForFollow(
-    val advertiserLoginId: String,
     val companyName: String,
     val advertiserType: AdvertiserType,
     val advertiserProfileUnifiedCode: String?
@@ -13,7 +12,6 @@ data class AdvertiserSummaryForFollow(
         fun fromPkgWithInfoEntity(
             entity: AdvertisementPackageWithAdvertiserEntity
         ): AdvertiserSummaryForFollow = AdvertiserSummaryForFollow(
-            advertiserLoginId = entity.advertiserLoginId,
             companyName = entity.companyName,
             advertiserType = entity.advertiserType,
             advertiserProfileUnifiedCode = entity.advertiserProfileUnifiedCode

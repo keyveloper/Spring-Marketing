@@ -1,7 +1,6 @@
 package org.example.marketing.domain.user
 
 import org.example.marketing.dao.user.AdvertiserJoinedProfileEntity
-import org.example.marketing.enums.ProfileImageType
 
 data class AdvertiserProfileInfo(
     val advertiserId: Long,
@@ -13,8 +12,8 @@ data class AdvertiserProfileInfo(
     val createdAt: Long,
     val profileUnifiedCode: String,
     val backgroundUnifiedCode: String,
-    val serviceInfo: String,
-    val locationBrief: String,
+    val serviceInfo: String?,
+    val locationBrief: String?,
     val introduction: String?
 ) {
     companion object {

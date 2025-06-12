@@ -1,14 +1,10 @@
 package org.example.marketing.controller
 
-import io.lettuce.core.StrAlgoArgs.By
 import org.apache.tika.metadata.HttpHeaders
 import org.example.marketing.domain.user.InfluencerPrincipal
 import org.example.marketing.dto.user.request.MakeNewInfluencerProfileImageRequest
 import org.example.marketing.dto.user.request.MakeNewInfluencerProfileInfoRequest
-import org.example.marketing.dto.user.response.CommitInfluencerProfileImageResponse
-import org.example.marketing.dto.user.response.GetInfluencerProfileResponse
-import org.example.marketing.dto.user.response.MakeNewInfluencerProfileImageResponse
-import org.example.marketing.dto.user.response.MakeNewInfluencerProfileInfoResponse
+import org.example.marketing.dto.user.response.*
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.InfluencerProfileImageService
 import org.example.marketing.service.InfluencerProfileService
@@ -92,6 +88,19 @@ class InfluencerProfileController(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
                 influencerProfileService.findProfileInfoByInfluencerId(influencerId)
+            )
+        )
+    }
+
+    @GetMapping("/influencer/profile/owned")
+    fun getOwnedProfileInfo(
+        @AuthenticationPrincipal influencerPrincipal: InfluencerPrincipal
+    ): ResponseEntity<GetInfluencerOwnedProfileResponse> {
+        return ResponseEntity.ok().body(
+            GetInfluencerOwnedProfileResponse.of(
+                FrontErrorCode.OK.code,
+                FrontErrorCode.OK.message,
+                influencerProfileService.findProfileInfoByInfluencerId(influencerPrincipal.userId)
             )
         )
     }
