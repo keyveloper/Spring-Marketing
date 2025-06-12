@@ -90,6 +90,10 @@ dependencies {
     // kotlin date time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 
+    // keyword filter
+    implementation("org.apache.commons:commons-text:1.13.0")   // 최신
+
+
 }
 
 kotlin {

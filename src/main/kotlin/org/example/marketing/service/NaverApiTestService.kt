@@ -6,7 +6,7 @@ import org.example.marketing.dto.keyword.RelatedKeywordStat
 import org.springframework.stereotype.Service
 
 @Service
-class TestService(
+class NaverApiTestService(
     private val naverOpenAPIService : NaverOpenAPIService
 ) {
     private val logger = KotlinLogging.logger {}

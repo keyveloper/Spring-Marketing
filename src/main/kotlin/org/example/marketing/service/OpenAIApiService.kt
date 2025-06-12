@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service
 @Service
 class OpenAIApiService(
     private val chatClient: ChatClient,
-    private val circuitBreakerRegistry: CircuitBreakerRegistry
+    private val circuitBreakerRegistry: CircuitBreakerRegistry,
+    private val keywordFilterService: KeywordFilterService
 ) {
+    private val rule = KEYWORD_COMBINATION_PROMPT
     private val logger = KotlinLogging.logger {}
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("openAiApiCircuitBreaker")
     @CircuitBreaker(
@@ -27,7 +29,6 @@ class OpenAIApiService(
         keyword: String,
         context: String
     ): List<String>? {
-        val rule = KEYWORD_COMBINATION_PROMPT
         return try {
             circuitBreaker.executeSuspendFunction {
                 withContext(Dispatchers.IO) {          // ★ blocking → IO thread
@@ -53,6 +54,7 @@ class OpenAIApiService(
             null
         }
     }
+
 
     @CircuitBreaker(
         name = "openAiApiCircuitBreaker",

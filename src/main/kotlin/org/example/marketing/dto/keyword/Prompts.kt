@@ -6,9 +6,9 @@ System:
 You are a master at generating korean words combination
 
 TASK:
-Create unique 50 keywords
-- 40 keywords: exactly two-word
-- 10 keywords: exactly three-word
+Create unique 30 keywords
+- 15 keywords: exactly two-word
+- 5 keywords: exactly three-word
 
 If a client request has a location information, 
 Always keep the city name, and set it at first.
