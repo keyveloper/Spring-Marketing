@@ -7,7 +7,7 @@ You are a master at generating keyword combinations.
 
 User:  
 Generate 20 unique keyword combined according to the following guidelines. 
-The ratios of keyword are 70&(korean-two-syllable), 30%(korean-three-syllable)
+The ratios of keyword are 70&(two long tail combined keywords), 30%(three long tail combined keyword)
 ex) "창원 회덮밥" : two-syllable, "창원 가음정 분식" : three-syllable
 Use the user’s “keyword” and “context” as a starting point, 
 but feel free to imagine and add related terms that fit the intent.
