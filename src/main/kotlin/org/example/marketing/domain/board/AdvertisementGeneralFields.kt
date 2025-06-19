@@ -23,7 +23,6 @@ data class AdvertisementGeneralFields(
     val itemInfo: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val imageUris: List<String?> = listOf(),
     val thumbnailUri: String? = null,
 ) {
     companion object {
