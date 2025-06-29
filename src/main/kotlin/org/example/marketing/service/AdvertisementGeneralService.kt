@@ -42,7 +42,7 @@ class AdvertisementGeneralService(
                 val advertisementEntity = advertisementRepository.save(
                     SaveAdvertisement.of(advertiserId, request)
                 )
-                // chane draft to saved 😏 Exception Check needed?
+                // change draft to saved 😏 Exception Check needed?
                 advertisementDraftService.changeStatusById(request.draftId, DraftStatus.SAVED)
 
                 // Connect advertisement images to the created advertisement
