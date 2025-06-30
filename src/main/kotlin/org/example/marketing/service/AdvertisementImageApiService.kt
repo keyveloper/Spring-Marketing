@@ -83,7 +83,8 @@ class AdvertisementImageApiService(
                                 logics = "AdvertisementImageApiService - uploadToImageServer",
                             )
 
-                        logger.info { "Successfully uploaded advertisement image: id=${result.id}, s3Key=${result.s3Key}" }
+                        logger.info { "Successfully uploaded advertisement image: id=${result.id}," +
+                                " s3Key=${result.s3Key}" }
 
                         AdvertisementImageInfo(
                             id = result.id,
