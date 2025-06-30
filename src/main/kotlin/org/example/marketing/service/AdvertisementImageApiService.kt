@@ -34,7 +34,7 @@ class AdvertisementImageApiService(
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
     suspend fun uploadToImageServer(
-        userId: Long,
+        userId: String,
         advertisementDraftId: Long,
         isThumbnail: Boolean,
         file: MultipartFile

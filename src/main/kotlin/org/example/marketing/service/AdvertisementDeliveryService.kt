@@ -24,7 +24,7 @@ class AdvertisementDeliveryService(
     private val advertisementPackageService: AdvertisementPackageService
 ) {
 
-    fun save(advertisementId: Long, request: MakeNewAdvertisementDeliveryRequest): Long {
+    fun save(advertisementId: String, request: MakeNewAdvertisementDeliveryRequest): Long {
         return transaction {
             val advertisementEntity = advertisementRepository.save(
                 SaveAdvertisement.of(

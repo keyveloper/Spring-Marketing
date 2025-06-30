@@ -5,7 +5,7 @@ import org.example.marketing.enums.DraftStatus
 
 data class AdvertisementDraft(
     val id: Long,
-    val advertiserId: Long,
+    val advertiserId: String,
     val draftStatus: DraftStatus,
     val expiredAt: Long,
     val createdAt: Long,

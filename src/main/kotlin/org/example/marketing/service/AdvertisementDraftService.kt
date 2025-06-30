@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 class AdvertisementDraftService(
     private val advertisementDraftRepository: AdvertisementDraftRepository
 ) {
-    fun issueDraft(advertiserId: Long): AdvertisementDraft {
+    fun issueDraft(advertiserId: String): AdvertisementDraft {
         return transaction {
             val newEntity = advertisementDraftRepository.save(
                 IssueAdvertisementDraft.of(advertiserId)

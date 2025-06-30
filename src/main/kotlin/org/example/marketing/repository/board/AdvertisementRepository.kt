@@ -57,7 +57,7 @@ class AdvertisementRepository {
         return advertisement
     }
 
-    fun checkOwner(advertiserId: Long, advertisementId: Long): Boolean {
+    fun checkOwner(advertiserId: String, advertisementId: Long): Boolean {
         return AdvertisementEntity.find {
             (AdvertisementsTable.advertiserId eq advertiserId) and
                     (AdvertisementsTable.id eq advertisementId) and

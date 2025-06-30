@@ -21,9 +21,13 @@ class AdvertisementGeneralService(
     private val advertisementRepository: AdvertisementRepository,
     private val advertisementDraftService: AdvertisementDraftService,
     private val advertisementImageApiService: AdvertisementImageApiService,
+    private val authApiService: AuthApiService
 ) {
 
-    fun save(advertiserId: Long, request: MakeNewAdvertisementGeneralRequest): MakeNewAdvertisementGeneralResult {
+    suspend fun save(
+        advertiserId: String,
+        request: MakeNewAdvertisementGeneralRequest
+    ): MakeNewAdvertisementGeneralResult {
         return transaction {
             // check
             val draftDomain = advertisementDraftService.findById(request.draftId)

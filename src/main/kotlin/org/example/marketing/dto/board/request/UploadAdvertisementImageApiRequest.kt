@@ -2,13 +2,13 @@ package org.example.marketing.dto.board.request
 
 data class UploadAdvertisementImageApiRequest(
     val advertisementDraftId: Long,
-    val writerId: Long,
+    val writerId: String,
     val isThumbnail: Boolean,
 ) {
     companion object {
         fun of(
             advertisementDraftId: Long,
-            writerId: Long,
+            writerId: String,
             isThumbnail: Boolean,
         ): UploadAdvertisementImageApiRequest {
             return UploadAdvertisementImageApiRequest(

@@ -26,10 +26,8 @@ class JwtFilterChain(
     }
 
     override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        val path = request.requestURI
-        val skip = path.startsWith("/test") || path.startsWith("/entry") ||
-                path.startsWith("/open")
-        return skip
+        // 모든 경로에 대해 JWT 필터를 건너뜀 (AuthApiService로 별도 검증)
+        return true
     }
 
     override fun doFilterInternal(

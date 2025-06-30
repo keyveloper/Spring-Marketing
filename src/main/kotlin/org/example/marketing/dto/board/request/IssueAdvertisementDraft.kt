@@ -1,10 +1,10 @@
 package org.example.marketing.dto.board.request
 
 data class IssueAdvertisementDraft(
-    val advertiserId: Long,
+    val advertiserId: String,
 ) {
     companion object {
-        fun of(advertiserId: Long): IssueAdvertisementDraft =
+        fun of(advertiserId: String): IssueAdvertisementDraft =
             IssueAdvertisementDraft(advertiserId = advertiserId)
     }
 }

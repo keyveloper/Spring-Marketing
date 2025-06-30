@@ -9,7 +9,7 @@ import org.jetbrains.exposed.sql.ResultRow
 
 data class AdvertisementPackageEntity(
     val id: Long,
-    val advertiserId: Long,
+    val advertiserId: String,
     val advertiserLoginId: String,
     val title: String,
     val reviewType: ReviewType,

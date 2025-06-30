@@ -7,7 +7,7 @@ import org.example.marketing.enums.ReviewType
 data class AdvertisementGeneralFields(
     val id: Long,
     val title: String,
-    val advertiserId: Long,
+    val advertiserId: String,
     val advertiserLoginId: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,

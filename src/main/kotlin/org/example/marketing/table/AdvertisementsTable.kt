@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.Column
 object AdvertisementsTable: BaseDateLongIdTable("advertisements") {
 
     val title: Column<String> = varchar("title", 255).index()
-    val advertiserId: Column<Long> = long("advertiser_id").index()
+    val advertiserId: Column<String> = varchar("advertiser_id", 255)
     val reviewType: Column<ReviewType> = enumerationByName("review_type", 255, ReviewType::class).index()
     val channelType: Column<ChannelType> = enumerationByName("channel_type", 255, ChannelType::class).index()
     val recruitmentNumber: Column<Int> = integer("recruitment_number").index()

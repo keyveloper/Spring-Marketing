@@ -6,7 +6,7 @@ import org.example.marketing.enums.ReviewType
 import java.time.ZoneId
 
 data class SaveAdvertisement(
-    val advertiserId : Long,
+    val advertiserId : String,
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
@@ -28,7 +28,7 @@ data class SaveAdvertisement(
         private const val THREE_DAYS_MILLIS = 3 * ONE_DAY_MILLIS
 
         fun of(
-            advertiserId: Long,
+            advertiserId: String,
             request: MakeNewAdvertisementGeneralRequest,
         ): SaveAdvertisement {
             // 날짜 자동 계산

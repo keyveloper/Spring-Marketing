@@ -36,15 +36,7 @@ class SecurityConfig(
                 auth
                     // Skip security for ASYNC dispatches - they're already authenticated in the initial request
                     .dispatcherTypeMatchers(DispatcherType.ASYNC).permitAll()
-                    .requestMatchers("/test/**").permitAll()
-                    .requestMatchers("/entry/**").permitAll()
-                    .requestMatchers("/open/**").permitAll()
-                    .requestMatchers("/validate-token").hasAnyRole(
-                        "ADVERTISER_COMMON",
-                        "ADMIN",
-                        "INFLUENCER"
-                    )
-                    .requestMatchers("/error").permitAll()
+                    .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated()
             }
             .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter::class.java)

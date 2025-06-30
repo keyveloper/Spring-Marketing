@@ -16,11 +16,6 @@ data class MakeNewAdvertisementGeneralRequest(
     @field: NotEmpty
     val itemName: String,
     val recruitmentStartAt: Long,
-    val recruitmentEndAt: Long,
-    val announcementAt: Long,
-    val reviewStartAt: Long,
-    val reviewEndAt: Long,
-    val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
 
