@@ -2,7 +2,9 @@ package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.domain.user.CustomUserPrincipal
+import org.example.marketing.dto.board.request.ConnectAdvertisementIdRequest
 import org.example.marketing.dto.board.request.UploadAdvertisementImageRequestFromClient
+import org.example.marketing.dto.board.response.ConnectAdvertisementResult
 import org.example.marketing.dto.board.response.FetchAdvertisementImageResponseToClient
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseToClient
 import org.example.marketing.enums.FrontErrorCode
@@ -13,6 +15,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
@@ -73,6 +76,34 @@ class AdvertisementImageController(
                 result = result,
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
+            )
+        )
+    }
+
+    /**
+     * Draft의 이미지들을 실제 Advertisement와 연결하는 테스트 엔드포인트
+     *
+     * @param request draftId와 advertisementId를 포함한 요청
+     * @return 연결 결과 (업데이트된 행 수와 연결된 S3 키 목록)
+     */
+    @PostMapping("/test/image/advertisement/connect")
+    suspend fun connectAdvertisementImages(
+        @RequestBody request: ConnectAdvertisementIdRequest
+    ): ResponseEntity<Map<String, Any>> {
+        logger.info { "Testing connect advertisement images: draftId=${request.draftId}, advertisementId=${request.advertisementId}" }
+
+        val result = advertisementImageApiService.connectAdvertisementToImageServer(
+            draftId = request.draftId,
+            advertisementId = request.advertisementId
+        )
+
+        logger.info { "Connection result: updatedRow=${result.updatedRow}, connectedKeys=${result.connectedS3BucketKeys.size}" }
+
+        return ResponseEntity.ok().body(
+            mapOf(
+                "frontErrorCode" to FrontErrorCode.OK.code,
+                "errorMessage" to FrontErrorCode.OK.message,
+                "result" to result
             )
         )
     }
