@@ -81,12 +81,12 @@ class AdvertisementImageController(
     }
 
     /**
-     * Draft의 이미지들을 실제 Advertisement와 연결하는 테스트 엔드포인트
+     * Draft의 이미지들을 실제 Advertisement와 연결하는 엔드포인트
      *
      * @param request draftId와 advertisementId를 포함한 요청
      * @return 연결 결과 (업데이트된 행 수와 연결된 S3 키 목록)
      */
-    @PostMapping("/test/image/advertisement/connect")
+    @PostMapping("/image/advertisement/connect")
     suspend fun connectAdvertisementImages(
         @RequestBody request: ConnectAdvertisementIdRequest
     ): ResponseEntity<Map<String, Any>> {
