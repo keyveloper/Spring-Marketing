@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*
  */
 @RestController
 @RequestMapping("/test/auth")
-class AuthTestController(
+class AuthApiController(
     private val authApiService: AuthApiService
 ) {
     private val logger = KotlinLogging.logger {}

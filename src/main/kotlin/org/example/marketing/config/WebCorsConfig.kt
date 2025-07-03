@@ -9,7 +9,10 @@ class WebCorsConfig: WebMvcConfigurer {
 
     override fun addCorsMappings(registry: CorsRegistry) {
         registry.addMapping("/**")
-            .allowedOrigins("http://localhost:5174")
+            .allowedOrigins(
+                "http://localhost:5173",  // Vite 기본 포트
+                "http://localhost:5174"   // 추가 포트
+            )
             .allowedMethods("*")
             .allowCredentials(true)
             .allowedHeaders("*")
