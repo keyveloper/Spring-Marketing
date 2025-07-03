@@ -1,17 +1,14 @@
 package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.domain.user.CustomUserPrincipal
 import org.example.marketing.dto.board.request.ConnectAdvertisementIdRequest
 import org.example.marketing.dto.board.request.UploadAdvertisementImageRequestFromClient
-import org.example.marketing.dto.board.response.ConnectAdvertisementResult
 import org.example.marketing.dto.board.response.FetchAdvertisementImageResponseToClient
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseToClient
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementImageApiService
 import org.example.marketing.service.AuthApiService
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -22,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-class AdvertisementImageController(
+class AdvertisementImageApiController(
     private val advertisementImageApiService: AdvertisementImageApiService,
     private val authApiService: AuthApiService,
 ) {
