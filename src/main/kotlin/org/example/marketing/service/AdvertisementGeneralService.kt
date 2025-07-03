@@ -3,10 +3,14 @@ package org.example.marketing.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.dto.board.request.*
+import org.example.marketing.dto.user.request.SaveDeliveryCategory
+import org.example.marketing.enums.ReviewType
 import org.example.marketing.dto.board.response.MakeNewAdvertisementGeneralResult
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.exception.DuplicatedDraftException
 import org.example.marketing.exception.ExpiredDraftException
+import org.example.marketing.exception.UnexpectedDeliveryCategoryException
+import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
 import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -19,6 +23,7 @@ class AdvertisementGeneralService(
     private val advertisementRepository: AdvertisementRepository,
     private val advertisementDraftService: AdvertisementDraftService,
     private val advertisementImageApiService: AdvertisementImageApiService,
+    private val advertisementDeliveryCategoryRepository: AdvertisementDeliveryCategoryRepository
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -71,6 +76,27 @@ class AdvertisementGeneralService(
                 logger.info { "💾 Saving advertisement to database..." }
                 val advertisementEntity = advertisementRepository.save(saveAdvertisement)
                 logger.info { "✅ Advertisement saved successfully: id=${advertisementEntity.id.value}" }
+
+                // Delivery category validation and save
+                if (request.deliveryCategories.isNotEmpty()) {
+                    logger.info { "🔍 Checking delivery categories: size=${request.deliveryCategories.size}, reviewType=${request.reviewType}" }
+
+                    if (request.reviewType != ReviewType.DELIVERY) {
+                        logger.error { "❌ Delivery categories provided but reviewType is not DELIVERY: reviewType=${request.reviewType}" }
+                        throw UnexpectedDeliveryCategoryException(
+                            logics = "advertisementGeneralSvc-save",
+                            reviewType = request.reviewType
+                        )
+                    }
+
+                    logger.info { "💾 Saving delivery categories: advertisementId=${advertisementEntity.id.value}, categories=${request.deliveryCategories}" }
+                    val saveDeliveryCategory = SaveDeliveryCategory.of(
+                        advertisementId = advertisementEntity.id.value,
+                        categories = request.deliveryCategories
+                    )
+                    val savedCount = advertisementDeliveryCategoryRepository.save(saveDeliveryCategory)
+                    logger.info { "✅ Delivery categories saved: count=$savedCount" }
+                }
 
                 logger.info { "🔄 Changing draft status to SAVED: draftId=${request.draftId}" }
                 advertisementDraftService.changeStatusById(request.draftId, DraftStatus.SAVED)

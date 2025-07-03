@@ -11,6 +11,7 @@ data class MakeNewAdvertisementGeneralRequest(
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
+    val deliveryCategories: List<DeliveryCategory>,
     val recruitmentNumber: Int,
 
     @field: NotEmpty

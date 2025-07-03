@@ -11,6 +11,7 @@ enum class FrontErrorCode(val code: Int, val message: String) {
     INSERT_LIMIT_ENTITY(40004, "Database usable but can't insert entity anymore..."),
     NOT_FOUND_FILE(40005, "File not found"),
     EXPIRED_DRAFT_EXCEPTION(40006, "The draft has been exceeded"),
+    UNEXPECTED_DELIVERY_CATEGORY(40007, "Delivery categories can only be used with DELIVERY review type"),
 
     // 50000 ~ : SERVER Error
     // Server Critical - not handle
