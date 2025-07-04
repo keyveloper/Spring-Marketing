@@ -112,6 +112,13 @@ class AdvertisementGeneralService(
                 logger.info { "✅ Images connected: updatedRow=${connectResult.updatedRow}, " +
                         "connectedKeys=${connectResult.connectedS3BucketKeys.size}" }
 
+                // Make thumbnail after successful image connection
+                logger.info { "🖼️ Creating thumbnail: imageMetaId=${request.thumbnailImageMetaId}" }
+                val thumbnailResult = advertisementImageApiService.makeThumbnail(request.thumbnailImageMetaId)
+                logger.info { "✅ Thumbnail created: thumbnailMetaId=${thumbnailResult.thumbnailMetaId}, " +
+                        "thumbnailS3Key=${thumbnailResult.thumbnailS3Key}, " +
+                        "thumbnailSize=${thumbnailResult.thumbnailSize}" }
+
                 val result = MakeNewAdvertisementGeneralResult(
                     entityId = advertisementEntity.id.value,
                     connectingResultFromApiServer = connectResult

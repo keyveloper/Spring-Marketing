@@ -20,6 +20,6 @@ data class MakeNewAdvertisementGeneralRequest(
     val siteUrl: String?,
     val itemInfo: String?,
 
-    // ----- draft -------
     val draftId: Long,
+    val thumbnailImageMetaId: Long
 )

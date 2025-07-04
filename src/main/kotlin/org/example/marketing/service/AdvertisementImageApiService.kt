@@ -10,6 +10,8 @@ import org.example.marketing.dto.board.response.AdvertisementImageMetadataWithUr
 import org.example.marketing.dto.board.response.AdvertisementImageResponseFromServer
 import org.example.marketing.dto.board.response.ConnectAdvertisementResponseFromServer
 import org.example.marketing.dto.board.response.ConnectAdvertisementResult
+import org.example.marketing.dto.board.response.MakeThumbnailResponseFromServer
+import org.example.marketing.dto.board.response.ThumbnailResult
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseFromServer
 import org.example.marketing.exception.MSAErrorException
 import org.example.marketing.exception.UploadFailedToImageServerException
@@ -210,6 +212,50 @@ class AdvertisementImageApiService(
             }
         } catch (ex: Throwable) {
             logger.error { "Failed to connect advertisement to image-api-server: ${ex.message}" }
+            throw ex
+        }
+    }
+
+    suspend fun makeThumbnail(imageMetaId: Long): ThumbnailResult {
+        logger.info { "Making thumbnail for imageMetaId=$imageMetaId" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val response = marketingApiClient.post()
+                    .uri("/api/advertisement-meta/thumbnail/{imageMetaId}", imageMetaId)
+                    .retrieve()
+                    .awaitBody<MakeThumbnailResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    org.example.marketing.enums.MSAServiceErrorCode.OK -> {
+                        val result = response.thumbnailResult
+                            ?: throw MSAErrorException(
+                                logics = "AdvertisementImageApiService - makeThumbnail",
+                                message = "Thumbnail result is null"
+                            )
+
+                        logger.info { "Successfully created thumbnail: imageMetaId=${result.imageMetaId}, " +
+                                "thumbnailMetaId=${result.thumbnailMetaId}, " +
+                                "thumbnailS3Key=${result.thumbnailS3Key}, " +
+                                "thumbnailSize=${result.thumbnailSize}" }
+
+                        result
+                    }
+                    else -> {
+                        logger.error { "Thumbnail creation failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        throw MSAErrorException(
+                            logics = "AdvertisementImageApiService - makeThumbnail",
+                            message = response.errorMessage ?: "Failed to create thumbnail"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to make thumbnail for imageMetaId=$imageMetaId: ${ex.message}" }
             throw ex
         }
     }
