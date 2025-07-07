@@ -247,7 +247,7 @@ class AdvertisementImageApiService(
                 val request = FetchAdThumbnailUrlsRequest(advertisementIds = advertisementIds)
 
                 val response = marketingApiClient.post()
-                    .uri("/api/advertisement-meta/thumbnails/batch")
+                    .uri("/api/advertisement-meta/thumbnails")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(request)
                     .retrieve()

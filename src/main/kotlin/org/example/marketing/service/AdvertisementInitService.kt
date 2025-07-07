@@ -11,15 +11,13 @@ class AdvertisementInitService(
     private val advertisementImageApiService: AdvertisementImageApiService,
 ) {
 
-    suspend fun findInitAdWithThumbnail(): AdvertisementInitResult {
+    suspend fun findInitFreshAdWithThumbnail(): AdvertisementInitResult {
         return newSuspendedTransaction {
-            // Call EventService.findFreshAll and findDeadlineAll = A
+            // Call EventService.findFreshAll = A
             val freshAds = advertisementEventService.findFreshAll()
-            val deadlineAds = advertisementEventService.findDeadlineAll()
-            val allAdvertisements = (freshAds + deadlineAds).distinctBy { it.id }
 
             // Call advertisementImageApiService.getThumbnailsByAdvertisementIds from A's ids = B
-            val advertisementIds = allAdvertisements.map { it.id }
+            val advertisementIds = freshAds.map { it.id }
             val thumbnails = advertisementImageApiService.getThumbnailsByAdvertisementIds(advertisementIds)
 
             // Create a map for quick lookup: advertisementId -> thumbnailUrl
@@ -32,6 +30,26 @@ class AdvertisementInitService(
                 }
             }
 
+            AdvertisementInitResult.of(
+                freshAds = freshAdCards,
+                deadlineAds = emptyList()
+            )
+        }
+    }
+
+    suspend fun findDeadlineFreshAdWithThumbnail(): AdvertisementInitResult {
+        return newSuspendedTransaction {
+            // Call EventService.findDeadlineAll = A
+            val deadlineAds = advertisementEventService.findDeadlineAll()
+
+            // Call advertisementImageApiService.getThumbnailsByAdvertisementIds from A's ids = B
+            val advertisementIds = deadlineAds.map { it.id }
+            val thumbnails = advertisementImageApiService.getThumbnailsByAdvertisementIds(advertisementIds)
+
+            // Create a map for quick lookup: advertisementId -> thumbnailUrl
+            val thumbnailMap = thumbnails.associateBy({ it.advertisementId }, { it.presignedUrl })
+
+            // Compare A and B -> A.id = B.advertisementId -> make ThumbnailAdCard
             val deadlineAdCards = deadlineAds.mapNotNull { ad ->
                 thumbnailMap[ad.id]?.let { thumbnailUrl ->
                     ThumbnailAdCard.of(ad, thumbnailUrl)
@@ -39,7 +57,7 @@ class AdvertisementInitService(
             }
 
             AdvertisementInitResult.of(
-                freshAds = freshAdCards,
+                freshAds = emptyList(),
                 deadlineAds = deadlineAdCards
             )
         }

@@ -14,9 +14,22 @@ class AdvertisementInitController(
     private val advertisementInitService: AdvertisementInitService,
 ) {
 
-    @GetMapping("/advertisement")
-    suspend fun getInit(): ResponseEntity<AdvertisementInitResponse> {
-        val result = advertisementInitService.findInitAdWithThumbnail()
+    @GetMapping("/advertisement/fresh")
+    suspend fun getFreshInit(): ResponseEntity<AdvertisementInitResponse> {
+        val result = advertisementInitService.findInitFreshAdWithThumbnail()
+
+        return ResponseEntity.ok().body(
+            AdvertisementInitResponse.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                result = result
+            )
+        )
+    }
+
+    @GetMapping("/advertisement/deadline")
+    suspend fun getDeadlineInit(): ResponseEntity<AdvertisementInitResponse> {
+        val result = advertisementInitService.findDeadlineFreshAdWithThumbnail()
 
         return ResponseEntity.ok().body(
             AdvertisementInitResponse.of(
