@@ -4,12 +4,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
 import org.example.marketing.dto.board.request.MakeNewAdvertisementGeneralRequest
 import org.example.marketing.dto.board.request.UpdateAdvertisementRequest
-import org.example.marketing.dto.board.response.GetAdvertisementGeneralResponse
+import org.example.marketing.dto.board.response.GetAdvertisementResponse
 import org.example.marketing.dto.board.response.MakeNewAdvertisementGeneralResponse
 import org.example.marketing.dto.board.response.UpdateAdvertisementResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementGeneralService
-import org.example.marketing.service.AdvertisementPackageService
 import org.example.marketing.service.AuthApiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class AdvertisementCRUDController( // only for general advertisement
     private val advertisementService: AdvertisementGeneralService,
-    private val advertisementPackageService: AdvertisementPackageService,
     private val authApiService: AuthApiService
 ) {
     private val logger = KotlinLogging.logger {}
@@ -45,15 +43,16 @@ class AdvertisementCRUDController( // only for general advertisement
     }
 
 
-    @GetMapping("/open/advertisement/general/{targetId}")
-    fun getById(
+    @GetMapping("/advertisement/{targetId}")
+    suspend fun getById(
         @PathVariable targetId: Long
-    ): ResponseEntity<GetAdvertisementGeneralResponse> {
+    ): ResponseEntity<GetAdvertisementResponse> {
+        val result = advertisementService.findByIdWithCategoriesAndImages(targetId)
         return ResponseEntity.ok().body(
-            GetAdvertisementGeneralResponse.of(
+            GetAdvertisementResponse.of(
+                result = result,
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                advertisement = advertisementPackageService.findByAdvertisementId(targetId)
             )
         )
     }

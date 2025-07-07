@@ -3,12 +3,16 @@ package org.example.marketing.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.dto.board.request.*
+import org.example.marketing.dto.board.response.AdvertisementWithCategories
+import org.example.marketing.dto.board.response.AdvertisementWithCategoriesAndImages
+import org.example.marketing.dto.board.response.AdvertisementWithCategoriesV2
 import org.example.marketing.dto.user.request.SaveDeliveryCategory
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.dto.board.response.MakeNewAdvertisementGeneralResult
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.exception.DuplicatedDraftException
 import org.example.marketing.exception.ExpiredDraftException
+import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.exception.UnexpectedDeliveryCategoryException
 import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
 import org.example.marketing.repository.board.AdvertisementRepository
@@ -169,6 +173,36 @@ class AdvertisementGeneralService(
         return transaction {
             advertisementRepository.deleteById(request.targetId)
         }.id.value
+    }
+
+
+    suspend fun findByIdWithCategoriesAndImages(id: Long): AdvertisementWithCategoriesAndImages {
+        return newSuspendedTransaction {
+            val adEntity = advertisementRepository.findById(id)
+                ?: throw NotFoundAdvertisementException(
+                    logics = "advertisementGeneralSvc-findByIdWithCategoriesAndImages",
+                )
+
+            // Get categories
+            val categories = if (adEntity.reviewType == ReviewType.DELIVERY) {
+                advertisementDeliveryCategoryRepository
+                    .findAllByAdvertisementId(id)
+                    .map { it.category }
+            } else {
+                emptyList()
+            }
+
+            // Get images from image API server
+            val images = advertisementImageApiService.fetchImageByAdvertisementId(id)
+
+            // Create AdvertisementWithCategorie
+            val adCategoryV2 = AdvertisementWithCategoriesV2.of(adEntity, categories)
+
+            AdvertisementWithCategoriesAndImages(
+                advertisementWithCategoriesV2 = adCategoryV2,
+                advertisementImages = images
+            )
+        }
     }
 
 

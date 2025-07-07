@@ -83,14 +83,11 @@ class AdvertisementRepository {
     }
 
 
-    fun findById(targetId: Long): AdvertisementEntity {
+    fun findById(targetId: Long): AdvertisementEntity? {
         logger.info {"targetId: $targetId"}
         val advertisement = AdvertisementEntity.find {
             (AdvertisementsTable.id eq targetId) and (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
         }.firstOrNull()
-            ?: throw NotFoundAdvertisementException(
-                logics = "advertisement - findById"
-            )
 
         return advertisement
     }
