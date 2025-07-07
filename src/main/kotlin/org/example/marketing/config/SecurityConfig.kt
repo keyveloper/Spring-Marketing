@@ -23,7 +23,6 @@ class SecurityConfig(
     @Bean
     fun securityFilterChain(
         http: HttpSecurity,
-        jwtFilterChain: JwtFilterChain,
         customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
     ): SecurityFilterChain {
         http
@@ -38,7 +37,6 @@ class SecurityConfig(
                     .requestMatchers("/**").permitAll()
                     .anyRequest().authenticated()
             }
-            .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter::class.java)
         return http.build()
     }
 

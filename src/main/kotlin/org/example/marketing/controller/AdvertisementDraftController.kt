@@ -1,7 +1,6 @@
 package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.response.DeleteAdDraftResponse
 import org.example.marketing.dto.board.response.GetDraftResponse
 import org.example.marketing.dto.board.response.IssueNewAdvertisementDraftResponse

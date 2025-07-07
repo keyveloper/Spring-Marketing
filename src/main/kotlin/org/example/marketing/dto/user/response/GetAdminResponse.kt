@@ -1,6 +1,5 @@
 package org.example.marketing.dto.user.response
 
-import org.example.marketing.domain.user.Admin
 import org.example.marketing.dto.error.FrontErrorResponse
 import org.example.marketing.dto.user.request.GetAdminRequest
 
