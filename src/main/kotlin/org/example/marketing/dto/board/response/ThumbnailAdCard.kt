@@ -11,4 +11,18 @@ data class ThumbnailAdCard(
     val recruitmentEndAt: Long,
     val channelType: ChannelType,
     val reviewType: ReviewType
-)
+) {
+    companion object {
+        fun of(ad: AdvertisementWithCategories, thumbnailUrl: String): ThumbnailAdCard {
+            return ThumbnailAdCard(
+                presignedUrl = thumbnailUrl,
+                itemInfo = ad.itemInfo,
+                title = ad.title,
+                recruitmentStartAt = ad.recruitmentStartAt,
+                recruitmentEndAt = ad.recruitmentEndAt,
+                channelType = ad.channelType,
+                reviewType = ad.reviewType
+            )
+        }
+    }
+}

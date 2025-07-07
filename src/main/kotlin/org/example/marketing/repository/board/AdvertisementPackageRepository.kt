@@ -19,14 +19,6 @@ class AdvertisementPackageRepository {
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
-            ).join(
-                AdvertisersTable,
-                JoinType.INNER,
-                onColumn = AdvertisersTable.id,
-                otherColumn = AdvertisementsTable.advertiserId,
-                additionalConstraint = {
-                    (AdvertisersTable.status eq UserStatus.LIVE)
-                }
             )
 
         return joinedTables

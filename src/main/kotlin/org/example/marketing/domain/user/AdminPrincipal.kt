@@ -1,6 +1,5 @@
 package org.example.marketing.domain.user
 
-import org.example.marketing.dao.user.AdminEntity
 import org.example.marketing.dao.user.AdvertiserEntity
 import org.example.marketing.enums.UserType
 

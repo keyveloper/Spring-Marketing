@@ -25,14 +25,6 @@ class AdvertisementDeliveryDslRepository {
                 additionalConstraint = {
                     (AdvertisementDeliveryCategoriesTable.category inList categories)
                 }
-            ).join(
-                AdvertisersTable,
-                JoinType.INNER,
-                onColumn = AdvertisersTable.id,
-                otherColumn = AdvertisementsTable.advertiserId,
-                additionalConstraint = {
-                    (AdvertisersTable.status eq UserStatus.LIVE)
-                }
             )
 
         val query:Query  = joinedTables
@@ -61,15 +53,8 @@ class AdvertisementDeliveryDslRepository {
                 additionalConstraint = {
                     (AdvertisementDeliveryCategoriesTable.category inList categories)
                 }
-            ).join(
-                AdvertisersTable,
-                JoinType.INNER,
-                onColumn = AdvertisersTable.id,
-                otherColumn = AdvertisementsTable.advertiserId,
-                additionalConstraint = {
-                    (AdvertisersTable.status eq UserStatus.LIVE)
-                }
             )
+
         return joinedTables
             .selectAll()
             .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
@@ -89,14 +74,6 @@ class AdvertisementDeliveryDslRepository {
                 otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId,
                 additionalConstraint = {
                     (AdvertisementDeliveryCategoriesTable.category inList categories)
-                }
-            ).join(
-                AdvertisersTable,
-                JoinType.INNER,
-                onColumn = AdvertisersTable.id,
-                otherColumn = AdvertisementsTable.advertiserId,
-                additionalConstraint = {
-                    (AdvertisersTable.status eq UserStatus.LIVE)
                 }
             )
 

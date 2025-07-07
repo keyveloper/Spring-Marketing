@@ -26,38 +26,4 @@ class AdvertiserProfileInfoService(
             )
         }.id.value
     }
-
-    fun findProfileInfoByAdvertiserId(advertiserId: Long): AdvertiserProfileInfo {
-        return transaction {
-            val targetEntities = advertiserProfileDslRepository.findJoinedProfileInfoByAdvertiserId(advertiserId)
-            val oneRow = targetEntities.first()
-            val profileUnifiedCode = targetEntities.find {
-                it.profileImageType == ProfileImageType.PROFILE
-            }?.unifiedImageCode ?: ""
-
-            val backgroundUnifiedCode = targetEntities.find {
-                it.profileImageType == ProfileImageType.BACKGROUND
-            }?.unifiedImageCode ?: "" //  throw Exception !! 📌
-
-            AdvertiserProfileInfo.of(
-                entity = oneRow,
-                profileUnifiedCode = profileUnifiedCode,
-                backgroundUnifiedCode = backgroundUnifiedCode
-            )
-        }
-    }
-
-    fun findLiveAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
-        return transaction {
-            val packageDomains = advertiserProfileDslRepository.findLiveAllAdsByAdvertiserId(advertiserId)
-            advertisementPackageService.groupToPackage(packageDomains)
-        }
-    }
-
-    fun findExpiredAllAdsByAdvertisements(advertiserId: Long): List<AdvertisementPackage> {
-        return transaction {
-            val packageDomains = advertiserProfileDslRepository.findExpiredAllAdsByAdvertiserId(advertiserId)
-            advertisementPackageService.groupToPackage(packageDomains)
-        }
-    }
 }

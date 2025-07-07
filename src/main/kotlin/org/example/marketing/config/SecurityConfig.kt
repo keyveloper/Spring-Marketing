@@ -2,7 +2,6 @@ package org.example.marketing.config
 
 import jakarta.servlet.DispatcherType
 import org.example.marketing.security.CustomAuthenticationEntryPoint
-import org.example.marketing.security.JwtFilterChain
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

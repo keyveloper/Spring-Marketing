@@ -1,7 +1,6 @@
 package org.example.marketing.domain.user
 
 import org.example.marketing.config.CustomDateTimeFormatter
-import org.example.marketing.dao.user.AdminEntity
 import java.time.format.DateTimeFormatter
 
 data class Admin(
