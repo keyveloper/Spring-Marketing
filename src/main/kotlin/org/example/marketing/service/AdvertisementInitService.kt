@@ -31,8 +31,7 @@ class AdvertisementInitService(
             }
 
             AdvertisementInitResult.of(
-                freshAds = freshAdCards,
-                deadlineAds = emptyList()
+                freshAdCards,
             )
         }
     }
@@ -57,8 +56,7 @@ class AdvertisementInitService(
             }
 
             AdvertisementInitResult.of(
-                freshAds = emptyList(),
-                deadlineAds = deadlineAdCards
+                deadlineAdCards
             )
         }
     }

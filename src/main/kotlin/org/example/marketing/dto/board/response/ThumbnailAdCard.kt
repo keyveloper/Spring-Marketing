@@ -4,6 +4,7 @@ import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 
 data class ThumbnailAdCard(
+    val advertisementId: Long,
     val presignedUrl: String,
     val itemInfo: String?,
     val title: String,
@@ -15,14 +16,16 @@ data class ThumbnailAdCard(
     companion object {
         fun of(ad: AdvertisementWithCategories, thumbnailUrl: String): ThumbnailAdCard {
             return ThumbnailAdCard(
-                presignedUrl = thumbnailUrl,
-                itemInfo = ad.itemInfo,
+                advertisementId = ad.id,
                 title = ad.title,
+                itemInfo = ad.itemInfo,
                 recruitmentStartAt = ad.recruitmentStartAt,
                 recruitmentEndAt = ad.recruitmentEndAt,
                 channelType = ad.channelType,
-                reviewType = ad.reviewType
-            )
+                reviewType = ad.reviewType,
+                presignedUrl = thumbnailUrl,
+
+                )
         }
     }
 }
