@@ -13,16 +13,7 @@ import org.springframework.stereotype.Component
 class AdvertisementPackageRepository {
     // 🎮 common find
     fun findPackageByAdvertisementId(advertisementId: Long): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-           .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.LEFT,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
-            )
-
-        return joinedTables
-            .selectAll()
-            .map(AdvertisementWithCategoriesEntity::fromRow)
+        // TODO
+        return listOf()
     }
 }

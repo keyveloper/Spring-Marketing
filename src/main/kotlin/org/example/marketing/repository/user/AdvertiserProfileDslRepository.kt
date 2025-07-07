@@ -16,50 +16,12 @@ class AdvertiserProfileDslRepository {
 
 
     fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.LEFT,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
-            ).join(
-                otherTable = AdvertisementDraftsTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDraftsTable.id,
-                additionalConstraint = {
-                    AdvertisementDraftsTable.draftStatus eq DraftStatus.SAVED
-                }
-            )
-
-        return joinedTables
-            .selectAll()
-            .map { row ->
-                AdvertisementWithCategoriesEntity.fromRow(row)
-            }
+        // TODO
+        return listOf()
     }
 
     fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.LEFT,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
-            ).join(
-                otherTable = AdvertisementDraftsTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDraftsTable.id,
-                additionalConstraint = {
-                    AdvertisementDraftsTable.draftStatus eq DraftStatus.SAVED
-                }
-            )
-
-        return joinedTables
-            .selectAll()
-            .map { row ->
-                AdvertisementWithCategoriesEntity.fromRow(row)
-            }
+        // TODO
+        return listOf()
     }
 }

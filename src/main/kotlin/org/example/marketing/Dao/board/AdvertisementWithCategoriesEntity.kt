@@ -24,11 +24,11 @@ data class AdvertisementWithCategoriesEntity(
     val itemInfo: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val category: DeliveryCategory?,
+    val categories: List<DeliveryCategory>,
     // 📌 location info
 ) {
     companion object {
-        fun fromRow(row: ResultRow): AdvertisementWithCategoriesEntity {
+        fun fromRow(row: ResultRow, categories: List<DeliveryCategory>): AdvertisementWithCategoriesEntity {
             return AdvertisementWithCategoriesEntity(
                 id = row[AdvertisementsTable.id].value,
                 advertiserId = row[AdvertisementsTable.advertiserId],
@@ -47,7 +47,7 @@ data class AdvertisementWithCategoriesEntity(
                 itemInfo = row[AdvertisementsTable.itemInfo],
                 createdAt = row[AdvertisementsTable.createdAt],
                 updatedAt = row[AdvertisementsTable.updatedAt],
-                category = row[AdvertisementDeliveryCategoriesTable.category],
+                categories = categories
             )
         }
     }

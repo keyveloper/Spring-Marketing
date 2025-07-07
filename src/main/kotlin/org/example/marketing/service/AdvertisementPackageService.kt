@@ -14,33 +14,13 @@ class AdvertisementPackageService(
 ){ // for total advertisements
 
     fun groupToPackage(domains: List<AdvertisementWithCategoriesEntity>): List<AdvertisementPackage> {
-        return domains.groupBy { it.id }
-            .map { (advertisementId, groupedRows) ->
-                val advertisement = groupedRows.first()
-                val category = groupedRows.map { it.category }.distinct()
-
-                val generalFields = AdvertisementGeneralFields.of(
-                    domain = advertisement,
-                )
-
-                AdvertisementPackage.of(generalFields, category)
-            }
+        // TODO
+        return listOf()
     }
 
     // 📌 perfect
-    fun findByAdvertisementId(advertisementId: Long): AdvertisementPackage {
-        return transaction {
-            val packagesDomain = advertisementPackageRepository.findPackageByAdvertisementId(advertisementId)
-
-            val original = packagesDomain.firstOrNull()
-                ?: throw NotFoundAdvertisementException(logics = "adPackageSvc-findByAdvertiserId: $advertisementId")
-
-            val generalFields = AdvertisementGeneralFields.of(
-                domain = original,
-            )
-
-            val categories = packagesDomain.map { it.category }.distinct()
-            AdvertisementPackage.of(generalFields, categories)
-        }
+    fun findByAdvertisementId(advertisementId: Long): AdvertisementPackage? {
+        // TODO
+        return null
     }
 }

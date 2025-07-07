@@ -24,9 +24,16 @@ class AdvertisementDeliveryCategoryRepository {
         val entities = AdvertisementDeliveryCategoryEntity.find {
             AdvertisementDeliveryCategoriesTable.advertisementId eq targetId
         }.toList()
-
         return entities
     }
+
+    fun findAllByAdvertisementIds(targetIds: List<Long>): List<AdvertisementDeliveryCategoryEntity> {
+        val entities = AdvertisementDeliveryCategoryEntity.find {
+            AdvertisementDeliveryCategoriesTable.advertisementId inList targetIds
+        }.toList()
+        return entities
+    }
+
 
     fun findByCategory(category: DeliveryCategory): List<AdvertisementDeliveryCategoryEntity> {
         val entities = AdvertisementDeliveryCategoryEntity.find {

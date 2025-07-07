@@ -16,77 +16,23 @@ class AdvertisementDeliveryDslRepository {
         categories: List<DeliveryCategory>
     )
     : List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementDeliveryCategoriesTable.category inList categories)
-                }
-            )
-
-        val query:Query  = joinedTables
-            .selectAll()
-            .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-
-        val results = query.map { row ->
-            logger.info { "\"Row contents: $row\"" }
-            AdvertisementWithCategoriesEntity.fromRow(row)
-        }
-
-        return results
+        // TODO
+        return listOf()
     }
 
     fun findAllDeliveryByCategoriesAndPivotTimeAfter(
         categories: List<DeliveryCategory>,
         pivotTime: Long
     ): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementDeliveryCategoriesTable.category inList categories)
-                }
-            )
-
-        return joinedTables
-            .selectAll()
-            .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-            .map(AdvertisementWithCategoriesEntity::fromRow)
+        // TODO
+        return listOf()
     }
 
     fun findAllDeliveryByIdsAndPivotTImeBefore(
         categories: List<DeliveryCategory>,
         pivotTime: Long
     ): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementDeliveryCategoriesTable.category inList categories)
-                }
-            )
-
-        val query:Query  = joinedTables
-            .selectAll()
-            .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
-            .limit(20)
-
-        val results = query.map { row ->
-            logger.info { "\"Row contents: $row\"" }
-            AdvertisementWithCategoriesEntity.fromRow(row)
-        }
-
-        return results
+        // TODO
+        return listOf()
     }
 }

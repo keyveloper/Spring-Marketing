@@ -1,5 +1,6 @@
 package org.example.marketing.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dto.board.response.AdvertisementInitResult
 import org.example.marketing.dto.board.response.ThumbnailAdCard
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
@@ -10,6 +11,7 @@ class AdvertisementInitService(
     private val advertisementEventService: AdvertisementEventService,
     private val advertisementImageApiService: AdvertisementImageApiService,
 ) {
+    private val logger = KotlinLogging.logger {}
 
     suspend fun findInitFreshAdWithThumbnail(): AdvertisementInitResult {
         return newSuspendedTransaction {
@@ -19,6 +21,7 @@ class AdvertisementInitService(
             // Call advertisementImageApiService.getThumbnailsByAdvertisementIds from A's ids = B
             val advertisementIds = freshAds.map { it.id }
             val thumbnails = advertisementImageApiService.getThumbnailsByAdvertisementIds(advertisementIds)
+            logger.debug { "Thumbnails: $thumbnails" }
 
             // Create a map for quick lookup: advertisementId -> thumbnailUrl
             val thumbnailMap = thumbnails.associateBy({ it.advertisementId }, { it.presignedUrl })

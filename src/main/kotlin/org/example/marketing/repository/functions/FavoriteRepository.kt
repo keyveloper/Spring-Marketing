@@ -48,25 +48,8 @@ class FavoriteRepository {
     }
 
     fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementWithCategoriesEntity> {
-        val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                AdvertisementDeliveryCategoriesTable,
-                JoinType.LEFT,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementDeliveryCategoriesTable.advertisementId
-            ).join(
-                otherTable = InfluencerFavoritesAdTable,
-                joinType = JoinType.INNER,
-                onColumn = InfluencerFavoritesAdTable.advertisementId,
-                otherColumn = AdvertisementsTable.advertiserId,
-                additionalConstraint = {
-                    (InfluencerFavoritesAdTable.favoriteStatus eq FavoriteStatus.FAVORITE)
-                }
-            )
-
-        return joinedTables
-            .selectAll()
-            .map(AdvertisementWithCategoriesEntity::fromRow)
+        // TODO
+        return listOf()
     }
 }
 

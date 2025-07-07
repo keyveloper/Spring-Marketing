@@ -23,7 +23,7 @@ data class AdvertisementWithCategories(
     val itemInfo: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val category: DeliveryCategory?,
+    val categories: List<DeliveryCategory>,
 ) {
     companion object {
         fun of(entity: AdvertisementWithCategoriesEntity): AdvertisementWithCategories {
@@ -45,7 +45,7 @@ data class AdvertisementWithCategories(
                 itemInfo = entity.itemInfo,
                 createdAt = entity.createdAt,
                 updatedAt = entity.updatedAt,
-                category = entity.category,
+                categories = entity.categories,
             )
         }
     }
