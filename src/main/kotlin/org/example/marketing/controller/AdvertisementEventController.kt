@@ -2,7 +2,6 @@ package org.example.marketing.controller
 
 import org.example.marketing.dto.board.response.GetAdvertisementDeadlineResponse
 import org.example.marketing.dto.board.response.GetAdvertisementFreshResponse
-import org.example.marketing.dto.board.response.GetHotAdvertisementResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementEventService
 import org.springframework.http.ResponseEntity

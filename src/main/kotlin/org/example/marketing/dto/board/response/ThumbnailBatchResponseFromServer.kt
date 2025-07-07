@@ -3,8 +3,8 @@ package org.example.marketing.dto.board.response
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.springframework.http.HttpStatus
 
-data class MakeThumbnailResponseFromServer(
-    val s3ThumbnailResult: S3ThumbnailResult?,
+data class ThumbnailBatchResponseFromServer(
+    val result: List<ThumbnailMetadataWithUrl>,
     val httpStatus: HttpStatus,
     val msaServiceErrorCode: MSAServiceErrorCode,
     val errorMessage: String? = null,

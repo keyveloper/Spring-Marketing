@@ -1,7 +1,6 @@
 package org.example.marketing.repository.board
 
 import org.example.marketing.domain.board.AdvertisementPackage
-import org.example.marketing.domain.functions.AdvertiserSummaryForFollow
 
 data class AdvertisementPackageWithAdvertiserSummaryInfo(
     val advertisementPackage: AdvertisementPackage,

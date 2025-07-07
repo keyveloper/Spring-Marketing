@@ -5,7 +5,6 @@ import org.example.marketing.dto.user.request.SaveAdvertiser
 import org.example.marketing.enums.UserStatus
 import org.example.marketing.exception.DuplicatedAdvertiserException
 import org.example.marketing.exception.NotFoundAdvertiserException
-import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component

@@ -2,15 +2,13 @@ package org.example.marketing.dao.board
 
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.DeliveryCategory
-import org.example.marketing.enums.FavoriteStatus
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.ResultRow
 
-data class AdvertisementPackageEntity(
+data class AdvertisementWithCategoriesEntity(
     val id: Long,
     val advertiserId: String,
-    val advertiserLoginId: String,
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
@@ -30,11 +28,10 @@ data class AdvertisementPackageEntity(
     // 📌 location info
 ) {
     companion object {
-        fun fromRow(row: ResultRow): AdvertisementPackageEntity {
-            return AdvertisementPackageEntity(
+        fun fromRow(row: ResultRow): AdvertisementWithCategoriesEntity {
+            return AdvertisementWithCategoriesEntity(
                 id = row[AdvertisementsTable.id].value,
                 advertiserId = row[AdvertisementsTable.advertiserId],
-                advertiserLoginId = row[AdvertisersTable.loginId],
                 title = row[AdvertisementsTable.title],
                 reviewType = row[AdvertisementsTable.reviewType],
                 channelType = row[AdvertisementsTable.channelType],

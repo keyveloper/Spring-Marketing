@@ -1,6 +1,6 @@
 package org.example.marketing.dto.board.response
 
-data class ThumbnailResult(
+data class S3ThumbnailResult(
     val imageMetaId: Long,
     val thumbnailMetaId: Long,
     val originalS3Key: String,

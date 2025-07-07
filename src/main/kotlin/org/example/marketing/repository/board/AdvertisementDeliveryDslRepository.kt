@@ -1,18 +1,11 @@
 package org.example.marketing.repository.board
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.minus
-import org.example.marketing.dao.board.AdvertisementPackageEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.enums.*
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
 import org.example.marketing.table.AdvertisementsTable
-import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.inList
 import org.springframework.stereotype.Component
 
 @Component
@@ -22,7 +15,7 @@ class AdvertisementDeliveryDslRepository {
         cutoffTime: Long,
         categories: List<DeliveryCategory>
     )
-    : List<AdvertisementPackageEntity> {
+    : List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -49,7 +42,7 @@ class AdvertisementDeliveryDslRepository {
 
         val results = query.map { row ->
             logger.info { "\"Row contents: $row\"" }
-            AdvertisementPackageEntity.fromRow(row)
+            AdvertisementWithCategoriesEntity.fromRow(row)
         }
 
         return results
@@ -58,7 +51,7 @@ class AdvertisementDeliveryDslRepository {
     fun findAllDeliveryByCategoriesAndPivotTimeAfter(
         categories: List<DeliveryCategory>,
         pivotTime: Long
-    ): List<AdvertisementPackageEntity> {
+    ): List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -81,13 +74,13 @@ class AdvertisementDeliveryDslRepository {
             .selectAll()
             .orderBy(AdvertisementsTable.createdAt to SortOrder.DESC)
             .limit(20)
-            .map(AdvertisementPackageEntity::fromRow)
+            .map(AdvertisementWithCategoriesEntity::fromRow)
     }
 
     fun findAllDeliveryByIdsAndPivotTImeBefore(
         categories: List<DeliveryCategory>,
         pivotTime: Long
-    ): List<AdvertisementPackageEntity> {
+    ): List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -114,7 +107,7 @@ class AdvertisementDeliveryDslRepository {
 
         val results = query.map { row ->
             logger.info { "\"Row contents: $row\"" }
-            AdvertisementPackageEntity.fromRow(row)
+            AdvertisementWithCategoriesEntity.fromRow(row)
         }
 
         return results

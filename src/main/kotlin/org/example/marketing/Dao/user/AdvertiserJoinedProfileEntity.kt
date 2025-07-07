@@ -3,7 +3,6 @@ package org.example.marketing.dao.user
 import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.table.AdvertiserProfileImagesTable
 import org.example.marketing.table.AdvertiserProfileInfosTable
-import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.ResultRow
 
 data class AdvertiserJoinedProfileEntity(

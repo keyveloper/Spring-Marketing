@@ -1,7 +1,6 @@
 package org.example.marketing.repository.functions
 
-import org.example.marketing.dao.board.AdvertisementPackageEntity
-import org.example.marketing.dao.functions.AdvertisementPackageWithAdvertiserEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.enums.*
 import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.JoinType
@@ -55,10 +54,10 @@ class FollowDslRepository {
             .selectAll()
 
         return rows.map {
-            val advertisementPackageEntity = AdvertisementPackageEntity.fromRow(it)
+            val advertisementWithCategoriesEntity = AdvertisementWithCategoriesEntity.fromRow(it)
 
             AdvertisementPackageWithAdvertiserEntity.fromRowWithPkgDomain(
-                advertisementPackageEntity,
+                advertisementWithCategoriesEntity,
                 it
             )
         }

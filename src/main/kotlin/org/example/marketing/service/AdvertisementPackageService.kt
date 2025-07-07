@@ -2,7 +2,7 @@ package org.example.marketing.service
 
 import org.example.marketing.domain.board.AdvertisementGeneralFields
 import org.example.marketing.domain.board.AdvertisementPackage
-import org.example.marketing.dao.board.AdvertisementPackageEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.repository.board.AdvertisementPackageRepository
 import org.jetbrains.exposed.sql.transactions.transaction
@@ -13,7 +13,7 @@ class AdvertisementPackageService(
     private val advertisementPackageRepository: AdvertisementPackageRepository
 ){ // for total advertisements
 
-    fun groupToPackage(domains: List<AdvertisementPackageEntity>): List<AdvertisementPackage> {
+    fun groupToPackage(domains: List<AdvertisementWithCategoriesEntity>): List<AdvertisementPackage> {
         return domains.groupBy { it.id }
             .map { (advertisementId, groupedRows) ->
                 val advertisement = groupedRows.first()

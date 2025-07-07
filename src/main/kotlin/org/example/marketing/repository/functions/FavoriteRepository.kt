@@ -1,10 +1,8 @@
 package org.example.marketing.repository.functions
 
 import org.example.marketing.dao.functions.InfluencerFavoriteAdEntity
-import org.example.marketing.dao.board.AdvertisementPackageEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.dto.functions.request.SaveInfluencerFavoriteAd
-import org.example.marketing.enums.AdvertisementStatus
-import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.enums.FavoriteStatus
 import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.*
@@ -49,7 +47,7 @@ class FavoriteRepository {
         }.singleOrNull()
     }
 
-    fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementPackageEntity> {
+    fun findAllAdPackageByInfluencerId(influencerId: Long): List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -68,7 +66,7 @@ class FavoriteRepository {
 
         return joinedTables
             .selectAll()
-            .map(AdvertisementPackageEntity::fromRow)
+            .map(AdvertisementWithCategoriesEntity::fromRow)
     }
 }
 

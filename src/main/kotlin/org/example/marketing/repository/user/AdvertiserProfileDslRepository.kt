@@ -1,6 +1,6 @@
 package org.example.marketing.repository.user
 
-import org.example.marketing.dao.board.AdvertisementPackageEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.dao.user.AdvertiserJoinedProfileEntity
 import org.example.marketing.enums.*
 import org.example.marketing.table.*
@@ -40,7 +40,7 @@ class AdvertiserProfileDslRepository {
         return result
     }
 
-    fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
+    fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -68,11 +68,11 @@ class AdvertiserProfileDslRepository {
         return joinedTables
             .selectAll()
             .map { row ->
-                AdvertisementPackageEntity.fromRow(row)
+                AdvertisementWithCategoriesEntity.fromRow(row)
             }
     }
 
-    fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
+    fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementWithCategoriesEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
                 AdvertisementDeliveryCategoriesTable,
@@ -100,7 +100,7 @@ class AdvertiserProfileDslRepository {
         return joinedTables
             .selectAll()
             .map { row ->
-                AdvertisementPackageEntity.fromRow(row)
+                AdvertisementWithCategoriesEntity.fromRow(row)
             }
     }
 }

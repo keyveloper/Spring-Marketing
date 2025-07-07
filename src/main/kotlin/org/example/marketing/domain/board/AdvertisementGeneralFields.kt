@@ -1,6 +1,6 @@
 package org.example.marketing.domain.board
 
-import org.example.marketing.dao.board.AdvertisementPackageEntity
+import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 
@@ -8,7 +8,6 @@ data class AdvertisementGeneralFields(
     val id: Long,
     val title: String,
     val advertiserId: String,
-    val advertiserLoginId: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,
     val recruitmentNumber: Int,
@@ -27,13 +26,12 @@ data class AdvertisementGeneralFields(
 ) {
     companion object {
         fun of(
-            domain: AdvertisementPackageEntity,
+            domain: AdvertisementWithCategoriesEntity,
         ): AdvertisementGeneralFields {
             return AdvertisementGeneralFields(
                 id = domain.id,
                 title = domain.title,
                 advertiserId = domain.advertiserId,
-                advertiserLoginId = domain.advertiserLoginId,
                 reviewType = domain.reviewType,
                 channelType = domain.channelType,
                 recruitmentNumber = domain.recruitmentNumber,

@@ -5,13 +5,16 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.board.AdvertisementImageInfo
 import org.example.marketing.dto.board.request.ConnectAdvertisementIdRequest
+import org.example.marketing.dto.board.request.FetchAdThumbnailUrlsRequest
 import org.example.marketing.dto.board.request.UploadAdvertisementImageApiRequest
 import org.example.marketing.dto.board.response.AdvertisementImageMetadataWithUrl
 import org.example.marketing.dto.board.response.AdvertisementImageResponseFromServer
 import org.example.marketing.dto.board.response.ConnectAdvertisementResponseFromServer
 import org.example.marketing.dto.board.response.ConnectAdvertisementResult
 import org.example.marketing.dto.board.response.MakeThumbnailResponseFromServer
-import org.example.marketing.dto.board.response.ThumbnailResult
+import org.example.marketing.dto.board.response.S3ThumbnailResult
+import org.example.marketing.dto.board.response.ThumbnailBatchResponseFromServer
+import org.example.marketing.dto.board.response.ThumbnailMetadataWithUrl
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseFromServer
 import org.example.marketing.exception.MSAErrorException
 import org.example.marketing.exception.UploadFailedToImageServerException
@@ -141,30 +144,6 @@ class AdvertisementImageApiService(
             logger.error { "Failed to fetch advertisement images for adId=$adId: ${ex.message}" }
             throw ex
         }
-
-    }
-
-    suspend fun fetchImageByAdvertisementIdFallback(
-        adId: Long,
-        throwable: Throwable
-    ): List<AdvertisementImageMetadataWithUrl> {
-        logger.error { "Circuit breaker fallback triggered for fetchImageByAdvertisementId: ${throwable.message}" }
-        logger.error { "Failed request details - adId: $adId" }
-        return emptyList()
-    }
-
-    suspend fun uploadToImageServerFallback(
-        userId: Long,
-        isThumbnail: Boolean,
-        file: MultipartFile,
-        throwable: Throwable
-    ): AdvertisementImageInfo {
-        logger.error { "Circuit breaker fallback triggered for uploadToImageServer: ${throwable.message}" }
-        logger.error { "Failed request details - userId: $userId, isThumbnail: $isThumbnail, fileName: ${file.originalFilename}" }
-        throw UploadFailedToImageServerException(
-            logics = "AdvertisementImageApiService - uploadToImageServer fallback",
-            message = "Failed to upload advertisement image to image-api-server: ${throwable.message}"
-        )
     }
 
     suspend fun connectAdvertisementToImageServer(
@@ -216,7 +195,7 @@ class AdvertisementImageApiService(
         }
     }
 
-    suspend fun makeThumbnail(imageMetaId: Long): ThumbnailResult {
+    suspend fun makeThumbnail(imageMetaId: Long): S3ThumbnailResult {
         logger.info { "Making thumbnail for imageMetaId=$imageMetaId" }
 
         return try {
@@ -231,7 +210,7 @@ class AdvertisementImageApiService(
 
                 when (response.msaServiceErrorCode) {
                     org.example.marketing.enums.MSAServiceErrorCode.OK -> {
-                        val result = response.thumbnailResult
+                        val result = response.s3ThumbnailResult
                             ?: throw MSAErrorException(
                                 logics = "AdvertisementImageApiService - makeThumbnail",
                                 message = "Thumbnail result is null"
@@ -258,5 +237,105 @@ class AdvertisementImageApiService(
             logger.error { "Failed to make thumbnail for imageMetaId=$imageMetaId: ${ex.message}" }
             throw ex
         }
+    }
+
+    suspend fun getThumbnailsByAdvertisementIds(advertisementIds: List<Long>): List<ThumbnailMetadataWithUrl> {
+        logger.info { "Fetching thumbnails for advertisementIds: ${advertisementIds.joinToString()}" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val request = FetchAdThumbnailUrlsRequest(advertisementIds = advertisementIds)
+
+                val response = marketingApiClient.post()
+                    .uri("/api/advertisement-meta/thumbnails/batch")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .awaitBody<ThumbnailBatchResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}, " +
+                        "thumbnailCount=${response.result.size}" }
+
+                when (response.msaServiceErrorCode) {
+                    org.example.marketing.enums.MSAServiceErrorCode.OK -> {
+                        logger.info { "Successfully fetched ${response.result.size} thumbnails" }
+                        response.result
+                    }
+                    else -> {
+                        logger.error { "Fetch thumbnails failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        throw MSAErrorException(
+                            logics = "AdvertisementImageApiService - getThumbnailsByAdvertisementIds",
+                            message = response.errorMessage ?: "Failed to fetch thumbnails"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to fetch thumbnails for advertisementIds=${advertisementIds.joinToString()}: ${ex.message}" }
+            throw ex
+        }
+    }
+
+    // ==================== Fallback Methods ====================
+
+    suspend fun uploadToImageServerFallback(
+        userId: String,
+        advertisementDraftId: Long,
+        isThumbnail: Boolean,
+        file: MultipartFile,
+        throwable: Throwable
+    ): AdvertisementImageInfo {
+        logger.error { "Circuit breaker fallback triggered for uploadToImageServer: ${throwable.message}" }
+        logger.error { "Failed request details - userId: $userId, draftId: $advertisementDraftId, " +
+                "isThumbnail: $isThumbnail, fileName: ${file.originalFilename}" }
+        throw UploadFailedToImageServerException(
+            logics = "AdvertisementImageApiService - uploadToImageServer fallback",
+            message = "Failed to upload advertisement image to image-api-server: ${throwable.message}"
+        )
+    }
+
+    suspend fun fetchImageByAdvertisementIdFallback(
+        adId: Long,
+        throwable: Throwable
+    ): List<AdvertisementImageMetadataWithUrl> {
+        logger.error { "Circuit breaker fallback triggered for fetchImageByAdvertisementId: ${throwable.message}" }
+        logger.error { "Failed request details - adId: $adId" }
+        return emptyList()
+    }
+
+    suspend fun connectAdvertisementToImageServerFallback(
+        draftId: Long,
+        advertisementId: Long,
+        throwable: Throwable
+    ): ConnectAdvertisementResult {
+        logger.error { "Circuit breaker fallback triggered for connectAdvertisementToImageServer: ${throwable.message}" }
+        logger.error { "Failed request details - draftId: $draftId, advertisementId: $advertisementId" }
+        throw MSAErrorException(
+            logics = "AdvertisementImageApiService - connectAdvertisementToImageServer fallback",
+            message = "Failed to connect advertisement to image-api-server: ${throwable.message}"
+        )
+    }
+
+    suspend fun makeThumbnailFallback(
+        imageMetaId: Long,
+        throwable: Throwable
+    ): S3ThumbnailResult {
+        logger.error { "Circuit breaker fallback triggered for makeThumbnail: ${throwable.message}" }
+        logger.error { "Failed request details - imageMetaId: $imageMetaId" }
+        throw MSAErrorException(
+            logics = "AdvertisementImageApiService - makeThumbnail fallback",
+            message = "Failed to create thumbnail: ${throwable.message}"
+        )
+    }
+
+    suspend fun getThumbnailsByAdvertisementIdsFallback(
+        advertisementIds: List<Long>,
+        throwable: Throwable
+    ): List<ThumbnailMetadataWithUrl> {
+        logger.error { "Circuit breaker fallback triggered for getThumbnailsByAdvertisementIds: ${throwable.message}" }
+        logger.error { "Failed request details - advertisementIds: ${advertisementIds.joinToString()}" }
+        return emptyList()
     }
 }
