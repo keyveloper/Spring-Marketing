@@ -37,18 +37,22 @@ class AdvertisementGeneralService(
     ): MakeNewAdvertisementGeneralResult {
         logger.info { "🚀 [START] AdvertisementGeneralService.save" }
         logger.info { "📝 Input - advertiserId: $advertiserId" }
-        logger.info { "📝 Input - request: draftId=${request.draftId}, title=${request.title}, " +
-                "reviewType=${request.reviewType}, channelType=${request.channelType}, " +
-                "recruitmentNumber=${request.recruitmentNumber}, itemName=${request.itemName}, " +
-                "recruitmentStartAt=${request.recruitmentStartAt}" }
+        logger.info {
+            "📝 Input - request: draftId=${request.draftId}, title=${request.title}, " +
+                    "reviewType=${request.reviewType}, channelType=${request.channelType}, " +
+                    "recruitmentNumber=${request.recruitmentNumber}, itemName=${request.itemName}, " +
+                    "recruitmentStartAt=${request.recruitmentStartAt}"
+        }
 
         // newSuspendedTransaction: suspend 함수를 트랜잭션 내에서 안전하게 호출
         // 이미지 연결 실패 시 전체 rollback되어 데이터 정합성 보장
         return newSuspendedTransaction {
             logger.info { "🔍 Fetching draft by ID: ${request.draftId}" }
             val draftDomain = advertisementDraftService.findById(request.draftId)
-            logger.info { "✅ Draft found: id=${draftDomain.id},, " +
-                    "expiredAt=${draftDomain.expiredAt}, advertiserId=${draftDomain.advertiserId}" }
+            logger.info {
+                "✅ Draft found: id=${draftDomain.id},, " +
+                        "expiredAt=${draftDomain.expiredAt}, advertiserId=${draftDomain.advertiserId}"
+            }
 
             // expired check
             val apiCallAt = System.currentTimeMillis() / 1000
@@ -68,14 +72,17 @@ class AdvertisementGeneralService(
             try {
                 logger.info { "💾 Creating SaveAdvertisement DTO" }
                 val saveAdvertisement = SaveAdvertisement.of(advertiserId, request)
-                logger.info { "💾 SaveAdvertisement created: advertiserId=${saveAdvertisement.advertiserId}, " +
-                        "title=${saveAdvertisement.title}, draftId=${saveAdvertisement.draftId}, " +
-                        "recruitmentStartAt=${saveAdvertisement.recruitmentStartAt}, " +
-                        "recruitmentEndAt=${saveAdvertisement.recruitmentEndAt}, " +
-                        "announcementAt=${saveAdvertisement.announcementAt}, " +
-                        "reviewStartAt=${saveAdvertisement.reviewStartAt}, " +
-                        "reviewEndAt=${saveAdvertisement.reviewEndAt}, " +
-                        "endAt=${saveAdvertisement.endAt}" }
+                logger.info {
+                    "💾 SaveAdvertisement created: advertiserId=${saveAdvertisement.advertiserId}, " +
+                            "title=${saveAdvertisement.title}, " +
+                            "draftId=${saveAdvertisement.draftId}, " +
+                            "recruitmentStartAt=${saveAdvertisement.recruitmentStartAt}, " +
+                            "recruitmentEndAt=${saveAdvertisement.recruitmentEndAt}, " +
+                            "announcementAt=${saveAdvertisement.announcementAt}, " +
+                            "reviewStartAt=${saveAdvertisement.reviewStartAt}, " +
+                            "reviewEndAt=${saveAdvertisement.reviewEndAt}, " +
+                            "endAt=${saveAdvertisement.endAt}"
+                }
 
                 logger.info { "💾 Saving advertisement to database..." }
                 val advertisementEntity = advertisementRepository.save(saveAdvertisement)
@@ -107,21 +114,27 @@ class AdvertisementGeneralService(
                 logger.info { "✅ Draft status changed to SAVED" }
 
                 // Transaction 내에서 suspend 함수 호출 가능 (newSuspendedTransaction 사용)
-                logger.info { "🔗 Connecting images to advertisement: draftId=${request.draftId}, " +
-                        "advertisementId=${advertisementEntity.id.value}" }
+                logger.info {
+                    "🔗 Connecting images to advertisement: draftId=${request.draftId}, " +
+                            "advertisementId=${advertisementEntity.id.value}"
+                }
                 val connectResult = advertisementImageApiService.connectAdvertisementToImageServer(
                     draftId = request.draftId,
                     advertisementId = advertisementEntity.id.value
                 )
-                logger.info { "✅ Images connected: updatedRow=${connectResult.updatedRow}, " +
-                        "connectedKeys=${connectResult.connectedS3BucketKeys.size}" }
+                logger.info {
+                    "✅ Images connected: updatedRow=${connectResult.updatedRow}, " +
+                            "connectedKeys=${connectResult.connectedS3BucketKeys.size}"
+                }
 
                 // Make thumbnail after successful image connection
                 logger.info { "🖼️ Creating thumbnail: imageMetaId=${request.thumbnailImageMetaId}" }
                 val thumbnailResult = advertisementImageApiService.makeThumbnail(request.thumbnailImageMetaId)
-                logger.info { "✅ Thumbnail created: thumbnailMetaId=${thumbnailResult.thumbnailMetaId}, " +
-                        "thumbnailS3Key=${thumbnailResult.thumbnailS3Key}, " +
-                        "thumbnailSize=${thumbnailResult.thumbnailSize}" }
+                logger.info {
+                    "✅ Thumbnail created: thumbnailMetaId=${thumbnailResult.thumbnailMetaId}, " +
+                            "thumbnailS3Key=${thumbnailResult.thumbnailS3Key}, " +
+                            "thumbnailSize=${thumbnailResult.thumbnailSize}"
+                }
 
                 val result = MakeNewAdvertisementGeneralResult(
                     entityId = advertisementEntity.id.value,
@@ -139,7 +152,8 @@ class AdvertisementGeneralService(
                     logger.error { "❌ BatchUpdateException: ${batchException.message}" }
 
                     if (batchException.message?.contains("Duplicate entry") == true &&
-                        batchException.message?.contains("uk_draft_id") == true) {
+                        batchException.message?.contains("uk_draft_id") == true
+                    ) {
                         logger.error { "❌ Duplicate draft ID detected: ${request.draftId}" }
                         throw DuplicatedDraftException(
                             logics = "advertisementGeneralSvc-save",
@@ -166,7 +180,6 @@ class AdvertisementGeneralService(
             ).id.value
         }
     }
-
 
 
     fun deleteById(request: DeleteAdvertisementRequest): Long {
@@ -204,7 +217,6 @@ class AdvertisementGeneralService(
             )
         }
     }
-
 
 
 }

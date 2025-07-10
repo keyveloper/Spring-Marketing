@@ -27,7 +27,7 @@ class UserProfileImageApiService(
     private val logger = KotlinLogging.logger {}
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
-    suspend fun uploadToImageServer(
+    suspend fun uploadAdvertiserProfileImageToImageServer(
         userId: Long,
         userType: UserType,
         profileImageType: ProfileImageType,
