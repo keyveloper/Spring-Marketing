@@ -1,9 +1,12 @@
 package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.dto.user.request.UploadProfileImageRequestFromClient
-import org.example.marketing.dto.user.response.UploadProfileImageResponseToClient
+import org.example.marketing.dto.user.request.UploadAdvertiserProfileImageRequestFromClient
+import org.example.marketing.dto.user.request.UploadInfluencerProfileImageRequestFromClient
+import org.example.marketing.dto.user.response.UploadAdvertiserProfileImageResponseToClient
+import org.example.marketing.dto.user.response.UploadInfluencerProfileImageResponseToClient
 import org.example.marketing.enums.FrontErrorCode
+import org.example.marketing.enums.UserType
 import org.example.marketing.exception.IllegalResourceUsageException
 import org.example.marketing.service.AuthApiService
 import org.example.marketing.service.UserProfileApiService
@@ -21,12 +24,12 @@ class UserProfileApiController(
 ) {
     private val logger = KotlinLogging.logger {}
 
-    @PostMapping("/profile/image")
+    @PostMapping("/profile/image/advertiser")
     suspend fun uploadAdvertiserProfileImage(
         @RequestHeader("Authorization") authorization: String,
-        @RequestPart("meta") meta: UploadProfileImageRequestFromClient,
+        @RequestPart("draftId") meta: UploadAdvertiserProfileImageRequestFromClient,
         @RequestPart("file") file: MultipartFile
-    ): ResponseEntity<UploadProfileImageResponseToClient> {
+    ): ResponseEntity<UploadAdvertiserProfileImageResponseToClient> {
         logger.info { "Validating user authorization for profile image upload" }
         logger.info { "Received Authorization header: ${authorization.take(50)}..." }
 
@@ -43,10 +46,53 @@ class UserProfileApiController(
         )
 
 
-        val result = userProfileApiService.uploadProfileImage()
+        val result = userProfileApiService.uploadAdvertiserProfileImageToApiServer(
+            userId,
+            userType,
+            meta.advertiserProfileDraftId,
+            file
+        )
 
         return ResponseEntity.ok().body(
-            UploadProfileImageResponseToClient.of(
+            UploadAdvertiserProfileImageResponseToClient.of(
+                frontErrorCode = FrontErrorCode.OK.code,
+                errorMessage = FrontErrorCode.OK.message,
+                result = result
+            )
+        )
+    }
+
+    @PostMapping("/profile/image/influencer")
+    suspend fun uploadInfluencerProfileImage(
+        @RequestHeader("Authorization") authorization: String,
+        @RequestPart("draftId") meta: UploadInfluencerProfileImageRequestFromClient,
+        @RequestPart("file") file: MultipartFile
+    ): ResponseEntity<UploadInfluencerProfileImageResponseToClient> {
+        logger.info { "Validating user authorization for profile image upload" }
+        logger.info { "Received Authorization header: ${authorization.take(50)}..." }
+
+        val extractedUser = authApiService.validateAdvertiser(authorization)
+        val userId = extractedUser.userId
+        val userType = extractedUser.userType ?: throw IllegalResourceUsageException(
+            message = "uploadProfile request must include userType!",
+            logics = "UserProfileApiController.uploadInfluencerProfileImage"
+        )
+
+        if (userType.uppercase() != UserType.INFLUENCER.name) throw IllegalResourceUsageException(
+            message = "you are not a influencer",
+            logics = "UserProfileApiController.uploadInfluencerProfileImage"
+        )
+
+
+        val result = userProfileApiService.uploadInfluencerProfileImageToApiServer(
+            userId,
+            userType,
+            meta.influencerProfileDraftId,
+            file
+        )
+
+        return ResponseEntity.ok().body(
+            UploadInfluencerProfileImageResponseToClient.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 result = result

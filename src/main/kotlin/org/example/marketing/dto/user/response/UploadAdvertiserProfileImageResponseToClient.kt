@@ -2,7 +2,7 @@ package org.example.marketing.dto.user.response
 
 import org.example.marketing.dto.error.FrontErrorResponse
 
-data class UploadProfileImageResponseToClient(
+data class UploadAdvertiserProfileImageResponseToClient(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val result: SaveAdvertisementProfileImageResult
@@ -12,8 +12,8 @@ data class UploadProfileImageResponseToClient(
             frontErrorCode: Int,
             errorMessage: String,
             result: SaveAdvertisementProfileImageResult
-        ): UploadProfileImageResponseToClient {
-            return UploadProfileImageResponseToClient(
+        ): UploadAdvertiserProfileImageResponseToClient {
+            return UploadAdvertiserProfileImageResponseToClient(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
                 result = result

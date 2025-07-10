@@ -3,5 +3,5 @@ package org.example.marketing.dto.user.request
 data class UploadAdvertiserProfileImageApiRequest(
     val userId: String,
     val userType: String,
-    val profileAdvertiserDraftId: String
+    val advertiserProfileDraftId: String
 )
