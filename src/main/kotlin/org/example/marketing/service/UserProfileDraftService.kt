@@ -16,7 +16,7 @@ import java.util.UUID
 class UserProfileDraftService(
     private val userProfileDraftRepository: UserProfileDraftRepository
 ) {
-    fun issueDraft(userId: String, userType: UserType): UserProfileDraft {
+    fun issueDraft(userId: UUID, userType: UserType): UserProfileDraft {
         return transaction {
             val newEntity = userProfileDraftRepository.save(
                 IssueUserProfileDraft.of(userId, userType)

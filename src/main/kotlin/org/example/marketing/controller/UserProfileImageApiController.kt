@@ -18,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
-class UserProfileApiController(
-    //TODO: add userProfileInfoApiService !
+class UserProfileImageApiController(
     private val userProfileImageApiService: UserProfileImageApiService,
     private val authApiService: AuthApiService,
 ) {

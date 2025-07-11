@@ -2,10 +2,11 @@ package org.example.marketing.domain.board
 
 import org.example.marketing.dao.board.AdvertisementDraftEntity
 import org.example.marketing.enums.DraftStatus
+import java.util.UUID
 
 data class AdvertisementDraft(
     val id: Long,
-    val advertiserId: String,
+    val advertiserId: UUID,
     val draftStatus: DraftStatus,
     val expiredAt: Long,
     val createdAt: Long,

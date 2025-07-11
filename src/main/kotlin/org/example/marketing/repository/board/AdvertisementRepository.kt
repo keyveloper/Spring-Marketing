@@ -57,13 +57,6 @@ class AdvertisementRepository {
         return advertisement
     }
 
-    fun checkOwner(advertiserId: String, advertisementId: Long): Boolean {
-        return AdvertisementEntity.find {
-            (AdvertisementsTable.advertiserId eq advertiserId) and
-                    (AdvertisementsTable.id eq advertisementId) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.any()
-    }
 
     fun deleteById(targetId: Long): AdvertisementEntity {
         val advertisement = AdvertisementEntity.findById(targetId)

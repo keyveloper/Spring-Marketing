@@ -31,22 +31,6 @@ class FavoriteController(
             )
         )
     }
-
-    @GetMapping("/favorite/ads")
-    fun getAllAds(
-        @AuthenticationPrincipal user: UserDetails?
-    ): ResponseEntity<GetFavoriteAdsResponse> {
-        val userPrincipal = user as CustomUserPrincipal
-        return ResponseEntity.ok().body(
-            GetFavoriteAdsResponse.of(
-                frontErrorCode = FrontErrorCode.OK.code,
-                errorMessage = FrontErrorCode.OK.message,
-                packages = advertisementFavoriteService.findAllAdByInfluencerId(
-                    userPrincipal
-                )
-            )
-        )
-    }
 //
 //    @GetMapping("/favorite/ads/influencer-personal")
 //    fun getAllAdsWithThumbnail(

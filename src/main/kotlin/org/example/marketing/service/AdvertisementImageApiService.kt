@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
+import java.util.UUID
 
 // service for image-api-server
 @Service
@@ -39,7 +40,7 @@ class AdvertisementImageApiService(
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
     suspend fun uploadToImageServer(
-        userId: String,
+        userId: UUID,
         advertisementDraftId: Long,
         isThumbnail: Boolean,
         file: MultipartFile

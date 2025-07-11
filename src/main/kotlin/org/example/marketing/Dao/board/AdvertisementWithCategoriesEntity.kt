@@ -5,10 +5,11 @@ import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.table.*
 import org.jetbrains.exposed.sql.ResultRow
+import java.util.UUID
 
 data class AdvertisementWithCategoriesEntity(
     val id: Long,
-    val advertiserId: String,
+    val advertiserId: UUID,
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,

@@ -10,12 +10,13 @@ import org.example.marketing.table.AdvertisementDraftsTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.springframework.stereotype.Service
+import java.util.UUID
 
 @Service
 class AdvertisementDraftService(
     private val advertisementDraftRepository: AdvertisementDraftRepository
 ) {
-    fun issueDraft(advertiserId: String): AdvertisementDraft {
+    fun issueDraft(advertiserId: UUID): AdvertisementDraft {
         return transaction {
             val newEntity = advertisementDraftRepository.save(
                 IssueAdvertisementDraft.of(advertiserId)
@@ -40,13 +41,5 @@ class AdvertisementDraftService(
         }
 
         return changedRow
-    }
-
-    fun findByIp(targetId: Long): AdvertisementDraft {
-        val entity = advertisementDraftRepository.findById(targetId)
-        if (entity == null) {
-            throw NotFoundAdDraftEntityException("adDraftSvc-findById")
-        }
-        return AdvertisementDraft.of(entity)
     }
 }

@@ -1,19 +1,21 @@
 package org.example.marketing.dto.board.request
 
+import java.util.UUID
+
 data class UploadAdvertisementImageApiRequest(
+    val writerId: UUID,
     val advertisementDraftId: Long,
-    val writerId: String,
     val isThumbnail: Boolean,
 ) {
     companion object {
         fun of(
+            writerId: UUID,
             advertisementDraftId: Long,
-            writerId: String,
             isThumbnail: Boolean,
         ): UploadAdvertisementImageApiRequest {
             return UploadAdvertisementImageApiRequest(
-                advertisementDraftId = advertisementDraftId,
                 writerId = writerId,
+                advertisementDraftId = advertisementDraftId,
                 isThumbnail = isThumbnail
             )
         }

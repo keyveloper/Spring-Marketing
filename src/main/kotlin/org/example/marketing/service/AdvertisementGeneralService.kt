@@ -3,13 +3,12 @@ package org.example.marketing.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.config.CustomDateTimeFormatter
 import org.example.marketing.dto.board.request.*
-import org.example.marketing.dto.board.response.AdvertisementWithCategories
 import org.example.marketing.dto.board.response.AdvertisementWithCategoriesAndImages
 import org.example.marketing.dto.board.response.AdvertisementWithCategoriesV2
-import org.example.marketing.dto.user.request.SaveDeliveryCategory
-import org.example.marketing.enums.ReviewType
 import org.example.marketing.dto.board.response.MakeNewAdvertisementGeneralResult
+import org.example.marketing.dto.user.request.SaveDeliveryCategory
 import org.example.marketing.enums.DraftStatus
+import org.example.marketing.enums.ReviewType
 import org.example.marketing.exception.DuplicatedDraftException
 import org.example.marketing.exception.ExpiredDraftException
 import org.example.marketing.exception.NotFoundAdvertisementException
@@ -21,6 +20,7 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 import java.sql.BatchUpdateException
+import java.util.*
 
 @Service
 class AdvertisementGeneralService(
@@ -32,7 +32,7 @@ class AdvertisementGeneralService(
     private val logger = KotlinLogging.logger {}
 
     suspend fun save(
-        advertiserId: String,
+        advertiserId: UUID,
         request: MakeNewAdvertisementGeneralRequest
     ): MakeNewAdvertisementGeneralResult {
         logger.info { "🚀 [START] AdvertisementGeneralService.save" }

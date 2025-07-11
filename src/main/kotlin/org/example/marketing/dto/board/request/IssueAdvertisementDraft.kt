@@ -1,10 +1,12 @@
 package org.example.marketing.dto.board.request
 
+import java.util.UUID
+
 data class IssueAdvertisementDraft(
-    val advertiserId: String,
+    val advertiserId: UUID,
 ) {
     companion object {
-        fun of(advertiserId: String): IssueAdvertisementDraft =
+        fun of(advertiserId: UUID): IssueAdvertisementDraft =
             IssueAdvertisementDraft(advertiserId = advertiserId)
     }
 }

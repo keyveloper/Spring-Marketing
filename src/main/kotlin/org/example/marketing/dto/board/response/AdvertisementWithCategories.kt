@@ -4,10 +4,11 @@ import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
+import java.util.UUID
 
 data class AdvertisementWithCategories(
     val id: Long,
-    val advertiserId: String,
+    val advertiserId: UUID,
     val title: String,
     val reviewType: ReviewType,
     val channelType: ChannelType,

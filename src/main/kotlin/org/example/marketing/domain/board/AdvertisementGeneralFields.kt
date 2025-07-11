@@ -3,11 +3,12 @@ package org.example.marketing.domain.board
 import org.example.marketing.dao.board.AdvertisementWithCategoriesEntity
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
+import java.util.UUID
 
 data class AdvertisementGeneralFields(
     val id: Long,
     val title: String,
-    val advertiserId: String,
+    val advertiserId: UUID,
     val reviewType: ReviewType,
     val channelType: ChannelType,
     val recruitmentNumber: Int,

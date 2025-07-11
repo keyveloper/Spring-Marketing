@@ -23,16 +23,6 @@ class AdvertisementDraftRepository {
         return newEntity
     }
 
-    fun deleteById(targetId: Long) {
-        val deletedRow = AdvertisementDraftsTable.update({ AdvertisementDraftsTable.id eq targetId }) {
-            it[draftStatus] = DraftStatus.DELETED
-        }
-
-        if (deletedRow== 0) {
-            throw NotFoundAdDraftEntityException("adDraftRepo - delete By Id")
-        }
-    }
-
     fun findById(targetId: Long): AdvertisementDraftEntity? {
         val targetEntity = AdvertisementDraftEntity.findById(targetId)
 
