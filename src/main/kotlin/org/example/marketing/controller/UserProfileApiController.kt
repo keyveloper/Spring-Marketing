@@ -9,7 +9,7 @@ import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.IllegalResourceUsageException
 import org.example.marketing.service.AuthApiService
-import org.example.marketing.service.UserProfileApiService
+import org.example.marketing.service.UserProfileImageApiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestHeader
@@ -19,7 +19,8 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 class UserProfileApiController(
-    private val userProfileApiService: UserProfileApiService,
+    //TODO: add userProfileInfoApiService !
+    private val userProfileImageApiService: UserProfileImageApiService,
     private val authApiService: AuthApiService,
 ) {
     private val logger = KotlinLogging.logger {}
@@ -35,20 +36,18 @@ class UserProfileApiController(
 
         val extractedUser = authApiService.validateAdvertiser(authorization)
         val userId = extractedUser.userId
-        val userType = extractedUser.userType ?: throw IllegalResourceUsageException(
-            message = "uploadProfile request must include userType!",
-            logics = "UserProfileApiController.uploadAdvertiserProfileImage"
-        )
+        val userType = extractedUser.userType
 
-        if (userType.uppercase().startsWith("ADVERTISER_")) throw IllegalResourceUsageException(
+        if (userType.name.startsWith("ADVERTISER_")) throw IllegalResourceUsageException(
             message = "uploadAdvertiserProfile request must include userType!",
             logics = "UserProfileApiController.uploadAdvertiserProfileImage"
         )
 
 
-        val result = userProfileApiService.uploadAdvertiserProfileImageToApiServer(
+        val result = userProfileImageApiService.uploadAdvertiserProfileImageToImageServer(
             userId,
             userType,
+            meta.profileImageType,
             meta.advertiserProfileDraftId,
             file
         )
@@ -73,20 +72,18 @@ class UserProfileApiController(
 
         val extractedUser = authApiService.validateAdvertiser(authorization)
         val userId = extractedUser.userId
-        val userType = extractedUser.userType ?: throw IllegalResourceUsageException(
-            message = "uploadProfile request must include userType!",
-            logics = "UserProfileApiController.uploadInfluencerProfileImage"
-        )
+        val userType = extractedUser.userType
 
-        if (userType.uppercase() != UserType.INFLUENCER.name) throw IllegalResourceUsageException(
+        if (userType != UserType.INFLUENCER) throw IllegalResourceUsageException(
             message = "you are not a influencer",
             logics = "UserProfileApiController.uploadInfluencerProfileImage"
         )
 
 
-        val result = userProfileApiService.uploadInfluencerProfileImageToApiServer(
+        val result = userProfileImageApiService.uploadAdvertiserProfileImageToImageServer(
             userId,
             userType,
+            meta.profileImageType,
             meta.influencerProfileDraftId,
             file
         )

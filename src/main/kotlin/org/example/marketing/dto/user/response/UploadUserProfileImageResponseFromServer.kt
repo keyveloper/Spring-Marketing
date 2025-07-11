@@ -4,7 +4,7 @@ import org.example.marketing.enums.MSAServiceErrorCode
 import org.springframework.http.HttpStatus
 
 data class UploadUserProfileImageResponseFromServer(
-    val saveProfileImageResult: SaveProfileImageResult?,
+    val saveUserProfileImageResult: SaveUserProfileImageResult?,
     val httpStatus: HttpStatus,
     val msaServiceErrorCode: MSAServiceErrorCode,
     val errorMessage: String?,

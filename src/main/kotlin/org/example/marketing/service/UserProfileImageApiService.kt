@@ -5,6 +5,7 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.UserProfileImageInfo
 import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
+import org.example.marketing.dto.user.response.SaveUserProfileImageResult
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
 import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.enums.UserType
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
+import java.util.UUID
 
 @Service
 class UserProfileImageApiService(
@@ -28,11 +30,12 @@ class UserProfileImageApiService(
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
     suspend fun uploadAdvertiserProfileImageToImageServer(
-        userId: Long,
+        userId: UUID,
         userType: UserType,
         profileImageType: ProfileImageType,
+        userProfileDraftId: UUID,
         file: MultipartFile
-    ): UserProfileImageInfo {
+    ): SaveUserProfileImageResult {
         logger.info { "Uploading image to image-api-server for user: ${userId}, type: ${userType}" }
 
         return try {
@@ -40,7 +43,8 @@ class UserProfileImageApiService(
                 val apiRequest = UploadUserProfileImageApiRequest.of(
                     userType = userType,
                     userId = userId,
-                    profileImageType = profileImageType
+                    profileImageType = profileImageType,
+                    userProfileDraftId = userProfileDraftId
                 )
 
                 // Build multipart body with file and metadata
@@ -68,7 +72,7 @@ class UserProfileImageApiService(
 
                 when (response.msaServiceErrorCode) {
                     org.example.marketing.enums.MSAServiceErrorCode.OK -> {
-                        val result = response.saveProfileImageResult
+                        val result = response.saveUserProfileImageResult
                             ?: throw UploadFailedToImageServerException(
                                 logics = "userprofileImageApiServer - uploadToImageServer",
                             )
@@ -76,14 +80,7 @@ class UserProfileImageApiService(
                         logger.info { "Successfully uploaded image: id=${result.id}, s3Key=${result.s3Key}" }
 
                         // Convert SaveProfileImageResult to AdvertiserProfileImage
-                        UserProfileImageInfo(
-                            id = result.id,
-                            s3Key = result.s3Key,
-                            bucketName = result.bucketName,
-                            contentType = result.contentType,
-                            size = result.size,
-                            originalFileName = result.originalFileName,
-                        )
+                        response.saveUserProfileImageResult
                     }
                     else -> {
                         logger.error { "Upload failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +

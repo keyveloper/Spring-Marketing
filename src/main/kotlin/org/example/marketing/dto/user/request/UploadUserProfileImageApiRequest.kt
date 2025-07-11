@@ -2,20 +2,23 @@ package org.example.marketing.dto.user.request
 
 import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.enums.UserType
+import java.util.UUID
 
 data class UploadUserProfileImageApiRequest(
+    val userId: UUID,
     val userType: UserType,
-    val userId: Long,
-    val profileImageType: ProfileImageType
+    val profileImageType: ProfileImageType,
+    val userProfileDraftId: UUID
 ) {
     companion object {
         fun of(
+            userId: UUID,
             userType: UserType,
-            userId: Long,
-            profileImageType: ProfileImageType
+            profileImageType: ProfileImageType,
+            userProfileDraftId: UUID
         ): UploadUserProfileImageApiRequest {
             return UploadUserProfileImageApiRequest(
-                userType, userId, profileImageType
+                 userId, userType, profileImageType, userProfileDraftId
             )
         }
     }

@@ -5,13 +5,13 @@ import org.example.marketing.dto.error.FrontErrorResponse
 data class UploadAdvertiserProfileImageResponseToClient(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val result: SaveAdvertisementProfileImageResult
+    val result: SaveUserProfileImageResult
 ): FrontErrorResponse(frontErrorCode, errorMessage) {
     companion object {
         fun of(
             frontErrorCode: Int,
             errorMessage: String,
-            result: SaveAdvertisementProfileImageResult
+            result: SaveUserProfileImageResult
         ): UploadAdvertiserProfileImageResponseToClient {
             return UploadAdvertiserProfileImageResponseToClient(
                 frontErrorCode = frontErrorCode,

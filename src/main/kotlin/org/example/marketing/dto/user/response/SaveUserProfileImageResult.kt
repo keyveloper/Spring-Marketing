@@ -1,6 +1,6 @@
 package org.example.marketing.dto.user.response
 
-data class SaveProfileImageResult(
+data class SaveUserProfileImageResult(
     val id: Long,
     val s3Key: String,
     val bucketName: String,
@@ -16,8 +16,8 @@ data class SaveProfileImageResult(
             contentType: String,
             size: Long,
             originalFileName: String?
-        ): SaveProfileImageResult {
-            return SaveProfileImageResult(id, s3Key, bucketName, contentType, size, originalFileName)
+        ): SaveUserProfileImageResult {
+            return SaveUserProfileImageResult(id, s3Key, bucketName, contentType, size, originalFileName)
         }
     }
 }
