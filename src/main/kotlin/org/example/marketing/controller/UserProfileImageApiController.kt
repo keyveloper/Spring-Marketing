@@ -27,7 +27,7 @@ class UserProfileImageApiController(
     @PostMapping("/profile/image/advertiser")
     suspend fun uploadAdvertiserProfileImage(
         @RequestHeader("Authorization") authorization: String,
-        @RequestPart("draftId") meta: UploadAdvertiserProfileImageRequestFromClient,
+        @RequestPart("meta") meta: UploadAdvertiserProfileImageRequestFromClient,
         @RequestPart("file") file: MultipartFile
     ): ResponseEntity<UploadAdvertiserProfileImageResponseToClient> {
         logger.info { "Validating user authorization for profile image upload" }
@@ -37,8 +37,8 @@ class UserProfileImageApiController(
         val userId = extractedUser.userId
         val userType = extractedUser.userType
 
-        if (userType.name.startsWith("ADVERTISER_")) throw IllegalResourceUsageException(
-            message = "uploadAdvertiserProfile request must include userType!",
+        if (!userType.name.startsWith("ADVERTISER_")) throw IllegalResourceUsageException(
+            message = "uploadAdvertiserProfile request must be called by advertiser user!",
             logics = "UserProfileApiController.uploadAdvertiserProfileImage"
         )
 

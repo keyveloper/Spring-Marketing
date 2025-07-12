@@ -61,7 +61,7 @@ class UserProfileImageApiService(
                 bodyBuilder.part("meta", apiRequest, MediaType.APPLICATION_JSON)
 
                 val response = imageApiServerClient.post()
-                    .uri("/api/profile-images")
+                    .uri("/api/user-profile")
                     .contentType(MediaType.MULTIPART_FORM_DATA)
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
