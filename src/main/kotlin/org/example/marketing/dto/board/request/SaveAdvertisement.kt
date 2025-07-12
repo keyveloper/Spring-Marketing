@@ -21,7 +21,7 @@ data class SaveAdvertisement(
     val endAt: Long,
     val siteUrl: String?,
     val itemInfo: String?,
-    val draftId: Long,
+    val draftId: UUID,
 ) {
     companion object{
         private const val ONE_DAY_MILLIS = 24 * 60 * 60 * 1000L

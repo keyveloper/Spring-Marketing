@@ -5,6 +5,7 @@ import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.enums.ReviewType
 import java.time.LocalDateTime
+import java.util.UUID
 
 data class MakeNewAdvertisementGeneralRequest(
     @field:NotEmpty
@@ -20,6 +21,6 @@ data class MakeNewAdvertisementGeneralRequest(
     val siteUrl: String?,
     val itemInfo: String?,
 
-    val draftId: Long,
+    val draftId: UUID,
     val thumbnailImageMetaId: Long
 )

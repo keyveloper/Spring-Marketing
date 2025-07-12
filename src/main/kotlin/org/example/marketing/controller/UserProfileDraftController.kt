@@ -19,7 +19,7 @@ class UserProfileDraftController(
     private val authApiService: AuthApiService,
 ) {
 
-    @PostMapping("/influencer/profile/new-draft")
+    @GetMapping("/influencer/profile/new-draft")
     suspend fun issueInfluencerDraft(
         @RequestHeader("Authorization") authorization: String,
     ): ResponseEntity<IssueNewUserProfileDraftResponse> {
@@ -37,7 +37,7 @@ class UserProfileDraftController(
         )
     }
 
-    @PostMapping("/advertiser/profile/new-draft")
+    @GetMapping("/advertiser/profile/new-draft")
     suspend fun issueAdvertiserDraft(
         @RequestHeader("Authorization") authorization: String,
     ): ResponseEntity<IssueNewUserProfileDraftResponse> {

@@ -26,6 +26,7 @@ class SecurityConfig(
         customAuthenticationEntryPoint: CustomAuthenticationEntryPoint
     ): SecurityFilterChain {
         http
+            .cors { cors -> cors.configure(http) }
             .exceptionHandling { config ->
                 config.authenticationEntryPoint(customAuthenticationEntryPoint)
             }

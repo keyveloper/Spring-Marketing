@@ -8,6 +8,7 @@ import org.example.marketing.exception.NotFoundAdvertisementException
 import org.example.marketing.table.AdvertisementsTable
 import org.jetbrains.exposed.sql.and
 import org.springframework.stereotype.Component
+import java.util.UUID
 
 @Component
 class AdvertisementRepository {
@@ -85,7 +86,7 @@ class AdvertisementRepository {
         return advertisement
     }
 
-    fun findByDraftId(targetDraftId: Long): AdvertisementEntity? {
+    fun findByDraftId(targetDraftId: UUID): AdvertisementEntity? {
         val targetEntity = AdvertisementEntity.find {
             (AdvertisementsTable.draftId eq targetDraftId) and
                     (AdvertisementsTable.status eq AdvertisementStatus.LIVE)

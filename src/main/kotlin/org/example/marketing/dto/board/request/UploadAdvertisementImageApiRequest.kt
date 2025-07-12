@@ -4,13 +4,13 @@ import java.util.UUID
 
 data class UploadAdvertisementImageApiRequest(
     val writerId: UUID,
-    val advertisementDraftId: Long,
+    val advertisementDraftId: UUID,
     val isThumbnail: Boolean,
 ) {
     companion object {
         fun of(
             writerId: UUID,
-            advertisementDraftId: Long,
+            advertisementDraftId: UUID,
             isThumbnail: Boolean,
         ): UploadAdvertisementImageApiRequest {
             return UploadAdvertisementImageApiRequest(

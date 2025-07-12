@@ -1,6 +1,5 @@
 package org.example.marketing.service
 
-import org.example.marketing.dao.board.AdvertisementDraftEntity
 import org.example.marketing.domain.board.AdvertisementDraft
 import org.example.marketing.dto.board.request.IssueAdvertisementDraft
 import org.example.marketing.enums.DraftStatus
@@ -10,7 +9,7 @@ import org.example.marketing.table.AdvertisementDraftsTable
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.jetbrains.exposed.sql.update
 import org.springframework.stereotype.Service
-import java.util.UUID
+import java.util.*
 
 @Service
 class AdvertisementDraftService(
@@ -26,7 +25,7 @@ class AdvertisementDraftService(
         }
     }
 
-    fun findById(targetId: Long): AdvertisementDraft {
+    fun findById(targetId: UUID): AdvertisementDraft {
         return transaction {
             val targetEntity = advertisementDraftRepository.findById(targetId)
             if (targetEntity == null) {
@@ -35,7 +34,7 @@ class AdvertisementDraftService(
         }
     }
 
-    fun changeStatusById(targetId: Long, status: DraftStatus): Int {
+    fun changeStatusById(targetId: UUID, status: DraftStatus): Int {
         val changedRow = AdvertisementDraftsTable.update( {AdvertisementDraftsTable.id eq targetId} ) {
             it[draftStatus] = status
         }

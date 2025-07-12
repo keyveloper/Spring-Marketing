@@ -1,15 +1,17 @@
 package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.dto.board.response.DeleteAdDraftResponse
 import org.example.marketing.dto.board.response.GetDraftResponse
 import org.example.marketing.dto.board.response.IssueNewAdvertisementDraftResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementDraftService
 import org.example.marketing.service.AuthApiService
 import org.springframework.http.ResponseEntity
-import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RestController
+import java.util.UUID
 
 private val logger = KotlinLogging.logger {}
 
@@ -19,7 +21,7 @@ class AdvertisementDraftController(
     private val authApiService: AuthApiService,
 ) {
 
-    @PostMapping("/advertisement/new-draft")
+    @GetMapping("/advertisement/new-draft")
     suspend fun issue(
         @RequestHeader("Authorization") authorization: String,
     ): ResponseEntity<IssueNewAdvertisementDraftResponse> {
@@ -40,7 +42,7 @@ class AdvertisementDraftController(
 
     @GetMapping("/advertisement/draft/{draftId}")
     fun getDraftById(
-        @PathVariable("draftId") draftId: Long
+        @PathVariable("draftId") draftId: UUID
     ): ResponseEntity<GetDraftResponse> {
         return ResponseEntity.ok().body(
             GetDraftResponse.of(

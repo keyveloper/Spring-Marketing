@@ -13,9 +13,10 @@ class WebCorsConfig: WebMvcConfigurer {
                 "http://localhost:5173",  // Vite 기본 포트
                 "http://localhost:5174"   // 추가 포트
             )
-            .allowedMethods("*")
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowCredentials(true)
             .allowedHeaders("*")
+            .exposedHeaders("Authorization")
             .maxAge(3000)
     }
 }

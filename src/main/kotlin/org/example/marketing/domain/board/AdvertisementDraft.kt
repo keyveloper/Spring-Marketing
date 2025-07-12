@@ -5,7 +5,7 @@ import org.example.marketing.enums.DraftStatus
 import java.util.UUID
 
 data class AdvertisementDraft(
-    val id: Long,
+    val id: UUID,
     val advertiserId: UUID,
     val draftStatus: DraftStatus,
     val expiredAt: Long,

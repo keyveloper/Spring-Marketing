@@ -9,6 +9,7 @@ import org.jetbrains.exposed.sql.update
 import org.springframework.stereotype.Component
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 @Component
 class AdvertisementDraftRepository {
@@ -23,7 +24,7 @@ class AdvertisementDraftRepository {
         return newEntity
     }
 
-    fun findById(targetId: Long): AdvertisementDraftEntity? {
+    fun findById(targetId: UUID): AdvertisementDraftEntity? {
         val targetEntity = AdvertisementDraftEntity.findById(targetId)
 
         return targetEntity

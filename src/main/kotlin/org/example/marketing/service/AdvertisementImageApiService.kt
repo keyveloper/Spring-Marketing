@@ -41,7 +41,7 @@ class AdvertisementImageApiService(
 
     suspend fun uploadToImageServer(
         userId: UUID,
-        advertisementDraftId: Long,
+        advertisementDraftId: UUID,
         isThumbnail: Boolean,
         file: MultipartFile
     ): AdvertisementImageInfo {
@@ -148,7 +148,7 @@ class AdvertisementImageApiService(
     }
 
     suspend fun connectAdvertisementToImageServer(
-        draftId: Long,
+        draftId: UUID,
         advertisementId: Long
     ): ConnectAdvertisementResult {
         logger.info { "Connecting advertisement images to advertisement: draftId=$draftId, advertisementId=$advertisementId" }
@@ -207,7 +207,8 @@ class AdvertisementImageApiService(
                     .awaitBody<MakeThumbnailResponseFromServer>()
 
                 logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
-                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}, " +
+                        "result=${response.s3ThumbnailResult}" }
 
                 when (response.msaServiceErrorCode) {
                     org.example.marketing.enums.MSAServiceErrorCode.OK -> {
