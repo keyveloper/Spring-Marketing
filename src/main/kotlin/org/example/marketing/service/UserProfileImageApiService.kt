@@ -4,7 +4,10 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.UserProfileImageInfo
+import org.example.marketing.dto.user.request.ChangeUserProfileStatusApiRequest
 import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
+import org.example.marketing.dto.user.response.ChangeUserProfileImageStatusResult
+import org.example.marketing.dto.user.response.ChangeUserProfileStatusResponseFromServer
 import org.example.marketing.dto.user.response.SaveUserProfileImageResult
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
 import org.example.marketing.enums.ProfileImageType
@@ -110,5 +113,55 @@ class UserProfileImageApiService(
             logics = "UserProfileImageApiService - uploadToImageServer fallback",
             message = "Failed to upload image to image-api-server: ${throwable.message}"
         )
+    }
+
+    suspend fun changeProfileStatusToSave(
+        targetEntityId: Long,
+        userId: UUID,
+        userType: UserType
+    ): Long {
+        logger.info { "Changing profile status to save for user: ${userId}, draftId: ${targetEntityId}" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val apiRequest = ChangeUserProfileStatusApiRequest(
+                    entityId = targetEntityId,
+                    userId = userId,
+                    userType = userType
+                )
+
+                val response = imageApiServerClient.post()
+                    .uri("/api/profile-image-meta/change-status")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .awaitBody<ChangeUserProfileStatusResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    org.example.marketing.enums.MSAServiceErrorCode.OK -> {
+                        val effectedRow = response.effectedRow
+                            ?: throw UploadFailedToImageServerException(
+                                logics = "UserProfileImageApiService - changeProfileStatusToSave",
+                            )
+
+                        logger.info { "Successfully changed profile status: effectedRow=${effectedRow}" }
+                        effectedRow
+                    }
+                    else -> {
+                        logger.error { "Change status failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        throw UploadFailedToImageServerException(
+                            logics = "UserProfileImageApiService - changeProfileStatusToSave",
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to change profile status: ${ex.message}" }
+            throw ex
+        }
     }
 }

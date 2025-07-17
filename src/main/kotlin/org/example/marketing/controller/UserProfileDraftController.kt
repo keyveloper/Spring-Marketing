@@ -57,14 +57,13 @@ class UserProfileDraftController(
 
     @GetMapping("/user/profile/draft/{draftId}")
     fun getDraftById(
-        @PathVariable("draftId") draftId: String
+        @PathVariable("draftId") draftId: UUID
     ): ResponseEntity<GetUserProfileDraftResponse> {
-        val uuid = UUID.fromString(draftId)
         return ResponseEntity.ok().body(
             GetUserProfileDraftResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                userProfileDraft = userProfileDraftService.findById(uuid)
+                userProfileDraft = userProfileDraftService.findById(draftId)
             )
         )
     }
