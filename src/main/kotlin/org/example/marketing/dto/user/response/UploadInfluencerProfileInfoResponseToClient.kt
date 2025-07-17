@@ -16,7 +16,7 @@ data class UploadInfluencerProfileInfoResponseToClient(
             return UploadInfluencerProfileInfoResponseToClient(
                 frontErrorCode = frontErrorCode,
                 errorMessage = errorMessage,
-                result = result
+                result = result //
             )
         }
     }

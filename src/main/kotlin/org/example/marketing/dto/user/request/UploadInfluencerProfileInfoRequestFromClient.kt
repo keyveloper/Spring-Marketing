@@ -7,3 +7,5 @@ data class UploadInfluencerProfileInfoRequestFromClient(
     val introduction: String?,
     val job: String?
 )
+
+
