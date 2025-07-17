@@ -72,7 +72,6 @@ class UserProfileApiService(
                             logger.info {
                                 "Successfully uploaded advertiser profile info: savedId=${result.savedEntityId}"
                             }
-                            result
                         }
                         else -> {
                             logger.error { "Upload failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +

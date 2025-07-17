@@ -66,7 +66,7 @@ class UserProfileImageApiController(
         logger.info { "Validating user authorization for profile image upload" }
         logger.info { "Received Authorization header: ${authorization.take(50)}..." }
 
-        val extractedUser = authApiService.validateAdvertiser(authorization)
+        val extractedUser = authApiService.validateInfluencer(authorization)
         val userId = extractedUser.userId
         val userType = extractedUser.userType
 
