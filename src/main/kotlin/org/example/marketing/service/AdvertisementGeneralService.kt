@@ -6,7 +6,7 @@ import org.example.marketing.dto.board.request.*
 import org.example.marketing.dto.board.response.AdvertisementWithCategoriesAndImages
 import org.example.marketing.dto.board.response.AdvertisementWithCategoriesV2
 import org.example.marketing.dto.board.response.MakeNewAdvertisementGeneralResult
-import org.example.marketing.dto.user.request.SaveDeliveryCategory
+import org.example.marketing.dto.board.request.SaveDeliveryCategory
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.enums.ReviewType
 import org.example.marketing.exception.DuplicatedDraftException

@@ -1,11 +1,11 @@
 package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.domain.functions.ReviewApplication
-import org.example.marketing.dto.functions.request.ApplyReviewRequest
-import org.example.marketing.dto.functions.request.SaveReviewApplication
+import org.example.marketing.domain.board.ReviewApplication
+import org.example.marketing.dto.board.request.ApplyReviewRequest
+import org.example.marketing.dto.board.request.SaveReviewApplication
 import org.example.marketing.exception.DuplicatedReviewApplicationException
-import org.example.marketing.repository.functions.ReviewApplicationRepository
+import org.example.marketing.repository.board.ReviewApplicationRepository
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service

@@ -1,6 +1,5 @@
 package org.example.marketing.domain.user
 
-import org.example.marketing.dao.user.AdvertiserProfileImageEntity
 import org.example.marketing.enums.ProfileImageType
 
 data class UserProfileImageInfo(

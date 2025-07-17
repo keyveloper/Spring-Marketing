@@ -1,6 +1,6 @@
 package org.example.marketing.repository.draft
 
-import org.example.marketing.dao.user.UserProfileDraftEntity
+import org.example.marketing.dao.UserProfileDraftEntity
 import org.example.marketing.dto.user.request.IssueUserProfileDraft
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.exception.NotFoundUserProfileDraftEntityException

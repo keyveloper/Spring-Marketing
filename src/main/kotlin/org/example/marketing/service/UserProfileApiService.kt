@@ -7,7 +7,6 @@ import org.example.marketing.dto.user.request.UploadAdvertiserProfileInfoApiRequ
 import org.example.marketing.dto.user.request.UploadInfluencerProfileInfoApiRequest
 import org.example.marketing.dto.user.response.SaveAdvertiserProfileInfoApiResult
 import org.example.marketing.dto.user.response.SaveAdvertiserProfileInfoResponseFromServer
-import org.example.marketing.dto.user.response.SaveAdvertiserProfileInfoResult
 import org.example.marketing.dto.user.response.SaveInfluencerProfileInfoResponseFromServer
 import org.example.marketing.dto.user.response.SaveInfluencerProfileInfoResult
 import org.example.marketing.enums.MSAServiceErrorCode
@@ -19,7 +18,7 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
-import java.util.UUID
+import java.util.*
 
 @Service
 class UserProfileApiService(

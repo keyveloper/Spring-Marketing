@@ -2,7 +2,7 @@ package org.example.marketing.repository.board
 
 import org.example.marketing.dao.board.AdvertisementDeliveryCategoryEntity
 import org.example.marketing.domain.board.AdvertisementDeliveryCategory
-import org.example.marketing.dto.user.request.SaveDeliveryCategory
+import org.example.marketing.dto.board.request.SaveDeliveryCategory
 import org.example.marketing.enums.DeliveryCategory
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
 import org.jetbrains.exposed.sql.batchInsert

@@ -2,9 +2,9 @@ package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.validation.Valid
-import org.example.marketing.dto.functions.request.ApplyReviewRequest
-import org.example.marketing.dto.functions.response.ApplyReviewResponse
-import org.example.marketing.dto.functions.response.GetReviewApplicationsByAdvertisementIdResponse
+import org.example.marketing.dto.board.request.ApplyReviewRequest
+import org.example.marketing.dto.board.response.ApplyReviewResponse
+import org.example.marketing.dto.board.response.GetReviewApplicationsByAdvertisementIdResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.IllegalResourceUsageException

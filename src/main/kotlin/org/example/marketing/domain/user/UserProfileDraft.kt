@@ -1,6 +1,6 @@
 package org.example.marketing.domain.user
 
-import org.example.marketing.dao.user.UserProfileDraftEntity
+import org.example.marketing.dao.UserProfileDraftEntity
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.enums.UserType
 import java.util.UUID
