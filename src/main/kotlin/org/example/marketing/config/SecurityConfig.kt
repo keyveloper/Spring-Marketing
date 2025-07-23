@@ -23,7 +23,7 @@ class SecurityConfig(
         http: HttpSecurity,
     ): SecurityFilterChain {
         http
-            .cors { cors -> cors.configure(http) }
+            .cors { cors -> cors.configure(http)}
             .csrf { csrf -> csrf.disable() }
             .authorizeHttpRequests { auth ->
                 auth
