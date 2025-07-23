@@ -95,7 +95,7 @@ class NotiApiController(
      * @param advertiserId Advertiser ID
      * @return GetNotiToAdvertisersByAdvertiserIdResponseToClient
      */
-    @GetMapping("/to-advertiser/advertiser/{advertiserId}")
+    @GetMapping("/to-advertiser/{advertiserId}")
     suspend fun getNotiToAdvertisersByAdvertiserId(
         @PathVariable advertiserId: UUID
     ): ResponseEntity<GetNotiToAdvertisersByAdvertiserIdResponseToClient> {
@@ -121,7 +121,7 @@ class NotiApiController(
      * @param influencerId Influencer ID
      * @return GetNotiToInfluencersByInfluencerIdResponseToClient
      */
-    @GetMapping("/to-influencer/influencer/{influencerId}")
+    @GetMapping("/to-influencer/{influencerId}")
     suspend fun getNotiToInfluencersByInfluencerId(
         @PathVariable influencerId: UUID
     ): ResponseEntity<GetNotiToInfluencersByInfluencerIdResponseToClient> {
