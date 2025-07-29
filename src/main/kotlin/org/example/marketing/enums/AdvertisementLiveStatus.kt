@@ -1,6 +1,6 @@
 package org.example.marketing.enums
 
-enum class AdvertisementStatus(val code: Int) {
+enum class AdvertisementLiveStatus(val code: Int) {
     DELETED(-1),
     LIVE(0),
     EXPIRED(1)

@@ -86,7 +86,7 @@ class AdvertisementGeneralService(
 
                 logger.info { "💾 Saving advertisement to database..." }
                 val advertisementEntity = advertisementRepository.save(saveAdvertisement)
-                logger.info { "✅ Advertisement saved successfully: id=${advertisementEntity.id.value}" }
+                logger.info { "✅ Advertisement saved successfully: id=${advertisementEntity.id}" }
 
                 // Delivery category validation and save
                 if (request.deliveryCategories.isNotEmpty()) {
@@ -100,9 +100,9 @@ class AdvertisementGeneralService(
                         )
                     }
 
-                    logger.info { "💾 Saving delivery categories: advertisementId=${advertisementEntity.id.value}, categories=${request.deliveryCategories}" }
+                    logger.info { "💾 Saving delivery categories: advertisementId=${advertisementEntity.id}, categories=${request.deliveryCategories}" }
                     val saveDeliveryCategory = SaveDeliveryCategory.of(
-                        advertisementId = advertisementEntity.id.value,
+                        advertisementId = advertisementEntity.id,
                         categories = request.deliveryCategories
                     )
                     val savedCount = advertisementDeliveryCategoryRepository.save(saveDeliveryCategory)
@@ -116,11 +116,11 @@ class AdvertisementGeneralService(
                 // Transaction 내에서 suspend 함수 호출 가능 (newSuspendedTransaction 사용)
                 logger.info {
                     "🔗 Connecting images to advertisement: draftId=${request.draftId}, " +
-                            "advertisementId=${advertisementEntity.id.value}"
+                            "advertisementId=${advertisementEntity.id}"
                 }
                 val connectResult = advertisementImageApiService.connectAdvertisementToImageServer(
                     draftId = request.draftId,
-                    advertisementId = advertisementEntity.id.value
+                    advertisementId = advertisementEntity.id
                 )
                 logger.info {
                     "✅ Images connected: updatedRow=${connectResult.updatedRow}, " +
@@ -137,7 +137,7 @@ class AdvertisementGeneralService(
                 }
 
                 val result = MakeNewAdvertisementGeneralResult(
-                    entityId = advertisementEntity.id.value,
+                    entityId = advertisementEntity.id,
                     connectingResultFromApiServer = connectResult
                 )
                 logger.info { "🎉 [SUCCESS] Advertisement created successfully: entityId=${result.entityId}" }
@@ -177,7 +177,7 @@ class AdvertisementGeneralService(
         return transaction {
             advertisementRepository.update(
                 UpdateAdvertisement.of(request)
-            ).id.value
+            ).id
         }
     }
 
@@ -185,7 +185,7 @@ class AdvertisementGeneralService(
     fun deleteById(request: DeleteAdvertisementRequest): Long {
         return transaction {
             advertisementRepository.deleteById(request.targetId)
-        }.id.value
+        }.id
     }
 
 

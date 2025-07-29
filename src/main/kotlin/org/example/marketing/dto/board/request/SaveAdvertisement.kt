@@ -1,9 +1,7 @@
 package org.example.marketing.dto.board.request
 
-import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
-import java.time.ZoneId
 import java.util.UUID
 
 data class SaveAdvertisement(

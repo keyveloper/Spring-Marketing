@@ -4,7 +4,7 @@ import org.example.marketing.enums.FollowStatus
 import java.time.LocalDateTime
 import java.util.UUID
 
-data class FollowOrSwitchResult(
+data class FollowResultFromServer(
     val advertiserId: UUID,
     val influencerId: UUID,
     val followStatus: FollowStatus,

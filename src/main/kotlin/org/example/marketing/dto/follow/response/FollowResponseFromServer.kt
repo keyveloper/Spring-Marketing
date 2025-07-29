@@ -3,10 +3,10 @@ package org.example.marketing.dto.follow.response
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.springframework.http.HttpStatus
 
-data class GetFollowersResponseFromServer(
+data class FollowResponseFromServer(
     val httpStatus: HttpStatus,
     val msaServiceErrorCode: MSAServiceErrorCode,
     val errorMessage: String?,
     val logics: String?,
-    val result: GetFollowersResultFromServer?
+    val result: FollowResultFromServer?
 )

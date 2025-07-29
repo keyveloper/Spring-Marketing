@@ -19,7 +19,8 @@ class AdvertisementEntity(id: EntityID<Long>) : BaseDateEntity(id, Advertisement
     var reviewStartAt by AdvertisementsTable.reviewStartAt
     var reviewEndAt by AdvertisementsTable.reviewEndAt
     var endAt by AdvertisementsTable.endAt
-    var status by AdvertisementsTable.status
+    var liveStatus by AdvertisementsTable.liveStatus
+    var reviewStatus by AdvertisementsTable.reviewStatus
     var siteUrl by AdvertisementsTable.siteUrl
     var itemInfo by AdvertisementsTable.itemInfo
     var draftId by AdvertisementsTable.draftId

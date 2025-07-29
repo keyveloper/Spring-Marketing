@@ -2,6 +2,7 @@ package org.example.marketing.repository.board
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dao.board.AdvertisementEntity
+import org.example.marketing.domain.board.Advertisement
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.enums.*
 import org.example.marketing.exception.NotFoundAdvertisementException
@@ -14,8 +15,8 @@ import java.util.UUID
 class AdvertisementRepository {
     private val logger = KotlinLogging.logger {}
 
-    fun save(saveAdvertisement: SaveAdvertisement): AdvertisementEntity {
-        return  AdvertisementEntity.new {
+    fun save(saveAdvertisement: SaveAdvertisement): Advertisement {
+        val entity = AdvertisementEntity.new {
             advertiserId = saveAdvertisement.advertiserId
             title = saveAdvertisement.title
             reviewType = saveAdvertisement.reviewType
@@ -28,14 +29,16 @@ class AdvertisementRepository {
             reviewStartAt = saveAdvertisement.reviewStartAt
             reviewEndAt = saveAdvertisement.reviewEndAt
             endAt = saveAdvertisement.endAt
-            status = AdvertisementStatus.LIVE
+            liveStatus = AdvertisementLiveStatus.LIVE
+            reviewStatus = AdvertisementReviewStatus.RECRUITING
             siteUrl = saveAdvertisement.siteUrl
             itemInfo = saveAdvertisement.itemInfo
             draftId = saveAdvertisement.draftId
         }
+        return Advertisement.of(entity)
     }
 
-    fun update(updateDto: UpdateAdvertisement): AdvertisementEntity {
+    fun update(updateDto: UpdateAdvertisement): Advertisement {
         val advertisement = AdvertisementEntity.findById(updateDto.targetId)
             ?: throw NotFoundAdvertisementException(
                 logics = "advertisement-update"
@@ -55,59 +58,59 @@ class AdvertisementRepository {
         updateDto.siteUrl?.let { advertisement.siteUrl = it }
         updateDto.itemInfo?.let { advertisement.itemInfo = it }
 
-        return advertisement
+        return Advertisement.of(advertisement)
     }
 
 
-    fun deleteById(targetId: Long): AdvertisementEntity {
+    fun deleteById(targetId: Long): Advertisement {
         val advertisement = AdvertisementEntity.findById(targetId)
             ?: throw NotFoundAdvertisementException(
                 logics = "advertisement-delete"
             )
 
-        advertisement.status = AdvertisementStatus.DELETED
+        advertisement.liveStatus = AdvertisementLiveStatus.DELETED
 
-        return advertisement
+        return Advertisement.of(advertisement)
     }
 
-    fun findByIds(targetIds: List<Long>): List<AdvertisementEntity> {
+    fun findByIds(targetIds: List<Long>): List<Advertisement> {
         return AdvertisementEntity.find {
             AdvertisementsTable.id inList targetIds
-        }.toList()
+        }.map { Advertisement.of(it) }
     }
 
 
-    fun findById(targetId: Long): AdvertisementEntity? {
+    fun findById(targetId: Long): Advertisement? {
         logger.info {"targetId: $targetId"}
         val advertisement = AdvertisementEntity.find {
-            (AdvertisementsTable.id eq targetId) and (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+            (AdvertisementsTable.id eq targetId) and (AdvertisementsTable.liveStatus eq AdvertisementLiveStatus.LIVE)
         }.firstOrNull()
 
-        return advertisement
+        return advertisement?.let { Advertisement.of(it) }
     }
 
-    fun findByDraftId(targetDraftId: UUID): AdvertisementEntity? {
+    fun findByDraftId(targetDraftId: UUID): Advertisement? {
         val targetEntity = AdvertisementEntity.find {
             (AdvertisementsTable.draftId eq targetDraftId) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
+                    (AdvertisementsTable.liveStatus eq AdvertisementLiveStatus.LIVE)
         }.firstOrNull()
 
-        return targetEntity
+        return targetEntity?.let { Advertisement.of(it) }
     }
 
-    fun findAllByReviewTypesExceptVisit(reviewTypes: List<ReviewType>): List<AdvertisementEntity> {
+    fun findAllByReviewTypesExceptVisit(reviewTypes: List<ReviewType>): List<Advertisement> {
         return AdvertisementEntity.find {
             (AdvertisementsTable.reviewType inList reviewTypes) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
+                    (AdvertisementsTable.liveStatus eq AdvertisementLiveStatus.LIVE) and
                     (AdvertisementsTable.reviewType neq ReviewType.VISITED)
-        }.toList()
+        }.map { Advertisement.of(it) }
     }
 
-    fun findAllByChannels(channels: List<ChannelType>): List<AdvertisementEntity> {
+    fun findAllByChannels(channels: List<ChannelType>): List<Advertisement> {
         return AdvertisementEntity.find {
             (AdvertisementsTable.channelType inList channels) and
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-        }.toList()
+                    (AdvertisementsTable.liveStatus eq AdvertisementLiveStatus.LIVE)
+        }.map { Advertisement.of(it) }
     }
 
 }

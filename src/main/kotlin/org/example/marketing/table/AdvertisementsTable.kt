@@ -1,6 +1,7 @@
 package org.example.marketing.table
 
-import org.example.marketing.enums.AdvertisementStatus
+import org.example.marketing.enums.AdvertisementLiveStatus
+import org.example.marketing.enums.AdvertisementReviewStatus
 import org.example.marketing.enums.ChannelType
 import org.example.marketing.enums.ReviewType
 import org.jetbrains.exposed.sql.Column
@@ -20,8 +21,10 @@ object AdvertisementsTable: BaseDateLongIdTable("advertisements") {
     val reviewStartAt: Column<Long> = long("review_start_at")
     val reviewEndAt: Column<Long> = long("review_end_at")
     val endAt: Column<Long> = long("end_at")
-    val status: Column<AdvertisementStatus> =
-        enumerationByName("status", 255, AdvertisementStatus::class).index()
+    val liveStatus: Column<AdvertisementLiveStatus> =
+        enumerationByName("live_status", 255, AdvertisementLiveStatus::class).index()
+    val reviewStatus: Column<AdvertisementReviewStatus> =
+        enumerationByName("review_status", 255, AdvertisementReviewStatus::class).index()
     val siteUrl: Column<String?> = text("site_url").nullable()
     val itemInfo: Column<String?> = varchar("item_info", 255).nullable()
     val draftId: Column<UUID> = uuid("draft_id")

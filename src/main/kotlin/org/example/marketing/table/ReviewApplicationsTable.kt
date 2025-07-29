@@ -1,5 +1,6 @@
 package org.example.marketing.table
 
+import org.example.marketing.enums.ApplicationReviewStatus
 import org.jetbrains.exposed.sql.Column
 import java.util.UUID
 
@@ -9,6 +10,8 @@ object ReviewApplicationsTable: BaseDateLongIdTable("review_applications") {
     val influencerEmail: Column<String> = varchar("influencer_email", 255)
     val influencerMobile: Column<String> = varchar("influencer_mobile", 50)
     val advertisementId: Column<Long> = long("advertisement_id").index()
+    val reviewStatus: Column<ApplicationReviewStatus>
+    = enumerationByName("review_status", 255, ApplicationReviewStatus::class).index()
     val applyMemo: Column<String> = varchar("apply_memo", 255)
 
     init {

@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.dto.follow.request.FollowOrSwitchApiRequest
+import org.example.marketing.dto.follow.request.UnFollowApiRequest
 import org.example.marketing.dto.follow.response.*
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.example.marketing.exception.MSAErrorException
@@ -30,13 +31,13 @@ class FollowApiService(
      *
      * @param advertiserId Advertiser ID
      * @param influencerId Influencer ID
-     * @return FollowOrSwitchResult
+     * @return FollowResult
      * @throws MSAErrorException 처리 실패 시
      */
-    suspend fun followOrSwitch(
+    suspend fun follow(
         advertiserId: UUID,
         influencerId: UUID
-    ): FollowOrSwitchResult {
+    ): FollowResult? {
         logger.info { "Follow or switch: advertiserId=$advertiserId, influencerId=$influencerId" }
 
         return try {
@@ -50,19 +51,20 @@ class FollowApiService(
                     .uri("/api/follow")
                     .bodyValue(request)
                     .retrieve()
-                    .awaitBody<FollowOrSwitchResponseFromServer>()
+                    .awaitBody<FollowResponseFromServer>()
 
                 logger.info { "Received response from follow-api-server: msaServiceErrorCode=" +
                         "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
 
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
-                        val result = response.result
+                        val resultFromServer = response.result
                             ?: throw MSAErrorException(
-                                logics = "FollowApiService - followOrSwitch: result is null",
+                                logics = "FollowApiService - follow: result is null",
                                 message = "Failed to follow or switch"
                             )
 
+                        val result = FollowResult.of(resultFromServer)
                         logger.info { "Successfully processed follow/switch: status=${result.followStatus}" }
                         result
                     }
@@ -71,7 +73,7 @@ class FollowApiService(
                                 "${response.msaServiceErrorCode}, errorMessage=${response.errorMessage}, " +
                                 "logics=${response.logics}" }
                         throw MSAErrorException(
-                            logics = "FollowApiService - followOrSwitch: ${response.logics}",
+                            logics = "FollowApiService - follow: ${response.logics}",
                             message = response.errorMessage ?: "Failed to follow or switch"
                         )
                     }
@@ -90,7 +92,7 @@ class FollowApiService(
      * @return GetFollowersResult
      * @throws MSAErrorException 조회 실패 시
      */
-    suspend fun getFollowersByAdvertiserId(advertiserId: UUID): GetFollowersResult {
+    suspend fun getFollowersByAdvertiserId(advertiserId: UUID): GetFollowersResult? {
         logger.info { "Getting followers for advertiser: advertiserId=$advertiserId" }
 
         return try {
@@ -109,12 +111,13 @@ class FollowApiService(
 
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
-                        val result = response.result
+                        val resultFromServer = response.result
                             ?: throw MSAErrorException(
                                 logics = "FollowApiService - getFollowersByAdvertiserId: result is null",
                                 message = "Failed to get followers"
                             )
 
+                        val result = GetFollowersResult.of(resultFromServer)
                         logger.info { "Successfully retrieved ${result.followers.size} followers" }
                         result
                     }
@@ -142,7 +145,7 @@ class FollowApiService(
      * @return GetFollowingResult
      * @throws MSAErrorException 조회 실패 시
      */
-    suspend fun getFollowingByInfluencerId(influencerId: UUID): GetFollowingResult {
+    suspend fun getFollowingByInfluencerId(influencerId: UUID): GetFollowingResult? {
         logger.info { "Getting following for influencer: influencerId=$influencerId" }
 
         return try {
@@ -161,12 +164,13 @@ class FollowApiService(
 
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
-                        val result = response.result
+                        val resultFromServer = response.result
                             ?: throw MSAErrorException(
                                 logics = "FollowApiService - getFollowingByInfluencerId: result is null",
                                 message = "Failed to get following"
                             )
 
+                        val result = GetFollowingResult.of(resultFromServer)
                         logger.info { "Successfully retrieved ${result.following.size} following" }
                         result
                     }
@@ -188,19 +192,88 @@ class FollowApiService(
     }
 
     /**
+     * 언팔로우
+     *
+     * @param advertiserId Advertiser ID
+     * @param influencerId Influencer ID
+     * @return UnFollowResult
+     * @throws MSAErrorException 처리 실패 시
+     */
+    suspend fun unFollow(
+        advertiserId: UUID,
+        influencerId: UUID
+    ): UnFollowResult? {
+        logger.info { "Unfollow: advertiserId=$advertiserId, influencerId=$influencerId" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val request = UnFollowApiRequest(
+                    advertiserId = advertiserId,
+                    influencerId = influencerId
+                )
+
+                val response = followApiServerClient.post()
+                    .uri("/api/follow/unfollow")
+                    .bodyValue(request)
+                    .retrieve()
+                    .awaitBody<UnFollowResponseFromServer>()
+
+                logger.info { "Received response from follow-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        val resultFromServer = response.result
+                            ?: throw MSAErrorException(
+                                logics = "FollowApiService - unFollow: result is null",
+                                message = "Failed to unfollow"
+                            )
+
+                        val result = UnFollowResult.of(resultFromServer)
+                        logger.info { "Successfully unfollowed: effectedRow=${result.effectedRow}" }
+                        result
+                    }
+                    else -> {
+                        logger.error { "Unfollow failed with msaServiceErrorCode=" +
+                                "${response.msaServiceErrorCode}, errorMessage=${response.errorMessage}, " +
+                                "logics=${response.logics}" }
+                        throw MSAErrorException(
+                            logics = "FollowApiService - unFollow: ${response.logics}",
+                            message = response.errorMessage ?: "Failed to unfollow"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to unfollow: ${ex.message}" }
+            throw ex
+        }
+    }
+
+    /**
      * 팔로우/언팔로우 실패 시 Fallback 메서드
      */
-    suspend fun followOrSwitchFallback(
+    suspend fun followFallback(
         advertiserId: UUID,
         influencerId: UUID,
         throwable: Throwable
-    ): FollowOrSwitchResult {
-        logger.error { "Circuit breaker fallback triggered for followOrSwitch: ${throwable.message}" }
+    ): FollowResult? {
+        logger.error { "Circuit breaker fallback triggered for follow: ${throwable.message}" }
         logger.error { "Failed request details - advertiserId: $advertiserId, influencerId: $influencerId" }
-        throw MSAErrorException(
-            logics = "FollowApiService - followOrSwitch fallback",
-            message = "Failed to follow or switch: ${throwable.message}"
-        )
+        return null
+    }
+
+    /**
+     * 언팔로우 실패 시 Fallback 메서드
+     */
+    suspend fun unFollowFallback(
+        advertiserId: UUID,
+        influencerId: UUID,
+        throwable: Throwable
+    ): UnFollowResult? {
+        logger.error { "Circuit breaker fallback triggered for unFollow: ${throwable.message}" }
+        logger.error { "Failed request details - advertiserId: $advertiserId, influencerId: $influencerId" }
+        return null
     }
 
     /**
@@ -209,13 +282,10 @@ class FollowApiService(
     suspend fun getFollowersByAdvertiserIdFallback(
         advertiserId: UUID,
         throwable: Throwable
-    ): GetFollowersResult {
+    ): GetFollowersResult? {
         logger.error { "Circuit breaker fallback triggered for getFollowersByAdvertiserId: ${throwable.message}" }
         logger.error { "Failed request details - advertiserId: $advertiserId" }
-        throw MSAErrorException(
-            logics = "FollowApiService - getFollowersByAdvertiserId fallback",
-            message = "Failed to get followers: ${throwable.message}"
-        )
+        return null
     }
 
     /**
@@ -224,12 +294,9 @@ class FollowApiService(
     suspend fun getFollowingByInfluencerIdFallback(
         influencerId: UUID,
         throwable: Throwable
-    ): GetFollowingResult {
+    ): GetFollowingResult? {
         logger.error { "Circuit breaker fallback triggered for getFollowingByInfluencerId: ${throwable.message}" }
         logger.error { "Failed request details - influencerId: $influencerId" }
-        throw MSAErrorException(
-            logics = "FollowApiService - getFollowingByInfluencerId fallback",
-            message = "Failed to get following: ${throwable.message}"
-        )
+        return null
     }
 }

@@ -3,6 +3,7 @@ package org.example.marketing.repository.board
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dao.board.ReviewApplicationEntity
 import org.example.marketing.dto.board.request.SaveReviewApplication
+import org.example.marketing.enums.ApplicationReviewStatus
 import org.example.marketing.table.ReviewApplicationsTable
 import org.springframework.stereotype.Component
 import java.util.UUID
@@ -18,6 +19,7 @@ class ReviewApplicationRepository {
             influencerEmail = saveReviewApplication.influencerEmail
             influencerMobile = saveReviewApplication.influencerMobile
             advertisementId = saveReviewApplication.advertisementId
+            reviewStatus = ApplicationReviewStatus.PENDING
             applyMemo = saveReviewApplication.applyMemo
         }
     }

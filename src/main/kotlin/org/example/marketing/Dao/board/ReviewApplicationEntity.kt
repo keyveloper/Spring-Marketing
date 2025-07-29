@@ -13,5 +13,6 @@ class ReviewApplicationEntity(id: EntityID<Long>) : BaseDateEntity(id, ReviewApp
     var influencerEmail by ReviewApplicationsTable.influencerEmail
     var influencerMobile by ReviewApplicationsTable.influencerMobile
     var advertisementId by ReviewApplicationsTable.advertisementId
+    var reviewStatus by ReviewApplicationsTable.reviewStatus
     var applyMemo by ReviewApplicationsTable.applyMemo
 }
