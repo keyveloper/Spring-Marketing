@@ -107,6 +107,26 @@ kotlin {
     }
 }
 
+// Exclude aexample package from compilation
+sourceSets {
+    main {
+        java {
+            exclude("**/aexample/**")
+        }
+        kotlin {
+            exclude("**/aexample/**")
+        }
+    }
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.bootJar {
+    exclude("org/example/marketing/aexample/**")
+}
+
+tasks.jar {
+    exclude("org/example/marketing/aexample/**")
 }

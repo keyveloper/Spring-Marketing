@@ -3,10 +3,8 @@ package org.example.marketing.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
-import org.example.marketing.domain.user.UserProfileImageInfo
 import org.example.marketing.dto.user.request.ChangeUserProfileStatusApiRequest
 import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
-import org.example.marketing.dto.user.response.ChangeUserProfileImageStatusResult
 import org.example.marketing.dto.user.response.ChangeUserProfileStatusResponseFromServer
 import org.example.marketing.dto.user.response.SaveUserProfileImageResult
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
@@ -22,24 +20,23 @@ import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.awaitBody
-import java.util.UUID
+import java.util.*
 
 @Service
-class UserProfileImageApiService(
+class AdvertiserProfileImageApiService(
     @Qualifier("imageApiServerClient") private val imageApiServerClient: WebClient,
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) {
     private val logger = KotlinLogging.logger {}
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
-    suspend fun uploadAdvertiserProfileImageToImageServer(
+    suspend fun uploadProfileImageToImageServer(
         userId: UUID,
         userType: UserType,
         profileImageType: ProfileImageType,
         userProfileDraftId: UUID,
         file: MultipartFile
     ): SaveUserProfileImageResult {
-        logger.info { "Uploading image to image-api-server for user: ${userId}, type: ${userType}" }
 
         return try {
             circuitBreaker.executeSuspendFunction {
@@ -100,27 +97,12 @@ class UserProfileImageApiService(
         }
     }
 
-    suspend fun uploadToImageServerFallback(
-        userId: Long,
-        userType: UserType,
-        profileImageType: ProfileImageType,
-        file: MultipartFile,
-        throwable: Throwable
-    ): UserProfileImageInfo {
-        logger.error { "Circuit breaker fallback triggered for uploadToImageServer: ${throwable.message}" }
-        logger.error { "Failed request details - userId: $userId, userType: $userType, profileImageType: $profileImageType, fileName: ${file.originalFilename}" }
-        throw UploadFailedToImageServerException(
-            logics = "UserProfileImageApiService - uploadToImageServer fallback",
-            message = "Failed to upload image to image-api-server: ${throwable.message}"
-        )
-    }
-
     suspend fun changeProfileStatusToSave(
         targetEntityId: Long,
         userId: UUID,
         userType: UserType
     ): Long {
-        logger.info { "Changing profile status to save for user: ${userId}, draftId: ${targetEntityId}" }
+        logger.info { "Changing advertiser profile status to save for user: ${userId}, draftId: ${targetEntityId}" }
 
         return try {
             circuitBreaker.executeSuspendFunction {

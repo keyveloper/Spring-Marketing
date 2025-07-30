@@ -1,4 +1,3 @@
 package org.example.marketing.controller
 
-class ReviewAdvertisementController {
-}
+class ReviewAdvertisementController

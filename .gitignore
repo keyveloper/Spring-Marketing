@@ -41,3 +41,6 @@ out/
 
 ### Secret ###
 src/main/resources/application-secret.yml
+
+### Example ###
+src/main/kotlin/org/example/marketing/aexample

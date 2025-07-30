@@ -1,0 +1,195 @@
+### ===============================================
+### Advertiser Profile API Tests
+### ===============================================
+
+### Variables
+@baseUrl = http://localhost:8080
+@advertiserId = YOUR_ADVERTISER_ID_HERE
+@influencerId = YOUR_INFLUENCER_ID_HERE
+@advertiserToken = Bearer YOUR_ADVERTISER_TOKEN_HERE
+@influencerToken = Bearer YOUR_INFLUENCER_TOKEN_HERE
+
+### ===============================================
+### Advertiser Profile - GET
+### ===============================================
+
+### GET - 광고주 프로필 조회
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Accept: application/json
+
+### ===============================================
+### Advertiser Profile - UPDATE
+### ===============================================
+
+### PUT - 광고주 프로필 업데이트
+PUT {{baseUrl}}/profile/info/advertiser
+Content-Type: application/json
+Authorization: {{advertiserToken}}
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Updated Service Information",
+  "locationBrief": "Seoul, South Korea",
+  "introduction": "This is an updated introduction for advertiser profile"
+}
+
+### ===============================================
+### Advertiser Profile - DELETE
+### ===============================================
+
+### DELETE - 광고주 프로필 삭제
+DELETE {{baseUrl}}/profile/info/advertiser
+Authorization: {{advertiserToken}}
+
+### ===============================================
+### Influencer Profile API Tests
+### ===============================================
+
+### ===============================================
+### Influencer Profile - GET
+### ===============================================
+
+### GET - 인플루언서 프로필 조회
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Accept: application/json
+
+### ===============================================
+### Influencer Profile - UPDATE
+### ===============================================
+
+### PUT - 인플루언서 프로필 업데이트
+PUT {{baseUrl}}/profile/info/influencer
+Content-Type: application/json
+Authorization: {{influencerToken}}
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Updated introduction for influencer profile",
+  "job": "YouTuber & Blogger"
+}
+
+### ===============================================
+### Influencer Profile - DELETE
+### ===============================================
+
+### DELETE - 인플루언서 프로필 삭제
+DELETE {{baseUrl}}/profile/info/influencer
+Authorization: {{influencerToken}}
+
+### ===============================================
+### Test Scenarios - Success Cases
+### ===============================================
+
+### Scenario 1: 광고주 프로필 전체 플로우 (조회 -> 업데이트 -> 조회)
+
+### 1-1. 광고주 프로필 조회
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Accept: application/json
+
+###
+
+### 1-2. 광고주 프로필 업데이트
+PUT {{baseUrl}}/profile/info/advertiser
+Content-Type: application/json
+Authorization: {{advertiserToken}}
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Premium Marketing Service",
+  "locationBrief": "Gangnam, Seoul",
+  "introduction": "We provide the best marketing solutions"
+}
+
+###
+
+### 1-3. 업데이트 후 광고주 프로필 재조회
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Accept: application/json
+
+###
+
+### Scenario 2: 인플루언서 프로필 전체 플로우 (조회 -> 업데이트 -> 조회)
+
+### 2-1. 인플루언서 프로필 조회
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Accept: application/json
+
+###
+
+### 2-2. 인플루언서 프로필 업데이트
+PUT {{baseUrl}}/profile/info/influencer
+Content-Type: application/json
+Authorization: {{influencerToken}}
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Passionate content creator specializing in tech reviews",
+  "job": "Tech Reviewer & YouTuber"
+}
+
+###
+
+### 2-3. 업데이트 후 인플루언서 프로필 재조회
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Accept: application/json
+
+###
+
+### ===============================================
+### Test Scenarios - Error Cases
+### ===============================================
+
+### Error 1: 존재하지 않는 광고주 프로필 조회 (NOT_FOUND)
+GET {{baseUrl}}/profile/info/advertiser/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+###
+
+### Error 2: 존재하지 않는 인플루언서 프로필 조회 (NOT_FOUND)
+GET {{baseUrl}}/profile/info/influencer/00000000-0000-0000-0000-000000000000
+Accept: application/json
+
+###
+
+### Error 3: 잘못된 Authorization 헤더로 광고주 프로필 업데이트
+PUT {{baseUrl}}/profile/info/advertiser
+Content-Type: application/json
+Authorization: Bearer INVALID_TOKEN
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Test Service",
+  "locationBrief": "Seoul",
+  "introduction": "Test"
+}
+
+###
+
+### Error 4: 잘못된 Authorization 헤더로 인플루언서 프로필 업데이트
+PUT {{baseUrl}}/profile/info/influencer
+Content-Type: application/json
+Authorization: Bearer INVALID_TOKEN
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Test",
+  "job": "Tester"
+}
+
+###
+
+### Error 5: Authorization 헤더 없이 광고주 프로필 삭제
+DELETE {{baseUrl}}/profile/info/advertiser
+
+###
+
+### Error 6: Authorization 헤더 없이 인플루언서 프로필 삭제
+DELETE {{baseUrl}}/profile/info/influencer
+
+###
