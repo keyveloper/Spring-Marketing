@@ -1,0 +1,331 @@
+### Profile API Tests (Advertiser & Influencer)
+
+@baseUrl = http://localhost:8080
+@advertiserId = YOUR_ADVERTISER_ID_HERE
+@influencerId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
+@advertiserToken = Bearer YOUR_ADVERTISER_JWT_TOKEN_HERE
+@influencerToken = Bearer eyJraWQiOiJZaWZyNDFFVnZIbFZSVmZTSEhYcEpFVUsxd08xMktyY0tNZWQ5T0NoYUxZPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNGE4MGQ4Yy1kMDIxLTcwYTktYmEyOC01YmFiMDdjODUzYzUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb21cL2FwLW5vcnRoZWFzdC0yX1N3MkYxSHNVNyIsInBob25lX251bWJlcl92ZXJpZmllZCI6ZmFsc2UsImNvZ25pdG86dXNlcm5hbWUiOiJpbmZsdSIsIm9yaWdpbl9qdGkiOiI1OGQ5ZmRkMS03YTUwLTQ0Y2MtYWFlNi1mMDA3NjczOGZmNmIiLCJjdXN0b206dXNlclR5cGUiOiJJTkZMVUVOQ0VSIiwiYXVkIjoiNGp1cDcxN29xMWNrcG9nb2JxNzY4bzdyNmMiLCJldmVudF9pZCI6IjFjYWQ5ZDk2LTRmOTEtNDM0ZS04OGQ4LTFhMGY2ZGE1NTRlNCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzY1MzMwNDc2LCJuYW1lIjoiZGRkIiwicGhvbmVfbnVtYmVyIjoiKzgyMTAzMzUzNTcxMSIsImV4cCI6MTc2NTM0MzE4NywiaWF0IjoxNzY1MzM5NTg3LCJqdGkiOiJjNDdkOGY2NS0wYzI1LTQ5ZTktOTIyNS0wMzMwNzVkYzExNmQiLCJlbWFpbCI6ImRpZGVoZHJiMjFAbmF2ZXIuY29tIn0.j_6CCV9_HwgLoFi5fmlKhjZPs0Dd69vCC_VfibvJmgvBELnSrlPpeBqXL69gfwuMTUAtGVkdkwYK0oagW2xBAgKLwi-liaJZKi6FMRoch7bqhasDyVFtqSQU2Mo3iIR9J2W0Wp2mMeZR1HNtCJhcDuQyKpiQftSvUJIR6TYpoUeMR6JTRGdDVV77jrmtzp9U3lWonVWWq4snb-mbJt5XEw_JBBtggsdQbe9rmJwoY0O5WxghWI2mKACR4V5y6z52VdTXlnHK8vi9gohM1Zx4Kqavz8Js34ZB6Ed7fyHKhG7Eu2Jbl-V_CDt7i_u9NUusgjpBqgfaYdpHW6Qwytsj9g
+
+### ===============================================
+### Advertiser Profile API Tests
+### ===============================================
+
+###
+# Get Advertiser Profile by ID
+# Returns advertiser profile information including presigned URLs for images
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "getAdvertiserProfileInfoResult": {
+#     "advertiserId": "uuid",
+#     "profilePresignedUrl": "https://...",
+#     "backgroundPresignedUrl": "https://...",
+#     "userProfileDraftId": "uuid",
+#     "serviceInfo": "Marketing Services",
+#     "locationBrief": "Seoul, Korea",
+#     "introduction": "We provide best services"
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+###
+# Update Advertiser Profile
+# Requires advertiser authentication
+PUT {{baseUrl}}/profile/info/advertiser
+Authorization: {{advertiserToken}}
+Content-Type: application/json
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Updated Marketing Services - Premium Package",
+  "locationBrief": "Gangnam, Seoul, South Korea",
+  "introduction": "We provide the best marketing solutions with proven track record"
+}
+
+###
+# Expected Response:
+# {
+#   "updateAdvertiserProfileInfoResult": {
+#     "updatedCount": 1
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+###
+# Delete Advertiser Profile
+# Requires advertiser authentication
+DELETE {{baseUrl}}/profile/info/advertiser
+Authorization: {{advertiserToken}}
+
+###
+# Expected Response:
+# {
+#   "deleteAdvertiserProfileInfoResult": {
+#     "deletedCount": 1
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+### ===============================================
+### Influencer Profile API Tests
+### ===============================================
+
+###
+# Get Influencer Profile by ID
+# Returns influencer profile information including presigned URLs for images
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "getInfluencerProfileInfoResult": {
+#     "influencerId": "uuid",
+#     "profilePresignedUrl": "https://...",
+#     "backgroundPresignedUrl": "https://...",
+#     "userProfileDraftId": "uuid",
+#     "introduction": "Passionate content creator",
+#     "job": "YouTuber & Blogger"
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+###
+# Update Influencer Profile
+# Requires influencer authentication
+PUT {{baseUrl}}/profile/info/influencer
+Authorization: {{influencerToken}}
+Content-Type: application/json
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Passionate tech reviewer specializing in mobile devices and gadgets. 100K+ subscribers on YouTube.",
+  "job": "Tech Reviewer & Content Creator"
+}
+
+###
+# Expected Response:
+# {
+#   "updateInfluencerProfileInfoResult": {
+#     "updatedCount": 1
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+###
+# Delete Influencer Profile
+# Requires influencer authentication
+DELETE {{baseUrl}}/profile/info/influencer
+Authorization: {{influencerToken}}
+
+###
+# Expected Response:
+# {
+#   "deleteInfluencerProfileInfoResult": {
+#     "deletedCount": 1
+#   },
+#   "httpStatus": "OK",
+#   "msaServiceErrorCode": "OK"
+# }
+
+### ===============================================
+### Error Cases - Advertiser Profile
+### ===============================================
+
+###
+# Test Case: Get non-existent advertiser profile (NOT_FOUND)
+GET {{baseUrl}}/profile/info/advertiser/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "getAdvertiserProfileInfoResult": null,
+#   "httpStatus": "NOT_FOUND",
+#   "msaServiceErrorCode": "NOT_FOUND_ADVERTISER_PROFILE",
+#   "errorMessage": "Advertiser profile not found with advertiserId: ..."
+# }
+
+###
+# Test Case: Update without authorization
+PUT {{baseUrl}}/profile/info/advertiser
+Content-Type: application/json
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Test",
+  "locationBrief": "Test",
+  "introduction": "Test"
+}
+
+###
+# Test Case: Update with invalid token
+PUT {{baseUrl}}/profile/info/advertiser
+Authorization: Bearer invalid_token_here
+Content-Type: application/json
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Test",
+  "locationBrief": "Test",
+  "introduction": "Test"
+}
+
+###
+# Test Case: Update with influencer token (should fail - wrong user type)
+PUT {{baseUrl}}/profile/info/advertiser
+Authorization: {{influencerToken}}
+Content-Type: application/json
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Test",
+  "locationBrief": "Test",
+  "introduction": "Test"
+}
+
+###
+# Test Case: Delete without authorization
+DELETE {{baseUrl}}/profile/info/advertiser
+
+###
+# Test Case: Delete with invalid token
+DELETE {{baseUrl}}/profile/info/advertiser
+Authorization: Bearer invalid_token_here
+
+### ===============================================
+### Error Cases - Influencer Profile
+### ===============================================
+
+###
+# Test Case: Get non-existent influencer profile (NOT_FOUND)
+GET {{baseUrl}}/profile/info/influencer/00000000-0000-0000-0000-000000000000
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "getInfluencerProfileInfoResult": null,
+#   "httpStatus": "NOT_FOUND",
+#   "msaServiceErrorCode": "NOT_FOUND_INFLUENCER_PROFILE",
+#   "errorMessage": "Influencer profile not found with influencerId: ..."
+# }
+
+###
+# Test Case: Update without authorization
+PUT {{baseUrl}}/profile/info/influencer
+Content-Type: application/json
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Test",
+  "job": "Test"
+}
+
+###
+# Test Case: Update with invalid token
+PUT {{baseUrl}}/profile/info/influencer
+Authorization: Bearer invalid_token_here
+Content-Type: application/json
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Test",
+  "job": "Test"
+}
+
+###
+# Test Case: Update with advertiser token (should fail - wrong user type)
+PUT {{baseUrl}}/profile/info/influencer
+Authorization: {{advertiserToken}}
+Content-Type: application/json
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Test",
+  "job": "Test"
+}
+
+###
+# Test Case: Delete without authorization
+DELETE {{baseUrl}}/profile/info/influencer
+
+###
+# Test Case: Delete with invalid token
+DELETE {{baseUrl}}/profile/info/influencer
+Authorization: Bearer invalid_token_here
+
+### ===============================================
+### Test Scenarios - Complete Flows
+### ===============================================
+
+###
+# Scenario 1: Advertiser Profile Flow
+# 1. Get profile -> 2. Update profile -> 3. Get updated profile
+
+### Step 1: Get current advertiser profile
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Content-Type: application/json
+
+###
+### Step 2: Update advertiser profile
+PUT {{baseUrl}}/profile/info/advertiser
+Authorization: {{advertiserToken}}
+Content-Type: application/json
+
+{
+  "advertiserId": "{{advertiserId}}",
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "serviceInfo": "Premium Marketing & Advertising Solutions",
+  "locationBrief": "Gangnam-gu, Seoul, South Korea",
+  "introduction": "Leading marketing agency with 10+ years of experience. We specialize in digital marketing and brand consulting."
+}
+
+###
+### Step 3: Verify updated advertiser profile
+GET {{baseUrl}}/profile/info/advertiser/{{advertiserId}}
+Content-Type: application/json
+
+###
+# Scenario 2: Influencer Profile Flow
+# 1. Get profile -> 2. Update profile -> 3. Get updated profile
+
+### Step 1: Get current influencer profile
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Content-Type: application/json
+
+###
+### Step 2: Update influencer profile
+PUT {{baseUrl}}/profile/info/influencer
+Authorization: {{influencerToken}}
+Content-Type: application/json
+
+{
+  "userProfileDraftId": "550e8400-e29b-41d4-a716-446655440000",
+  "influencerId": "{{influencerId}}",
+  "introduction": "Tech enthusiast and content creator with 200K+ subscribers. I create honest reviews of the latest gadgets and technology trends.",
+  "job": "Tech Reviewer & YouTuber"
+}
+
+###
+### Step 3: Verify updated influencer profile
+GET {{baseUrl}}/profile/info/influencer/{{influencerId}}
+Content-Type: application/json
+
+###

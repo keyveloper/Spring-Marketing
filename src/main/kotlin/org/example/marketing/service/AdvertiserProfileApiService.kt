@@ -101,7 +101,7 @@ class AdvertiserProfileApiService(
         }
     }
 
-    suspend fun getAdvertiserProfileInfoById(advertiserId: String): GetAdvertiserProfileInfoResult? {
+    suspend fun getAdvertiserProfileInfoById(advertiserId: String): GetAdvertiserProfileInfoWithImages? {
         logger.info { "Getting advertiser profile info for advertiserId: $advertiserId" }
 
         return try {
@@ -115,7 +115,17 @@ class AdvertiserProfileApiService(
                         "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
 
                 when (response.msaServiceErrorCode) {
-                    MSAServiceErrorCode.OK -> response.getAdvertiserProfileInfoResult
+                    MSAServiceErrorCode.OK -> {
+                        val profileInfoResult = response.getAdvertiserProfileInfoResult
+                        if (profileInfoResult != null) {
+                            val profileImages = advertiserProfileImageApiService.getUserProfileImagesByUserId(
+                                UUID.fromString(advertiserId)
+                            )
+                            GetAdvertiserProfileInfoWithImages.of(profileInfoResult, profileImages)
+                        } else {
+                            null
+                        }
+                    }
                     else -> {
                         logger.error { "Get failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
                                 ", errorMessage=${response.errorMessage}" }
@@ -196,17 +206,27 @@ class AdvertiserProfileApiService(
     }
 
     // Fallback methods
-    private fun getAdvertiserProfileInfoByIdFallback(advertiserId: String, ex: Throwable): GetAdvertiserProfileInfoResult? {
+    private fun getAdvertiserProfileInfoByIdFallback(
+        advertiserId: String,
+        ex: Throwable
+    ): GetAdvertiserProfileInfoResult? {
         logger.error { "Fallback triggered for getAdvertiserProfileInfoById: ${ex.message}" }
         return null
     }
 
-    private fun updateAdvertiserProfileInfoByIdFallback(advertiserId: String, domain: AdvertiserProfile, ex: Throwable): UpdateAdvertiserProfileInfoResult {
+    private fun updateAdvertiserProfileInfoByIdFallback(
+        advertiserId: String,
+        domain: AdvertiserProfile,
+        ex: Throwable
+    ): UpdateAdvertiserProfileInfoResult {
         logger.error { "Fallback triggered for updateAdvertiserProfileInfoById: ${ex.message}" }
         return UpdateAdvertiserProfileInfoResult(updatedCount = -1)
     }
 
-    private fun deleteAdvertiserProfileInfoByIdFallback(advertiserId: String, ex: Throwable): DeleteAdvertiserProfileInfoResult {
+    private fun deleteAdvertiserProfileInfoByIdFallback(
+        advertiserId: String,
+        ex: Throwable
+    ): DeleteAdvertiserProfileInfoResult {
         logger.error { "Fallback triggered for deleteAdvertiserProfileInfoById: ${ex.message}" }
         return DeleteAdvertiserProfileInfoResult(deletedCount = -1)
     }

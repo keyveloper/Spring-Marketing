@@ -59,12 +59,12 @@ class InfluencerProfileApiController(
     @GetMapping("/profile/info/influencer/{influencerId}")
     suspend fun getInfluencerProfileInfoById(
         @PathVariable influencerId: String
-    ): ResponseEntity<GetInfluencerProfileInfoResponseFromServer> {
+    ): ResponseEntity<GetInfluencerProfileInfoWithImagesResponseToClient> {
         val getInfluencerProfileInfoResult = influencerProfileApiService.getInfluencerProfileInfoById(influencerId)
 
         if (getInfluencerProfileInfoResult == null) {
-            val errorResponse = GetInfluencerProfileInfoResponseFromServer(
-                getInfluencerProfileInfoResult = null,
+            val errorResponse = GetInfluencerProfileInfoWithImagesResponseToClient(
+                result = null,
                 httpStatus = HttpStatus.NOT_FOUND,
                 msaServiceErrorCode = MSAServiceErrorCode.NOT_FOUND_INFLUENCER_PROFILE,
                 errorMessage = "Influencer profile not found with influencerId: $influencerId"
@@ -72,7 +72,7 @@ class InfluencerProfileApiController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
         }
 
-        val response = GetInfluencerProfileInfoResponseFromServer.of(
+        val response = GetInfluencerProfileInfoWithImagesResponseToClient.of(
             result = getInfluencerProfileInfoResult,
             httpStatus = HttpStatus.OK,
             msaServiceErrorCode = MSAServiceErrorCode.OK

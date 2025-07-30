@@ -94,7 +94,7 @@ class InfluencerProfileApiService(
         }
     }
 
-    suspend fun getInfluencerProfileInfoById(influencerId: String): GetInfluencerProfileInfoResult? {
+    suspend fun getInfluencerProfileInfoById(influencerId: String): GetInfluencerProfileInfoWithImages? {
         logger.info { "Getting influencer profile info for influencerId: $influencerId" }
 
         return try {
@@ -108,7 +108,17 @@ class InfluencerProfileApiService(
                         "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
 
                 when (response.msaServiceErrorCode) {
-                    MSAServiceErrorCode.OK -> response.getInfluencerProfileInfoResult
+                    MSAServiceErrorCode.OK -> {
+                        val profileInfoResult = response.getInfluencerProfileInfoResult
+                        if (profileInfoResult != null) {
+                            val profileImages = influencerProfileImageApiService.getUserProfileImagesByUserId(
+                                UUID.fromString(influencerId)
+                            )
+                            GetInfluencerProfileInfoWithImages.of(profileInfoResult, profileImages)
+                        } else {
+                            null
+                        }
+                    }
                     else -> {
                         logger.error { "Get failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
                                 ", errorMessage=${response.errorMessage}" }

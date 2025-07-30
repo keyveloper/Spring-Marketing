@@ -29,4 +29,10 @@ enum class FrontErrorCode(val code: Int, val message: String) {
 
     // 70000 ~ MSA
     UNEXPECTED_MSA_SERVER_ERROR(70000, "unexpected MSA server error"),
+
+    // 71000 ~ Like MSA Error
+    LIKE_FAILED(71000, "Failed to like advertisement"),
+    UNLIKE_FAILED(71001, "Failed to unlike advertisement"),
+    GET_LIKED_ADS_FAILED(71002, "Failed to get liked advertisements"),
+    GET_INFLUENCERS_BY_AD_FAILED(71003, "Failed to get influencers by advertisement"),
 }

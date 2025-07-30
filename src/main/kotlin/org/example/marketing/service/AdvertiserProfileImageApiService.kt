@@ -8,6 +8,9 @@ import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
 import org.example.marketing.dto.user.response.ChangeUserProfileStatusResponseFromServer
 import org.example.marketing.dto.user.response.SaveUserProfileImageResult
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
+import org.example.marketing.dto.user.response.UserProfileImageResponseFromServer
+import org.example.marketing.dto.user.response.UserProfileImageMetadataWithUrl
+import org.example.marketing.enums.MSAServiceErrorCode
 import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.UploadFailedToImageServerException
@@ -94,6 +97,37 @@ class AdvertiserProfileImageApiService(
         } catch (ex: Throwable) {
             logger.error { "Failed to upload image to image-api-server: ${ex.message}" }
             throw ex
+        }
+    }
+
+    suspend fun getUserProfileImagesByUserId(userId: UUID): List<UserProfileImageMetadataWithUrl> {
+        logger.info { "Getting user profile images for userId: $userId" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val response = imageApiServerClient.get()
+                    .uri("/api/user-profile/$userId")
+                    .retrieve()
+                    .awaitBody<UserProfileImageResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        logger.info { "Successfully retrieved profile images: count=${response.result.size}" }
+                        response.result
+                    }
+                    else -> {
+                        logger.error { "Get profile images failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        emptyList()
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to get user profile images: ${ex.message}" }
+            emptyList()
         }
     }
 

@@ -59,12 +59,12 @@ class AdvertiserProfileController(
     @GetMapping("/profile/info/advertiser/{advertiserId}")
     suspend fun getAdvertiserProfileInfoById(
         @PathVariable advertiserId: String
-    ): ResponseEntity<GetAdvertiserProfileInfoResponseFromServer> {
+    ): ResponseEntity<GetAdvertiserProfileInfoWithImagesResponseToClient> {
         val getAdvertiserProfileInfoResult = advertiserProfileApiService.getAdvertiserProfileInfoById(advertiserId)
 
         if (getAdvertiserProfileInfoResult == null) {
-            val errorResponse = GetAdvertiserProfileInfoResponseFromServer(
-                getAdvertiserProfileInfoResult = null,
+            val errorResponse = GetAdvertiserProfileInfoWithImagesResponseToClient(
+                result = null,
                 httpStatus = HttpStatus.NOT_FOUND,
                 msaServiceErrorCode = MSAServiceErrorCode.NOT_FOUND_ADVERTISER_PROFILE,
                 errorMessage = "Advertiser profile not found with advertiserId: $advertiserId"
@@ -72,7 +72,7 @@ class AdvertiserProfileController(
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse)
         }
 
-        val response = GetAdvertiserProfileInfoResponseFromServer.of(
+        val response = GetAdvertiserProfileInfoWithImagesResponseToClient.of(
             result = getAdvertiserProfileInfoResult,
             httpStatus = HttpStatus.OK,
             msaServiceErrorCode = MSAServiceErrorCode.OK
