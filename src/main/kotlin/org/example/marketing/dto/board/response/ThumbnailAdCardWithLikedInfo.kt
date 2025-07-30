@@ -1,9 +1,10 @@
 package org.example.marketing.dto.board.response
 
 import org.example.marketing.enums.ChannelType
+import org.example.marketing.enums.LikeStatus
 import org.example.marketing.enums.ReviewType
 
-data class ThumbnailAdCard(
+data class ThumbnailAdCardWithLikedInfo(
     val advertisementId: Long,
     val presignedUrl: String,
     val itemInfo: String?,
@@ -13,11 +14,16 @@ data class ThumbnailAdCard(
     val recruitNumber: Int,
     val appliedCount: Int,
     val channelType: ChannelType,
-    val reviewType: ReviewType
+    val reviewType: ReviewType,
+    val isLiked: LikeStatus
 ) {
     companion object {
-        fun of(ad: AdvertisementWithCategoriesAndAppliedCountResult, thumbnailUrl: String): ThumbnailAdCard {
-            return ThumbnailAdCard(
+        fun of(
+            ad: AdvertisementWithCategoriesAndAppliedCountResult,
+            thumbnailUrl: String,
+            isLiked: LikeStatus
+        ): ThumbnailAdCardWithLikedInfo {
+            return ThumbnailAdCardWithLikedInfo(
                 advertisementId = ad.id,
                 title = ad.title,
                 itemInfo = ad.itemInfo,
@@ -28,6 +34,7 @@ data class ThumbnailAdCard(
                 channelType = ad.channelType,
                 reviewType = ad.reviewType,
                 presignedUrl = thumbnailUrl,
+                isLiked = isLiked
             )
         }
     }

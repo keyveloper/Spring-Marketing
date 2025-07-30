@@ -3,6 +3,7 @@ package org.example.marketing.service
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
+import org.example.marketing.dto.like.request.CheckLikedAdsByInfluencerIdApiRequest
 import org.example.marketing.dto.like.request.LikeOrSwitchApiRequest
 import org.example.marketing.dto.like.request.UnLikeApiRequest
 import org.example.marketing.dto.like.response.*
@@ -226,6 +227,59 @@ class LikeApiService(
             }
         } catch (ex: Throwable) {
             logger.error { "Failed to get influencers by ad id: ${ex.message}" }
+            throw ex
+        }
+    }
+
+    /**
+     * 인플루언서가 특정 광고들을 좋아요 했는지 확인
+     *
+     * @param influencerId Influencer ID
+     * @param advertisementIds Advertisement IDs to check
+     * @return CheckLikedAdsByInfluencerIdResult
+     * @throws GetLikedAdsFailedException 조회 실패 시
+     */
+    suspend fun checkLikedAdsByInfluencerId(
+        influencerId: UUID,
+        advertisementIds: List<Long>
+    ): CheckLikedAdsByInfluencerIdResult {
+        logger.info { "CheckLikedAdsByInfluencerId: influencerId=$influencerId, advertisementIds=$advertisementIds" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val request = CheckLikedAdsByInfluencerIdApiRequest(
+                    influencerId = influencerId,
+                    advertisementIds = advertisementIds
+                )
+
+                val response = likeApiServerClient.post()
+                    .uri("/api/v1/like/advertisement/liked")
+                    .bodyValue(request)
+                    .retrieve()
+                    .awaitBody<CheckLikedAdsByInfluencerIdResponseFromServer>()
+
+                logger.info { "Received response from like-api-server: msaServiceErrorCode=${response.msaServiceErrorCode}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        val result = response.result
+                            ?: throw GetLikedAdsFailedException(
+                                logics = "LikeApiService.checkLikedAdsByInfluencerId: result is null"
+                            )
+                        logger.info { "Successfully checked liked ads: count=${result.likedAdvertisements.size}" }
+                        result
+                    }
+                    else -> {
+                        logger.error { "CheckLikedAdsByInfluencerId failed: ${response.errorMessage}" }
+                        throw GetLikedAdsFailedException(
+                            logics = "LikeApiService.checkLikedAdsByInfluencerId: ${response.logics}",
+                            message = response.errorMessage ?: "Failed to check liked advertisements"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to check liked ads by influencer id: ${ex.message}" }
             throw ex
         }
     }

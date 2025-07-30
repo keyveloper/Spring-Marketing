@@ -1,7 +1,6 @@
 package org.example.marketing.service
 
-import org.example.marketing.dto.board.response.AdvertisementWithCategories
-import org.example.marketing.repository.board.AdvertisementDeliveryCategoryRepository
+import org.example.marketing.dto.board.response.AdvertisementWithCategoriesAndAppliedCountResult
 import org.example.marketing.repository.board.AdvertisementEventRepository
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
@@ -9,80 +8,37 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertisementEventService(
     private val advertisementEventRepository: AdvertisementEventRepository,
-    private val advertisementDeliveryCategoryRepository: AdvertisementDeliveryCategoryRepository
 ) {
-    fun findFreshAll(): List<AdvertisementWithCategories> {
+    /**
+     * Fresh 광고 목록 조회 (카테고리 + 지원자 수 포함)
+     * - Repository에서 JOIN 결과(중복 행)를 받아 그룹핑하여 반환
+     */
+    fun findFreshAll(): List<AdvertisementWithCategoriesAndAppliedCountResult> {
         return transaction {
-            val adEntities = advertisementEventRepository.findFreshAll()
-            val categoryEntities = advertisementDeliveryCategoryRepository
-                .findAllByAdvertisementIds(adEntities.map { it.id.value })
-
-            // Group categories by advertisement ID
-            val categoriesMap = categoryEntities
-                .groupBy({ it.advertisementId }, { it.category })
-
-            // Map each advertisement entity to AdvertisementWithCategories
-            adEntities.map { adEntity ->
-                val categories = categoriesMap[adEntity.id.value] ?: emptyList()
-                AdvertisementWithCategories(
-                    id = adEntity.id.value,
-                    advertiserId = adEntity.advertiserId,
-                    title = adEntity.title,
-                    reviewType = adEntity.reviewType,
-                    channelType = adEntity.channelType,
-                    recruitmentNumber = adEntity.recruitmentNumber,
-                    itemName = adEntity.itemName,
-                    recruitmentStartAt = adEntity.recruitmentStartAt,
-                    recruitmentEndAt = adEntity.recruitmentEndAt,
-                    announcementAt = adEntity.announcementAt,
-                    reviewStartAt = adEntity.reviewStartAt,
-                    reviewEndAt = adEntity.reviewEndAt,
-                    endAt = adEntity.endAt,
-                    siteUrl = adEntity.siteUrl,
-                    itemInfo = adEntity.itemInfo,
-                    createdAt = adEntity.createdAt,
-                    updatedAt = adEntity.updatedAt,
-                    categories = categories
-                )
-            }
+            val rows = advertisementEventRepository.findFreshAll()
+            AdvertisementWithCategoriesAndAppliedCountResult.fromRows(rows)
         }
     }
 
-    fun findDeadlineAll(): List<AdvertisementWithCategories> {
+    /**
+     * Deadline 광고 목록 조회 (카테고리 + 지원자 수 포함)
+     * - Repository에서 JOIN 결과(중복 행)를 받아 그룹핑하여 반환
+     */
+    fun findDeadlineAll(): List<AdvertisementWithCategoriesAndAppliedCountResult> {
         return transaction {
-            val adEntities = advertisementEventRepository.findDeadlineAll()
-            val categoryEntities = advertisementDeliveryCategoryRepository
-                .findAllByAdvertisementIds(adEntities.map { it.id.value })
+            val rows = advertisementEventRepository.findDeadlineAll()
+            AdvertisementWithCategoriesAndAppliedCountResult.fromRows(rows)
+        }
+    }
 
-            // Group categories by advertisement ID
-            val categoriesMap = categoryEntities
-                .groupBy({ it.advertisementId }, { it.category })
-
-            // Map each advertisement entity to AdvertisementWithCategories
-            adEntities.map { adEntity ->
-                val categories = categoriesMap[adEntity.id.value] ?: emptyList()
-                AdvertisementWithCategories(
-                    id = adEntity.id.value,
-                    advertiserId = adEntity.advertiserId,
-                    title = adEntity.title,
-                    reviewType = adEntity.reviewType,
-                    channelType = adEntity.channelType,
-                    recruitmentNumber = adEntity.recruitmentNumber,
-                    itemName = adEntity.itemName,
-                    recruitmentStartAt = adEntity.recruitmentStartAt,
-                    recruitmentEndAt = adEntity.recruitmentEndAt,
-                    announcementAt = adEntity.announcementAt,
-                    reviewStartAt = adEntity.reviewStartAt,
-                    reviewEndAt = adEntity.reviewEndAt,
-                    endAt = adEntity.endAt,
-                    siteUrl = adEntity.siteUrl,
-                    itemInfo = adEntity.itemInfo,
-                    createdAt = adEntity.createdAt,
-                    updatedAt = adEntity.updatedAt,
-                    categories = categories
-                )
-            }
+    /**
+     * Hot 광고 목록 조회 (카테고리 + 지원자 수 포함)
+     * - Repository에서 JOIN 결과(중복 행)를 받아 그룹핑하여 반환
+     */
+    fun findHotAll(): List<AdvertisementWithCategoriesAndAppliedCountResult> {
+        return transaction {
+            val rows = advertisementEventRepository.findHotAll()
+            AdvertisementWithCategoriesAndAppliedCountResult.fromRows(rows)
         }
     }
 }
-

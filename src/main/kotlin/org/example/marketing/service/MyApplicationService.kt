@@ -47,6 +47,8 @@ class MyApplicationService(
                         title = application.title,
                         recruitmentStartAt = application.recruitmentStartAt,
                         recruitmentEndAt = application.recruitmentEndAt,
+                        recruitNumber = application.recruitmentNumber,
+                        appliedCount = 0, // 내 지원 목록에서는 appliedCount 미사용
                         channelType = application.channelType,
                         reviewType = application.reviewType
                     )
