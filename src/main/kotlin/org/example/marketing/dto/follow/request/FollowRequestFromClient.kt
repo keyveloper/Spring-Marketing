@@ -4,5 +4,4 @@ import java.util.UUID
 
 data class FollowRequestFromClient(
     val advertiserId: UUID,
-    val influencerId: UUID
 )

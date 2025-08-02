@@ -4,5 +4,4 @@ import java.util.UUID
 
 data class UnFollowRequestFromClient(
     val advertiserId: UUID,
-    val influencerId: UUID
 )

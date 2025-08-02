@@ -8,6 +8,7 @@ import org.example.marketing.dto.follow.response.GetFollowersResponseToClient
 import org.example.marketing.dto.follow.response.GetFollowingResponseToClient
 import org.example.marketing.dto.follow.response.UnFollowResponseToClient
 import org.example.marketing.enums.FrontErrorCode
+import org.example.marketing.service.AuthApiService
 import org.example.marketing.service.FollowApiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -20,6 +21,7 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/v1/follow")
 class FollowApiController(
+    private val authApiService: AuthApiService,
     private val followApiService: FollowApiService
 ) {
     private val logger = KotlinLogging.logger {}
@@ -34,13 +36,16 @@ class FollowApiController(
      */
     @PostMapping
     suspend fun follow(
+        @RequestHeader("Authorization") authorization: String,
         @RequestBody requestFromClient: FollowRequestFromClient
     ): ResponseEntity<FollowResponseToClient> {
-        logger.info { "POST /api/v1/follow - advertiserId=${requestFromClient.advertiserId}, influencerId=${requestFromClient.influencerId}" }
+        val extractedInfluencer = authApiService.validateInfluencer(authorization)
+        val influencerId = extractedInfluencer.userId
+        logger.info { "POST /api/v1/follow - advertiserId=${requestFromClient.advertiserId}, influencerId=${influencerId}" }
 
         val result = followApiService.follow(
             advertiserId = requestFromClient.advertiserId,
-            influencerId = requestFromClient.influencerId
+            influencerId = extractedInfluencer.userId
         )
 
         val responseToClient = FollowResponseToClient(
@@ -63,13 +68,17 @@ class FollowApiController(
      */
     @PostMapping("/unfollow")
     suspend fun unFollow(
+        @RequestHeader("Authorization") authorization: String,
         @RequestBody requestFromClient: UnFollowRequestFromClient
     ): ResponseEntity<UnFollowResponseToClient> {
-        logger.info { "POST /api/v1/follow/unfollow - advertiserId=${requestFromClient.advertiserId}, influencerId=${requestFromClient.influencerId}" }
+        val extractedInfluencer = authApiService.validateInfluencer(authorization)
+        val influencerId = extractedInfluencer.userId
+        logger.info { "POST /api/v1/follow/unfollow - advertiserId=${requestFromClient.advertiserId}" +
+                ", influencerId=${influencerId}" }
 
         val result = followApiService.unFollow(
             advertiserId = requestFromClient.advertiserId,
-            influencerId = requestFromClient.influencerId
+            influencerId = influencerId
         )
 
         val responseToClient = UnFollowResponseToClient(

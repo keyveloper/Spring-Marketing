@@ -5,6 +5,9 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.dto.user.response.ExtractUserResponseFromServer
 import org.example.marketing.dto.user.response.ExtractedUserFromToken
+import org.example.marketing.dto.user.response.GetUserInfoResponseFromServer
+import org.example.marketing.dto.user.response.GetUserInfoResult
+import java.util.UUID
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.example.marketing.exception.MSAErrorException
 import org.springframework.beans.factory.annotation.Qualifier
@@ -127,6 +130,53 @@ class AuthApiService(
     }
 
     /**
+     * 사용자 정보 조회
+     *
+     * @param userId 사용자 UUID
+     * @return GetUserInfoResult 사용자 정보
+     * @throws MSAErrorException 조회 실패 시
+     */
+    suspend fun getUserInfo(userId: UUID): GetUserInfoResult? {
+        logger.info { "Getting user info for userId: $userId" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val response = authApiServerClient.get()
+                    .uri("/api/v1/user/$userId")
+                    .retrieve()
+                    .awaitBody<GetUserInfoResponseFromServer>()
+
+                logger.info { "Received response from auth-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        val result = response.result
+                            ?: throw MSAErrorException(
+                                logics = "AuthApiService - getUserInfo: result is null",
+                                message = "Failed to get user information"
+                            )
+
+                        logger.info { "Successfully retrieved user info: userId=${result.userId}, " +
+                                "email=${result.email}, name=${result.name}" }
+
+                        result
+                    }
+                    else -> {
+                        logger.error { "Get user info failed with msaServiceErrorCode=" +
+                                "${response.msaServiceErrorCode}, errorMessage=${response.errorMessage}, " +
+                                "logics=${response.logics}" }
+                        null
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to get user info: ${ex.message}" }
+            throw ex
+        }
+    }
+
+    /**
      * Influencer 검증 실패 시 Fallback 메서드
      */
     suspend fun validateInfluencerFallback(
@@ -154,5 +204,19 @@ class AuthApiService(
             logics = "AuthApiService - validateAdvertiser fallback",
             message = "Failed to validate advertiser token: ${throwable.message}"
         )
+    }
+
+
+    /**
+     * 사용자 정보 조회 실패 시 Fallback 메서드
+     */
+    suspend fun getUserInfoFallback(
+        userId: UUID,
+        throwable: Throwable
+    ): GetUserInfoResult? {
+        logger.error { "Circuit breaker fallback triggered for getUserInfo: ${throwable.message}" }
+        logger.error { "Failed request details - userId: $userId" }
+
+        return null
     }
 }

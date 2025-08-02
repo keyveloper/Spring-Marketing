@@ -1,0 +1,14 @@
+### Auth API Tests
+
+@baseUrl = http://localhost:8080
+@userId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
+
+### ===============================================
+### User Info API Tests
+### ===============================================
+
+###
+# Get User Info by ID
+# Returns user information from Cognito
+GET {{baseUrl}}/summary/advertisement-owner/14
+Content-Type: application/json

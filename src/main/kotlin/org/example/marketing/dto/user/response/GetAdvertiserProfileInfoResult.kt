@@ -3,11 +3,12 @@ package org.example.marketing.dto.user.response
 import java.util.*
 
 data class GetAdvertiserProfileInfoResult(
+    val id: Long,
     val advertiserId: UUID,
-    val profilePresignedUrl: String,
-    val backgroundPresignedUrl: String,
     val userProfileDraftId: UUID,
     val serviceInfo: String,
     val locationBrief: String,
-    val introduction: String?
+    val introduction: String?,
+    val createdAt: Long,
+    val updatedAt: Long
 )

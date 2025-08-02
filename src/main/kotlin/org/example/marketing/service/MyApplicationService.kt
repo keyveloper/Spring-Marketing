@@ -64,10 +64,7 @@ class MyApplicationService(
                         isLiked = isLiked
                     )
 
-                    ThumbnailAdCardWithApplyInfo(
-                        appliedDate = application.applicationCreatedAt,
-                        thumbnailAdCardLikedInfo = thumbnailAdCard
-                    )
+                    ThumbnailAdCardWithApplyInfo.of(application, thumbnailAdCard)
                 } else {
                     logger.warn { "No thumbnail found for advertisementId: ${application.advertisementId}" }
                     null
