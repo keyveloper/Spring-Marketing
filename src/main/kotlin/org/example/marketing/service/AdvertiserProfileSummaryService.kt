@@ -10,8 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class AdvertiserProfileSummaryService(
     private val advertisementRepository: AdvertisementRepository,
-    private val advertiserProfileApiService: AdvertiserProfileApiService,
-    private val authApiService: AuthApiService
+    private val advertiserProfileApiService: AdvertiserProfileApiService
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -30,12 +29,10 @@ class AdvertiserProfileSummaryService(
             val advertiserId = advertisement.advertiserId
             logger.info { "Found advertiserId: $advertiserId for advertisementId: $advertisementId" }
 
-            val userInfo = authApiService.getUserInfo(advertiserId)
             val profileWithImages = advertiserProfileApiService.getAdvertiserProfileInfoById(advertiserId.toString())
 
             GetAdvertiserProfileSummarizedResult.of(
                 advertiserId = advertiserId,
-                advertiserName = userInfo?.name,
                 profileWithImages = profileWithImages
             )
         }

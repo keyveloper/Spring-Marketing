@@ -29,6 +29,7 @@ class AdvertiserProfileApiService(
 
     suspend fun uploadAdvertiserProfileInfoToApiServer(
         advertiserId: UUID,
+        advertiserName: String,
         userProfileDraftId: UUID,
         serviceInfo: String,
         locationBrief: String,
@@ -43,6 +44,7 @@ class AdvertiserProfileApiService(
                 circuitBreaker.executeSuspendFunction {
                     val apiRequest = UploadAdvertiserProfileInfoApiRequest(
                         advertiserId = advertiserId,
+                        advertiserName = advertiserName,
                         userProfileDraftId = userProfileDraftId,
                         serviceInfo = serviceInfo,
                         locationBrief = locationBrief,

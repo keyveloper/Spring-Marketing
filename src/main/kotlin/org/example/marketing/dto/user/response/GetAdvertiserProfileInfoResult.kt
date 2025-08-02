@@ -5,6 +5,7 @@ import java.util.*
 data class GetAdvertiserProfileInfoResult(
     val id: Long,
     val advertiserId: UUID,
+    val advertiserName: String,
     val userProfileDraftId: UUID,
     val serviceInfo: String,
     val locationBrief: String,

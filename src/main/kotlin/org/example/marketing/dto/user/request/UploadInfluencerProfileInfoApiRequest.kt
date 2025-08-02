@@ -4,6 +4,7 @@ import java.util.UUID
 
 data class UploadInfluencerProfileInfoApiRequest(
     val influencerId: UUID,
+    val influencerName: String,
     val userProfileDraftId: UUID,
     val introduction: String?,
     val job: String?

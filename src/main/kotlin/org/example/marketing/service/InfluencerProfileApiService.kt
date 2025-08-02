@@ -30,6 +30,7 @@ class InfluencerProfileApiService(
 
     suspend fun uploadInfluencerProfileInfoToApiServer(
         influencerId: UUID,
+        influencerName: String,
         userType: UserType,
         userProfileDraftId: UUID,
         introduction: String?,
@@ -43,6 +44,7 @@ class InfluencerProfileApiService(
                 val result = circuitBreaker.executeSuspendFunction {
                     val apiRequest = UploadInfluencerProfileInfoApiRequest(
                         influencerId = influencerId,
+                        influencerName = influencerName,
                         userProfileDraftId = userProfileDraftId,
                         introduction = introduction,
                         job = job

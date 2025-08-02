@@ -8,6 +8,7 @@ import org.example.marketing.dto.user.response.*
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.example.marketing.exception.IllegalResourceUsageException
+import org.example.marketing.exception.MissingUserNameException
 import org.example.marketing.service.AdvertiserProfileApiService
 import org.example.marketing.service.AuthApiService
 import org.springframework.http.HttpStatus
@@ -32,6 +33,10 @@ class AdvertiserProfileController(
         val extractedUser = authApiService.validateAdvertiser(authorization)
         val advertiserId = extractedUser.userId
         val userType = extractedUser.userType
+        val userName = extractedUser.name
+            ?: throw MissingUserNameException(
+                logics = "AdvertiserProfileController.uploadAdvertiserProfileInfo"
+            )
 
         if (!userType.name.startsWith("ADVERTISER_")) throw IllegalResourceUsageException(
             message = "uploadAdvertiserProfileInfo request must be called by advertiser user!",
@@ -40,6 +45,7 @@ class AdvertiserProfileController(
 
         val result = advertiserProfileApiService.uploadAdvertiserProfileInfoToApiServer(
             advertiserId = advertiserId,
+            advertiserName = userName,
             userProfileDraftId = request.userProfileDraftId,
             serviceInfo = request.serviceInfo,
             locationBrief = request.locationBrief,

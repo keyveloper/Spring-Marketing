@@ -12,12 +12,11 @@ data class GetAdvertiserProfileSummarizedResult(
     companion object {
         fun of(
             advertiserId: UUID,
-            advertiserName: String?,
             profileWithImages: GetAdvertiserProfileInfoWithImages?
         ): GetAdvertiserProfileSummarizedResult {
             return GetAdvertiserProfileSummarizedResult(
                 advertiserId = advertiserId,
-                advertiserName = advertiserName,
+                advertiserName = profileWithImages?.profileApiResult?.advertiserName,
                 serviceInfo = profileWithImages?.profileApiResult?.serviceInfo,
                 locationBrief = profileWithImages?.profileApiResult?.locationBrief,
                 profileImageUrl = profileWithImages?.profileImage?.presignedUrl

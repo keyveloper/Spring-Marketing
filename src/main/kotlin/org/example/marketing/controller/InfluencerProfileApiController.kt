@@ -9,6 +9,7 @@ import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.enums.MSAServiceErrorCode
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.IllegalResourceUsageException
+import org.example.marketing.exception.MissingUserNameException
 import org.example.marketing.service.AuthApiService
 import org.example.marketing.service.InfluencerProfileApiService
 import org.springframework.http.HttpStatus
@@ -33,6 +34,10 @@ class InfluencerProfileApiController(
         val extractedUser = authApiService.validateInfluencer(authorization)
         val influencerId = extractedUser.userId
         val userType = extractedUser.userType
+        val influencerName = extractedUser.name
+            ?: throw MissingUserNameException(
+                logics = "InfluencerProfileApiController.uploadInfluencerProfileInfo"
+            )
 
         if (userType != UserType.INFLUENCER) throw IllegalResourceUsageException(
             message = "you are not an influencer",
@@ -41,6 +46,7 @@ class InfluencerProfileApiController(
 
         val result = influencerProfileApiService.uploadInfluencerProfileInfoToApiServer(
             influencerId = influencerId,
+            influencerName = influencerName,
             userType = userType,
             userProfileDraftId = request.userProfileDraftId,
             introduction = request.introduction,
@@ -105,7 +111,8 @@ class InfluencerProfileApiController(
             job = request.job
         )
 
-        val updateInfluencerProfileInfoResult = influencerProfileApiService.updateInfluencerProfileInfoById(influencerId.toString(), domain)
+        val updateInfluencerProfileInfoResult =
+            influencerProfileApiService.updateInfluencerProfileInfoById(influencerId.toString(), domain)
 
         val response = UpdateInfluencerProfileInfoResponseFromServer.of(
             result = updateInfluencerProfileInfoResult,
@@ -132,7 +139,8 @@ class InfluencerProfileApiController(
             logics = "InfluencerProfileApiController.deleteInfluencerProfileInfoById"
         )
 
-        val deleteInfluencerProfileInfoResult = influencerProfileApiService.deleteInfluencerProfileInfoById(influencerId.toString())
+        val deleteInfluencerProfileInfoResult =
+            influencerProfileApiService.deleteInfluencerProfileInfoById(influencerId.toString())
 
         val response = DeleteInfluencerProfileInfoResponseFromServer.of(
             result = deleteInfluencerProfileInfoResult,
