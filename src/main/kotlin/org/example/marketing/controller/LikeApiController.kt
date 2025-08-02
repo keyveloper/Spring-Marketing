@@ -1,10 +1,11 @@
 package org.example.marketing.controller
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.example.marketing.dto.like.request.LikeOrSwitchRequestFromClient
+import org.example.marketing.dto.like.request.LikeRequestFromClient
 import org.example.marketing.dto.like.request.UnLikeRequestFromClient
 import org.example.marketing.dto.like.response.*
 import org.example.marketing.enums.FrontErrorCode
+import org.example.marketing.service.AuthApiService
 import org.example.marketing.service.LikeApiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -17,36 +18,39 @@ import java.util.UUID
 @RestController
 @RequestMapping("/api/v1/like")
 class LikeApiController(
-    private val likeApiService: LikeApiService
+    private val likeApiService: LikeApiService,
+    private val authApiService: AuthApiService
 ) {
     private val logger = KotlinLogging.logger {}
 
     /**
-     * 좋아요 또는 좋아요 취소 토글
+     * 좋아요
      *
      * POST /api/v1/like/ad
      *
-     * @param requestFromClient LikeOrSwitchRequestFromClient
-     * @return LikeOrSwitchResponseToClient
+     * @param authorization JWT 토큰
+     * @param requestFromClient LikeRequestFromClient
+     * @return LikeResponseToClient
      */
     @PostMapping("/ad")
-    suspend fun likeOrSwitch(
-        @RequestBody requestFromClient: LikeOrSwitchRequestFromClient
-    ): ResponseEntity<LikeOrSwitchResponseToClient> {
-        logger.info { "POST /api/v1/like/ad - influencerId=${requestFromClient.influencerId}, advertisementId=${requestFromClient.advertisementId}" }
+    suspend fun like(
+        @RequestHeader("Authorization") authorization: String,
+        @RequestBody requestFromClient: LikeRequestFromClient
+    ): ResponseEntity<LikeResponseToClient> {
+        val extractedUser = authApiService.validateInfluencer(authorization)
+        logger.info { "POST /api/v1/like/ad - influencerId=${extractedUser.userId}, advertisementId=${requestFromClient.advertisementId}" }
 
-        val result = likeApiService.likeOrSwitch(
-            influencerId = requestFromClient.influencerId,
+        val result = likeApiService.like(
+            influencerId = extractedUser.userId,
             advertisementId = requestFromClient.advertisementId
         )
 
-        val responseToClient = LikeOrSwitchResponseToClient(
+        val responseToClient = LikeResponseToClient(
             frontErrorCode = FrontErrorCode.OK.code,
             errorMessage = FrontErrorCode.OK.message,
             result = result
         )
 
-        logger.info { "Successfully processed like/switch: status=${result.likeStatus}" }
         return ResponseEntity.ok(responseToClient)
     }
 
@@ -55,17 +59,20 @@ class LikeApiController(
      *
      * POST /api/v1/like/ad/unlike
      *
+     * @param authorization JWT 토큰
      * @param requestFromClient UnLikeRequestFromClient
      * @return UnLikeResponseToClient
      */
     @PostMapping("/ad/unlike")
     suspend fun unLike(
+        @RequestHeader("Authorization") authorization: String,
         @RequestBody requestFromClient: UnLikeRequestFromClient
     ): ResponseEntity<UnLikeResponseToClient> {
-        logger.info { "POST /api/v1/like/ad/unlike - influencerId=${requestFromClient.influencerId}, advertisementId=${requestFromClient.advertisementId}" }
+        val extractedUser = authApiService.validateInfluencer(authorization)
+        logger.info { "POST /api/v1/like/ad/unlike - influencerId=${extractedUser.userId}, advertisementId=${requestFromClient.advertisementId}" }
 
         val result = likeApiService.unLike(
-            influencerId = requestFromClient.influencerId,
+            influencerId = extractedUser.userId,
             advertisementId = requestFromClient.advertisementId
         )
 
@@ -101,7 +108,7 @@ class LikeApiController(
             result = result
         )
 
-        logger.info { "Successfully got liked ads: count=${result.advertisementIds.size}" }
+        logger.info { "Successfully got liked ads: count=${result.likedAdvertisements.size}" }
         return ResponseEntity.ok(responseToClient)
     }
 

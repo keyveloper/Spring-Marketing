@@ -5,5 +5,5 @@ import org.example.marketing.dto.error.FrontErrorResponse
 data class GetLikedAdsByInfluencerIdResponseToClient(
     override val frontErrorCode: Int,
     override val errorMessage: String,
-    val result: GetLikedAdsByInfluencerIdResult?
+    val result: GetLikedAdsWithThumbnailResult?
 ) : FrontErrorResponse(frontErrorCode, errorMessage)

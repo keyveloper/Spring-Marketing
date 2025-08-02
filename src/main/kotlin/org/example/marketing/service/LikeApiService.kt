@@ -4,7 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.dto.like.request.CheckLikedAdsByInfluencerIdApiRequest
-import org.example.marketing.dto.like.request.LikeOrSwitchApiRequest
+import org.example.marketing.dto.like.request.LikeApiRequest
 import org.example.marketing.dto.like.request.UnLikeApiRequest
 import org.example.marketing.dto.like.response.*
 import org.example.marketing.enums.MSAServiceErrorCode
@@ -25,7 +25,8 @@ import java.util.UUID
 @Service
 class LikeApiService(
     @Qualifier("likeApiServerClient") private val likeApiServerClient: WebClient,
-    private val circuitBreakerRegistry: CircuitBreakerRegistry
+    private val circuitBreakerRegistry: CircuitBreakerRegistry,
+    private val advertisementImageApiService: AdvertisementImageApiService
 ) {
     private val logger = KotlinLogging.logger {}
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("likeApiCircuitBreaker")
@@ -38,15 +39,15 @@ class LikeApiService(
      * @return LikeOrSwitchResult
      * @throws MSAErrorException 처리 실패 시
      */
-    suspend fun likeOrSwitch(
+    suspend fun like(
         influencerId: UUID,
         advertisementId: Long
-    ): LikeOrSwitchResult {
+    ): LikeResult {
         logger.info { "Like or switch: influencerId=$influencerId, advertisementId=$advertisementId" }
 
         return try {
             circuitBreaker.executeSuspendFunction {
-                val request = LikeOrSwitchApiRequest(
+                val request = LikeApiRequest(
                     influencerId = influencerId,
                     advertisementId = advertisementId
                 )
@@ -55,7 +56,7 @@ class LikeApiService(
                     .uri("/api/v1/like/ad")
                     .bodyValue(request)
                     .retrieve()
-                    .awaitBody<LikeOrSwitchResponseFromServer>()
+                    .awaitBody<LikeResponseFromServer>()
 
                 logger.info { "Received response from like-api-server: msaServiceErrorCode=" +
                         "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
@@ -63,12 +64,8 @@ class LikeApiService(
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
                         val result = response.result
-                            ?: throw LikeFailedException(
-                                logics = "LikeApiService.likeOrSwitch: result is null"
-                            )
-
                         logger.info { "Successfully processed like/switch: status=${result.likeStatus}" }
-                        result
+                        LikeResult.of(result)
                     }
                     else -> {
                         logger.error { "Like/switch failed with msaServiceErrorCode=" +
@@ -142,15 +139,15 @@ class LikeApiService(
     }
 
     /**
-     * 인플루언서가 좋아요한 광고 목록 조회
+     * 인플루언서가 좋아요한 광고 목록 조회 (썸네일 포함)
      *
      * @param influencerId Influencer ID
-     * @return GetLikedAdsByInfluencerIdResult
+     * @return GetLikedAdsWithThumbnailResult
      * @throws GetLikedAdsFailedException 조회 실패 시
      */
     suspend fun getLikedAdsByInfluencerId(
         influencerId: UUID
-    ): GetLikedAdsByInfluencerIdResult {
+    ): GetLikedAdsWithThumbnailResult {
         logger.info { "GetLikedAdsByInfluencerId: influencerId=$influencerId" }
 
         return try {
@@ -169,7 +166,22 @@ class LikeApiService(
                                 logics = "LikeApiService.getLikedAdsByInfluencerId: result is null"
                             )
                         logger.info { "Successfully got liked ads: count=${result.advertisementIds.size}" }
-                        result
+
+                        // 썸네일 조회
+                        val thumbnails = advertisementImageApiService.getThumbnailsByAdvertisementIds(result.advertisementIds)
+                        val thumbnailMap = thumbnails.associateBy({ it.advertisementId }, { it.presignedUrl })
+
+                        // LikeAdIdWithThumbnailUrl 리스트 생성
+                        val likedAdsWithThumbnail = result.advertisementIds.mapNotNull { adId ->
+                            thumbnailMap[adId]?.let { thumbnailUrl ->
+                                LikeAdIdWithThumbnailUrl(
+                                    advertisementId = adId,
+                                    thumbnailUrl = thumbnailUrl
+                                )
+                            }
+                        }
+
+                        GetLikedAdsWithThumbnailResult(likedAdvertisements = likedAdsWithThumbnail)
                     }
                     else -> {
                         logger.error { "GetLikedAdsByInfluencerId failed: ${response.errorMessage}" }
@@ -289,9 +301,9 @@ class LikeApiService(
         influencerId: UUID,
         advertisementId: Long,
         ex: Throwable
-    ): LikeOrSwitchResult? {
+    ): LikeResult {
         logger.error { "Fallback triggered for likeOrSwitch: ${ex.message}" }
-        return null
+        return LikeResult.of(null)
     }
 
     private fun unLikeFallback(

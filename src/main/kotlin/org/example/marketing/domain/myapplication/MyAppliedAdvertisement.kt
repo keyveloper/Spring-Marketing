@@ -42,7 +42,10 @@ data class MyAppliedAdvertisement(
     val applicationReviewStatus: ApplicationReviewStatus,
     val applyMemo: String,
     val applicationCreatedAt: Long,
-    val applicationUpdatedAt: Long
+    val applicationUpdatedAt: Long,
+
+    // Aggregated field
+    val appliedCount: Int = 0
 ) {
     companion object {
         fun fromRow(row: ResultRow): MyAppliedAdvertisement {

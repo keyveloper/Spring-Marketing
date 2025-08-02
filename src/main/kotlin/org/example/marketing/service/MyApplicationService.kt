@@ -2,8 +2,9 @@ package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dto.board.response.GetMyApplicationResult
-import org.example.marketing.dto.board.response.ThumbnailAdCard
 import org.example.marketing.dto.board.response.ThumbnailAdCardWithApplyInfo
+import org.example.marketing.dto.board.response.ThumbnailAdCardWithLikedInfo
+import org.example.marketing.enums.LikeStatus
 import org.example.marketing.repository.board.MyApplicationRepository
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.springframework.stereotype.Service
@@ -12,7 +13,8 @@ import java.util.UUID
 @Service
 class MyApplicationService(
     private val myApplicationRepository: MyApplicationRepository,
-    private val advertisementImageApiService: AdvertisementImageApiService
+    private val advertisementImageApiService: AdvertisementImageApiService,
+    private val likeApiService: LikeApiService
 ) {
     private val logger = KotlinLogging.logger {}
 
@@ -36,11 +38,19 @@ class MyApplicationService(
             // Create a map of advertisementId -> thumbnail for easy lookup
             val thumbnailMap = thumbnails.associateBy { it.advertisementId }
 
+            // 좋아요 상태 조회
+            val likedResult = likeApiService.checkLikedAdsByInfluencerId(influencerId, advertisementIds)
+            val likedAdIds = likedResult.likedAdvertisements
+                .filter { it.likeStatus == LikeStatus.LIKE }
+                .map { it.advertisementId }
+                .toSet()
+
             // Combine applications with their thumbnails to create ThumbnailAdCardWithApplyInfo list
             val thumbnailAdCardWithApplyInfoList = applications.mapNotNull { application ->
                 val thumbnail = thumbnailMap[application.advertisementId]
                 if (thumbnail != null) {
-                    val thumbnailAdCard = ThumbnailAdCard(
+                    val isLiked = if (likedAdIds.contains(application.advertisementId)) LikeStatus.LIKE else LikeStatus.UNLIKE
+                    val thumbnailAdCard = ThumbnailAdCardWithLikedInfo(
                         advertisementId = application.advertisementId,
                         presignedUrl = thumbnail.presignedUrl,
                         itemInfo = application.itemInfo,
@@ -48,14 +58,15 @@ class MyApplicationService(
                         recruitmentStartAt = application.recruitmentStartAt,
                         recruitmentEndAt = application.recruitmentEndAt,
                         recruitNumber = application.recruitmentNumber,
-                        appliedCount = 0, // 내 지원 목록에서는 appliedCount 미사용
+                        appliedCount = application.appliedCount,
                         channelType = application.channelType,
-                        reviewType = application.reviewType
+                        reviewType = application.reviewType,
+                        isLiked = isLiked
                     )
 
                     ThumbnailAdCardWithApplyInfo(
                         appliedDate = application.applicationCreatedAt,
-                        thumbnailAdCard = thumbnailAdCard
+                        thumbnailAdCardLikedInfo = thumbnailAdCard
                     )
                 } else {
                     logger.warn { "No thumbnail found for advertisementId: ${application.advertisementId}" }

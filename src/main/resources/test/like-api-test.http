@@ -1,0 +1,85 @@
+### Like API Tests
+
+@baseUrl = http://localhost:8080
+@influencerToken = Bearer eyJraWQiOiJZaWZyNDFFVnZIbFZSVmZTSEhYcEpFVUsxd08xMktyY0tNZWQ5T0NoYUxZPSIsImFsZyI6IlJTMjU2In0.eyJzdWIiOiIxNGE4MGQ4Yy1kMDIxLTcwYTktYmEyOC01YmFiMDdjODUzYzUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiaXNzIjoiaHR0cHM6XC9cL2NvZ25pdG8taWRwLmFwLW5vcnRoZWFzdC0yLmFtYXpvbmF3cy5jb21cL2FwLW5vcnRoZWFzdC0yX1N3MkYxSHNVNyIsInBob25lX251bWJlcl92ZXJpZmllZCI6ZmFsc2UsImNvZ25pdG86dXNlcm5hbWUiOiJpbmZsdSIsIm9yaWdpbl9qdGkiOiI1OGQ5ZmRkMS03YTUwLTQ0Y2MtYWFlNi1mMDA3NjczOGZmNmIiLCJjdXN0b206dXNlclR5cGUiOiJJTkZMVUVOQ0VSIiwiYXVkIjoiNGp1cDcxN29xMWNrcG9nb2JxNzY4bzdyNmMiLCJldmVudF9pZCI6IjFjYWQ5ZDk2LTRmOTEtNDM0ZS04OGQ4LTFhMGY2ZGE1NTRlNCIsInRva2VuX3VzZSI6ImlkIiwiYXV0aF90aW1lIjoxNzY1MzMwNDc2LCJuYW1lIjoiZGRkIiwicGhvbmVfbnVtYmVyIjoiKzgyMTAzMzUzNTcxMSIsImV4cCI6MTc2NTMzNDA3NiwiaWF0IjoxNzY1MzMwNDc2LCJqdGkiOiIwMDIxYmU4OS1jNDlhLTQ5YzAtOWE1Yy01NGE0OWIyOThkNDciLCJlbWFpbCI6ImRpZGVoZHJiMjFAbmF2ZXIuY29tIn0.x8yjVPF7rafsJ3k-l3LWLhauuMaujCMebjgn72o9Nmms4plIMtaQbbdC89BhrIp3WZppMAFVYKDplyFsqOadkkf1kS4AwVRKSxWLi_NEBIw89Okc_AGQ1USk0z1x7yfpXu9jHqzDQ8w_6RWPDxhZhVMMasWgHCqzreuS1HUcAfUu16N99w-464ti9ncToNYl29Y3TAcGpeLinXe6Qx_K6WtL99udTIfhH_DOZXo2LYFnNSs8t3sFsAH1FFTiM5eHob3mx5_Tdr4XRJAkjNBe-Vbt8bEXTsvNnv9Dr-axRCrs1tfUzEl74qYrrZa8sweuSEdqi-B6V34AE8cbXoFrSw
+@advertisementId = 13
+
+###
+# Health Check
+GET {{baseUrl}}/api/v1/like/health
+Content-Type: application/json
+
+###
+# Like Advertisement
+# POST /api/v1/like/ad
+POST {{baseUrl}}/api/v1/like/ad
+Authorization: {{influencerToken}}
+Content-Type: application/json
+
+{
+  "advertisementId": {{advertisementId}}
+}
+
+###
+# Expected Response:
+# {
+#   "frontErrorCode": 0,
+#   "errorMessage": "OK",
+#   "result": {
+#     "likeStatus": "LIKE"
+#   }
+# }
+
+###
+# Unlike Advertisement
+# POST /api/v1/like/ad/unlike
+POST {{baseUrl}}/api/v1/like/ad/unlike
+Authorization: {{influencerToken}}
+Content-Type: application/json
+
+{
+  "advertisementId": {{advertisementId}}
+}
+
+###
+# Expected Response:
+# {
+#   "frontErrorCode": 0,
+#   "errorMessage": "OK",
+#   "result": {
+#     "effectedRow": 1
+#   }
+# }
+
+###
+# Get Liked Ads by Influencer ID
+# GET /api/v1/like/influencer/{influencerId}
+@influencerId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
+GET {{baseUrl}}/api/v1/like/influencer/{{influencerId}}
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "frontErrorCode": 0,
+#   "errorMessage": "OK",
+#   "result": {
+#     "advertisementIds": [1, 2, 3]
+#   }
+# }
+
+###
+# Get Influencers by Advertisement ID
+# GET /api/v1/like/advertisement/{advertisementId}
+GET {{baseUrl}}/api/v1/like/advertisement/{{advertisementId}}
+Content-Type: application/json
+
+###
+# Expected Response:
+# {
+#   "frontErrorCode": 0,
+#   "errorMessage": "OK",
+#   "result": {
+#     "influencerIds": ["uuid1", "uuid2"]
+#   }
+# }
