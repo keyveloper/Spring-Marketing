@@ -4,7 +4,9 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.dto.user.request.ChangeUserProfileStatusApiRequest
+import org.example.marketing.dto.user.request.GetUserProfileImagesApiRequest
 import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
+import org.example.marketing.dto.user.response.GetUserProfileImagesResponseFromServer
 import org.example.marketing.dto.user.response.ChangeUserProfileStatusResponseFromServer
 import org.example.marketing.dto.user.response.SaveUserProfileImageResult
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
@@ -178,6 +180,41 @@ class InfluencerProfileImageApiService(
         } catch (ex: Throwable) {
             logger.error { "Failed to change profile status: ${ex.message}" }
             throw ex
+        }
+    }
+
+    suspend fun getUserProfileImagesByUserIds(userIds: List<UUID>): List<UserProfileImageMetadataWithUrl> {
+        logger.info { "Getting user profile images for userIds: $userIds" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val apiRequest = GetUserProfileImagesApiRequest(userIds = userIds)
+
+                val response = imageApiServerClient.post()
+                    .uri("/api/user-profile/user-profiles")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .awaitBody<GetUserProfileImagesResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        logger.info { "Successfully retrieved profile images: count=${response.result.size}" }
+                        response.result
+                    }
+                    else -> {
+                        logger.error { "Get profile images by ids failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        emptyList()
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to get user profile images by ids: ${ex.message}" }
+            emptyList()
         }
     }
 

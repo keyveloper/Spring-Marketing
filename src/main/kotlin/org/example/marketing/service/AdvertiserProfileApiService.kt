@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.AdvertiserProfile
+import org.example.marketing.dto.user.request.GetAdvertiserProfileInfosByIdsApiRequest
 import org.example.marketing.dto.user.request.UpdateAdvertiserProfileInfoApiRequest
 import org.example.marketing.dto.user.request.UploadAdvertiserProfileInfoApiRequest
 import org.example.marketing.dto.user.response.*
@@ -204,6 +205,42 @@ class AdvertiserProfileApiService(
                     throw RuntimeException("Failed to delete advertiser profile: ${response.errorMessage}")
                 }
             }
+        }
+    }
+
+    suspend fun getAdvertiserProfileInfosByIds(advertiserIds: List<UUID>): GetAdvertiserProfileInfosByIdsResult? {
+        logger.info { "Getting advertiser profile infos for advertiserIds: $advertiserIds" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val apiRequest = GetAdvertiserProfileInfosByIdsApiRequest(advertiserIds = advertiserIds)
+
+                val response = userProfileApiClient.post()
+                    .uri("/api/v1/advertiser-profiles/by-ids")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .awaitBody<GetAdvertiserProfileInfosByIdsResponseFromServer>()
+
+                logger.info { "Received response from user-profile-api: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        val result = response.getAdvertiserProfileInfosByIdsResult
+                        logger.info { "Successfully got ${result?.advertiserProfileInfos?.size ?: 0} advertiser profiles" }
+                        result
+                    }
+                    else -> {
+                        logger.error { "Get by ids failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}" }
+                        null
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to get advertiser profile infos by ids: ${ex.message}" }
+            null
         }
     }
 

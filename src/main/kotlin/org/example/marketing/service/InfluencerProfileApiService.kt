@@ -4,6 +4,7 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.InfluencerProfile
+import org.example.marketing.dto.user.request.GetInfluencerProfileInfosByIdsApiRequest
 import org.example.marketing.dto.user.request.UpdateInfluencerProfileInfoApiRequest
 import org.example.marketing.dto.user.request.UploadInfluencerProfileInfoApiRequest
 import org.example.marketing.dto.user.response.*
@@ -196,6 +197,42 @@ class InfluencerProfileApiService(
                     throw RuntimeException("Failed to delete influencer profile: ${response.errorMessage}")
                 }
             }
+        }
+    }
+
+    suspend fun getInfluencerProfileInfosByIds(influencerIds: List<UUID>): GetInfluencerProfileInfosByIdsResult? {
+        logger.info { "Getting influencer profile infos for influencerIds: $influencerIds" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val apiRequest = GetInfluencerProfileInfosByIdsApiRequest(influencerIds = influencerIds)
+
+                val response = userProfileApiClient.post()
+                    .uri("/api/v1/influencer-profiles/by-ids")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(apiRequest)
+                    .retrieve()
+                    .awaitBody<GetInfluencerProfileInfosByIdsResponseFromServer>()
+
+                logger.info { "Received response from user-profile-api: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    MSAServiceErrorCode.OK -> {
+                        val result = response.getInfluencerProfileInfosByIdsResult
+                        logger.info { "Successfully got ${result?.influencerProfileInfos?.size ?: 0} influencer profiles" }
+                        result
+                    }
+                    else -> {
+                        logger.error { "Get by ids failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}" }
+                        null
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to get influencer profile infos by ids: ${ex.message}" }
+            null
         }
     }
 
