@@ -51,14 +51,14 @@ class ProfileSummaryService(
         logger.info { "Getting following advertiser info for influencerId: $influencerId" }
 
         return newSuspendedTransaction {
-            // 1. followapi.getFollowingByInfluencerId -> advertiserId를 list로 만든다
+            // 1. follow api.getFollowingByInfluencerId -> advertiserId를 list로 만든다
             val followingResult = followApiService.getFollowingByInfluencerId(influencerId)
             if (followingResult == null || followingResult.following.isEmpty()) {
                 logger.info { "No following found for influencerId: $influencerId" }
                 return@newSuspendedTransaction emptyList()
             }
 
-            val advertiserIds = followingResult.following.map { it.advertiserId }
+            val advertiserIds = followingResult.following
             logger.info { "Found ${advertiserIds.size} following advertisers for influencerId: $influencerId" }
 
             // 2. AdvertiserProfileImageApiService.getUserProfileImagesByUserIds 를 호출
@@ -91,7 +91,7 @@ class ProfileSummaryService(
                 return@newSuspendedTransaction emptyList()
             }
 
-            val influencerIds = followersResult.followers.map { it.influencerId }
+            val influencerIds = followersResult.followers
             logger.info { "Found ${influencerIds.size} followers for advertiserId: $advertiserId" }
 
             // 2. InfluencerProfileImageApiService.getUserProfileImagesByUserIds 를 호출

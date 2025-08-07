@@ -216,7 +216,7 @@ class AdvertiserProfileApiService(
                 val apiRequest = GetAdvertiserProfileInfosByIdsApiRequest(advertiserIds = advertiserIds)
 
                 val response = userProfileApiClient.post()
-                    .uri("/api/v1/advertiser-profiles/by-ids")
+                    .uri("/api/v1/advertiser-profiles/all")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(apiRequest)
                     .retrieve()

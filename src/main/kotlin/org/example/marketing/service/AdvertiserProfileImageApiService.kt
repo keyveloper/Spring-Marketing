@@ -191,7 +191,7 @@ class AdvertiserProfileImageApiService(
                 val apiRequest = GetUserProfileImagesApiRequest(userIds = userIds)
 
                 val response = imageApiServerClient.post()
-                    .uri("/api/user-profile/user-profiles")
+                    .uri("/api/user-profile/all")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(apiRequest)
                     .retrieve()

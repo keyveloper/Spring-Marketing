@@ -8,5 +8,5 @@ data class UnFollowResponseFromServer(
     val msaServiceErrorCode: MSAServiceErrorCode,
     val errorMessage: String?,
     val logics: String?,
-    val result: UnFollowResultFromServer?
+    val result: UnFollowResultFromServer
 )

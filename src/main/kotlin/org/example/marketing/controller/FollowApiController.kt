@@ -4,22 +4,19 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import org.example.marketing.dto.follow.request.FollowRequestFromClient
 import org.example.marketing.dto.follow.request.UnFollowRequestFromClient
 import org.example.marketing.dto.follow.response.FollowResponseToClient
-import org.example.marketing.dto.follow.response.GetFollowersResponseToClient
-import org.example.marketing.dto.follow.response.GetFollowingResponseToClient
 import org.example.marketing.dto.follow.response.UnFollowResponseToClient
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AuthApiService
 import org.example.marketing.service.FollowApiService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
-import java.util.UUID
 
 /**
  * Follow API Controller
  * 팔로우/언팔로우 및 팔로워/팔로잉 조회 엔드포인트를 제공합니다.
  */
 @RestController
-@RequestMapping("/api/v1/follow")
+@RequestMapping()
 class FollowApiController(
     private val authApiService: AuthApiService,
     private val followApiService: FollowApiService
@@ -34,7 +31,7 @@ class FollowApiController(
      * @param requestFromClient FollowOrSwitchRequestFromClient
      * @return FollowOrSwitchResponseToClient
      */
-    @PostMapping
+    @PostMapping("/follow")
     suspend fun follow(
         @RequestHeader("Authorization") authorization: String,
         @RequestBody requestFromClient: FollowRequestFromClient
@@ -91,57 +88,6 @@ class FollowApiController(
         return ResponseEntity.ok(responseToClient)
     }
 
-    /**
-     * Advertiser의 팔로워 목록 조회
-     *
-     * GET /api/v1/follow/followers/{advertiserId}
-     *
-     * @param advertiserId Advertiser ID
-     * @return GetFollowersResponseToClient
-     */
-    @GetMapping("/followers/{advertiserId}")
-    suspend fun getFollowersByAdvertiserId(
-        @PathVariable advertiserId: UUID
-    ): ResponseEntity<GetFollowersResponseToClient> {
-        logger.info { "GET /api/v1/follow/followers/$advertiserId" }
-
-        val result = followApiService.getFollowersByAdvertiserId(advertiserId)
-
-        val responseToClient = GetFollowersResponseToClient(
-            frontErrorCode = FrontErrorCode.OK.code,
-            errorMessage = FrontErrorCode.OK.message,
-            result = result
-        )
-
-        logger.info { "Successfully retrieved ${result?.followers?.size ?: 0} followers for advertiser" }
-        return ResponseEntity.ok(responseToClient)
-    }
-
-    /**
-     * Influencer의 팔로잉 목록 조회
-     *
-     * GET /api/v1/follow/following/{influencerId}
-     *
-     * @param influencerId Influencer ID
-     * @return GetFollowingResponseToClient
-     */
-    @GetMapping("/following/{influencerId}")
-    suspend fun getFollowingByInfluencerId(
-        @PathVariable influencerId: UUID
-    ): ResponseEntity<GetFollowingResponseToClient> {
-        logger.info { "GET /api/v1/follow/following/$influencerId" }
-
-        val result = followApiService.getFollowingByInfluencerId(influencerId)
-
-        val responseToClient = GetFollowingResponseToClient(
-            frontErrorCode = FrontErrorCode.OK.code,
-            errorMessage = FrontErrorCode.OK.message,
-            result = result
-        )
-
-        logger.info { "Successfully retrieved ${result?.following?.size ?: 0} following for influencer" }
-        return ResponseEntity.ok(responseToClient)
-    }
 
     /**
      * Health Check 엔드포인트

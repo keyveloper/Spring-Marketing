@@ -8,5 +8,5 @@ data class FollowResponseFromServer(
     val msaServiceErrorCode: MSAServiceErrorCode,
     val errorMessage: String?,
     val logics: String?,
-    val result: FollowResultFromServer?
+    val result: FollowAdvertiser
 )

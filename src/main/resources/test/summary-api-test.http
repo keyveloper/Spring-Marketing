@@ -1,7 +1,7 @@
 ### Auth API Tests
 
 @baseUrl = http://localhost:8080
-@userId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
+@influencerId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
 
 ### ===============================================
 ### User Info API Tests
@@ -12,3 +12,8 @@
 # Returns user information from Cognito
 GET {{baseUrl}}/summary/advertisement-owner/14
 Content-Type: application/json
+
+###
+
+GET {{baseUrl}}/summary/following/{{influencerId}}
+CContent-Type: application/json

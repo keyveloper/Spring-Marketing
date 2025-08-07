@@ -45,6 +45,8 @@ class AdvertisementInitController(
 
         // 로그인 유저
         val extractedUser = authApiService.validateInfluencer(authorization)
+        val userType = extractedUser.userType
+
         val result = advertisementInitService.findInitFreshAdWithThumbnailAndLiked(extractedUser.userId)
 
         return ResponseEntity.ok().body(

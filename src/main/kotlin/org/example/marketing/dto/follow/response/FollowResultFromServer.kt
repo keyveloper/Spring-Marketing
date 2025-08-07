@@ -8,6 +8,6 @@ data class FollowResultFromServer(
     val advertiserId: UUID,
     val influencerId: UUID,
     val followStatus: FollowStatus,
-    val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?
+    val createdAt: Long?,
+    val updatedAt: Long?
 )

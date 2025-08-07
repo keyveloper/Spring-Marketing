@@ -59,11 +59,6 @@ class FollowApiService(
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
                         val resultFromServer = response.result
-                            ?: throw MSAErrorException(
-                                logics = "FollowApiService - follow: result is null",
-                                message = "Failed to follow or switch"
-                            )
-
                         val result = FollowResult.of(resultFromServer)
                         logger.info { "Successfully processed follow/switch: status=${result.followStatus}" }
                         result
@@ -224,11 +219,6 @@ class FollowApiService(
                 when (response.msaServiceErrorCode) {
                     MSAServiceErrorCode.OK -> {
                         val resultFromServer = response.result
-                            ?: throw MSAErrorException(
-                                logics = "FollowApiService - unFollow: result is null",
-                                message = "Failed to unfollow"
-                            )
-
                         val result = UnFollowResult.of(resultFromServer)
                         logger.info { "Successfully unfollowed: effectedRow=${result.effectedRow}" }
                         result

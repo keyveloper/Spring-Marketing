@@ -8,11 +8,11 @@ data class FollowResult(
     val advertiserId: UUID,
     val influencerId: UUID,
     val followStatus: FollowStatus,
-    val createdAt: LocalDateTime?,
-    val updatedAt: LocalDateTime?
+    val createdAt: Long?,
+    val updatedAt: Long?
 ) {
     companion object {
-        fun of(fromServer: FollowResultFromServer): FollowResult {
+        fun of(fromServer: FollowAdvertiser): FollowResult {
             return FollowResult(
                 advertiserId = fromServer.advertiserId,
                 influencerId = fromServer.influencerId,

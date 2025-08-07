@@ -208,7 +208,7 @@ class InfluencerProfileApiService(
                 val apiRequest = GetInfluencerProfileInfosByIdsApiRequest(influencerIds = influencerIds)
 
                 val response = userProfileApiClient.post()
-                    .uri("/api/v1/influencer-profiles/by-ids")
+                    .uri("/api/v1/influencer-profiles/all")
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(apiRequest)
                     .retrieve()
