@@ -10,7 +10,7 @@ import org.example.marketing.table.ReviewApplicationsTable
 import org.jetbrains.exposed.sql.ResultRow
 import java.util.UUID
 
-data class OfferedApplication(
+data class OfferedAdvertisementJoinedApplication(
     // Advertisement fields
     val advertisementId: Long,
     val advertiserId: UUID,
@@ -48,8 +48,8 @@ data class OfferedApplication(
     val appliedCount: Int = 0
 ) {
     companion object {
-        fun fromRow(row: ResultRow): OfferedApplication {
-            return OfferedApplication(
+        fun fromRow(row: ResultRow): OfferedAdvertisementJoinedApplication {
+            return OfferedAdvertisementJoinedApplication(
                 // Advertisement fields
                 advertisementId = row[AdvertisementsTable.id].value,
                 advertiserId = row[AdvertisementsTable.advertiserId],

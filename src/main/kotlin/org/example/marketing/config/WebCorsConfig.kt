@@ -12,7 +12,9 @@ class WebCorsConfig: WebMvcConfigurer {
             .allowedOrigins(
                 "http://localhost:5173",  // Vite 기본 포트
                 "http://localhost:5174",   // 추가 포트
-                "http://marketing-web-app.s3-website.ap-northeast-2.amazonaws.com" //s3 web hosting
+                "http://marketing-web-app.s3-website.ap-northeast-2.amazonaws.com", //s3 web hosting,
+                "https://d1gyb5hcofe8jv.cloudfront.net",
+                "http://localhost:80",
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
             .allowCredentials(true)

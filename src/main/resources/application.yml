@@ -25,9 +25,6 @@ spring:
       pool-name: marketingHikariCP
 
 
-jwt:
-  secret: "fdasfjsdhfushfksdjfhsjdfhsudfhsddfjjisdfjisdjfisdjfisdfjisdjfisdjfijdsfljiefjildsjfdslfjsfsdffdfsdadsfsddf"
-
 resilience4j:
   circuitbreaker:
     instances:

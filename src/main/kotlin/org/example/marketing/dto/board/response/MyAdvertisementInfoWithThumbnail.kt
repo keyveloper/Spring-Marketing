@@ -1,6 +1,7 @@
 package org.example.marketing.dto.board.response
 
 import org.example.marketing.domain.board.Advertisement
+import org.example.marketing.domain.myadvertisement.OfferedAdvertisementJoinedApplication
 import org.example.marketing.enums.AdvertisementLiveStatus
 import org.example.marketing.enums.AdvertisementReviewStatus
 import org.example.marketing.enums.ChannelType
@@ -8,7 +9,7 @@ import org.example.marketing.enums.ReviewType
 import java.util.UUID
 
 
-data class MyAdvertisementInfo(
+data class MyAdvertisementInfoWithThumbnail(
     val id: Long,
     val advertiserId: UUID,
     val title: String,
@@ -28,11 +29,12 @@ data class MyAdvertisementInfo(
     val itemInfo: String?,
     val draftId: UUID,
     val createdAt: Long,
-    val updatedAt: Long
+    val updatedAt: Long,
+    val thumbnailUrl: String?,
 ) {
     companion object {
-        fun of(advertisement: Advertisement): MyAdvertisementInfo {
-            return MyAdvertisementInfo(
+        fun of(advertisement: Advertisement, thumbnailUrl: String?): MyAdvertisementInfoWithThumbnail {
+            return MyAdvertisementInfoWithThumbnail(
                 id = advertisement.id,
                 advertiserId = advertisement.advertiserId,
                 title = advertisement.title,
@@ -52,7 +54,8 @@ data class MyAdvertisementInfo(
                 itemInfo = advertisement.itemInfo,
                 draftId = advertisement.draftId,
                 createdAt = advertisement.createdAt,
-                updatedAt = advertisement.updatedAt
+                updatedAt = advertisement.updatedAt,
+                thumbnailUrl = thumbnailUrl
             )
         }
     }

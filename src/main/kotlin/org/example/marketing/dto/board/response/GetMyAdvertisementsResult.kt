@@ -3,12 +3,12 @@ package org.example.marketing.dto.board.response
 import org.example.marketing.domain.board.Advertisement
 
 data class GetMyAdvertisementsResult(
-    val advertisements: List<MyAdvertisementInfo>
+    val myAds: List<MyAdvertisementInfoWithThumbnail>
 ) {
     companion object {
-        fun of(advertisements: List<Advertisement>): GetMyAdvertisementsResult {
+        fun of(myAds: List<MyAdvertisementInfoWithThumbnail>): GetMyAdvertisementsResult {
             return GetMyAdvertisementsResult(
-                advertisements = advertisements.map { MyAdvertisementInfo.of(it) }
+                myAds
             )
         }
     }

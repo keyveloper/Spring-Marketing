@@ -2,6 +2,7 @@
 
 @baseUrl = http://localhost:8080
 @influencerId = 14a80d8c-d021-70a9-ba28-5bab07c853c5
+@advertiserId = 64882d9c-10a1-7052-f283-384bc8eac3c9
 
 ### ===============================================
 ### User Info API Tests
@@ -16,4 +17,8 @@ Content-Type: application/json
 ###
 
 GET {{baseUrl}}/summary/following/{{influencerId}}
-CContent-Type: application/json
+Content-Type: application/json
+
+###
+GET {{baseUrl}}/summary/followers/{{advertiserId}}
+Content-Type: application/json
