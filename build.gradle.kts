@@ -24,7 +24,6 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
 }
 
 dependencies {
@@ -83,10 +82,6 @@ dependencies {
     // coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
 
-    // ai
-    implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M7")) // ★
-    implementation("org.springframework.ai:spring-ai-starter-model-openai")
-
     // image signature
     implementation("org.apache.tika:tika-core:2.9.0") // or latest
 
@@ -95,9 +90,6 @@ dependencies {
 
     // kotlin date time
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
-
-    // keyword filter
-    implementation("org.apache.commons:commons-text:1.13.0")   // 최신
 
 }
 

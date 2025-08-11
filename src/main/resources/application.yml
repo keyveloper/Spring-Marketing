@@ -1,9 +1,4 @@
 spring:
-  config:
-    import: application-secret.yml
-  profiles:
-    group:
-      local: [secret]
   servlet:
     multipart:
       max-file-size: 15MB
@@ -31,27 +26,6 @@ jwt:
 resilience4j:
   circuitbreaker:
     instances:
-      naverAdApiCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 2
-
-      naverScrapperCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 2
-
-      openAIApiCircuitBreaker:
-        registerHealthIndicator: true
-        slidingWindowSize: 5
-        failureRateThreshold: 50
-        waitDurationInOpenState: 10s
-        permittedNumberOfCallsInHalfOpenState: 2
-
       marketingApiCircuitBreaker:
         registerHealthIndicator: true
         slidingWindowSize: 10
@@ -86,12 +60,6 @@ resilience4j:
         failureRateThreshold: 50
         waitDurationInOpenState: 15s
         permittedNumberOfCallsInHalfOpenState: 3
-
-  timelimiter:
-    instances:
-      naverScraperCircuitBreaker:
-        timeout-duration: 300s
-
 
 logging:
   level:
