@@ -70,12 +70,5 @@ class ReviewApplicationService(
         }
     }
 
-    fun findByInfluencerId(influencerId: UUID): List<ReviewApplication> {
-        return transaction {
-            logger.info { "influencerId: $influencerId" }
-            reviewApplicationRepository.findByInfluencerId(influencerId).map {
-                ReviewApplication.of(it)
-            }
-        }
-    }
+
 }
