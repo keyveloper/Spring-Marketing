@@ -16,9 +16,6 @@ spring:
     async:
       request-timeout: 0
 
-jwt:
-  secret: "fdasfjsdhfushfksdjfhsjdfhsudfhsddfjjisdfjisdjfisdjfisdfjisdjfisdjfijdsfljiefjildsjfdslfjsfsdffdfsdadsfsddf"
-
 resilience4j:
   circuitbreaker:
     instances:
