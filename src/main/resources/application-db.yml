@@ -1,0 +1,52 @@
+spring:
+  config:
+    activate:
+      on-profile: db-local
+
+  datasource:
+    url: jdbc:mariadb://localhost:3306/marketing?userSSL=false
+    username: tod
+    password: 1234
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 10
+      idle-timeout: 300000
+      pool-name: marketingHikariCP
+
+---
+spring:
+  config:
+    activate:
+      on-profile: db-prod
+
+  datasource:
+    url: jdbc:mariadb://prod-db-host:3306/marketing?userSSL=false
+    username: prod_user
+    password: prod_password
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      pool-name: marketingHikariCP
+
+---
+spring:
+  config:
+    activate:
+      on-profile: db-aws
+
+  datasource:
+    url: jdbc:mariadb://aws-rds-endpoint:3306/marketing?userSSL=false
+    username: aws_user
+    password: aws_password
+    driver-class-name: org.mariadb.jdbc.Driver
+    hikari:
+      connection-timeout: 20000
+      minimum-idle: 10
+      maximum-pool-size: 20
+      idle-timeout: 300000
+      pool-name: marketingHikariCP
