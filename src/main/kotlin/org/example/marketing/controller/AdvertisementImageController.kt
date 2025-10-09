@@ -9,7 +9,7 @@ import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
 import org.example.marketing.dto.board.response.*
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementImageDslService
-import org.example.marketing.service.AdvertisementImageService
+import org.example.marketing.service.AdvertisementImageApiService
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
@@ -18,35 +18,35 @@ import org.springframework.web.multipart.MultipartFile
 
 @RestController
 class AdvertisementImageController(
-    private val advertisementImageService: AdvertisementImageService,
+    private val advertisementImageApiService: AdvertisementImageApiService,
     private val advertisementImageDslService: AdvertisementImageDslService
 ) {
     val logger = KotlinLogging.logger {}
     //  ✅ check legal approach
-    @PostMapping(
-        "/advertisement/image",
-        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
-    )
-    fun save(
-        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
-        @RequestPart("meta") meta: MakeNewAdvertisementImageRequest,
-        @RequestPart("file") file: MultipartFile
-    ): ResponseEntity<MakeNewAdvertisementImageResponse> {
-        return ResponseEntity.ok().body(
-            MakeNewAdvertisementImageResponse.of(
-                FrontErrorCode.OK.code,
-                FrontErrorCode.OK.message,
-                advertisementImageService.save(advertiserPrincipal.userId, meta, file)
-            )
-        )
-    }
+//    @PostMapping(
+//        "/advertisement/image",
+//        consumes = [MediaType.MULTIPART_FORM_DATA_VALUE]
+//    )
+//    fun save(
+//        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
+//        @RequestPart("meta") meta: MakeNewAdvertisementImageRequest,
+//        @RequestPart("file") file: MultipartFile
+//    ): ResponseEntity<MakeNewAdvertisementImageResponse> {
+//        return ResponseEntity.ok().body(
+//            MakeNewAdvertisementImageResponse.of(
+//                FrontErrorCode.OK.code,
+//                FrontErrorCode.OK.message,
+//                advertisementImageApiService.save(advertiserPrincipal.userId, meta, file)
+//            )
+//        )
+//    }
 
     @DeleteMapping("/advertisement/image/{metaId}")
     fun deleteById(
         @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
         @PathVariable metaId: Long
     ): ResponseEntity<DeleteAdImageResponse> {
-        advertisementImageService.deleteById(
+        advertisementImageApiService.deleteById(
             advertiserPrincipal.userId,
             metaId
         )
@@ -64,7 +64,7 @@ class AdvertisementImageController(
         @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal,
         @RequestBody request: SetAdvertisementThumbnailRequest,
     ):ResponseEntity<SetAdvertisementThumbnailResponse> {
-        advertisementImageService.setThumbnailImage(advertiserPrincipal.userId, request)
+        advertisementImageApiService.setThumbnailImage(advertiserPrincipal.userId, request)
         return ResponseEntity.ok().body(
             SetAdvertisementThumbnailResponse.of(
                 FrontErrorCode.OK.code,
@@ -94,7 +94,7 @@ class AdvertisementImageController(
             GetAdThumbnailUrlResponse.of(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
-                advertisementImageService.findThumbnailUrlByAdvertisementId(advertisementId)
+                advertisementImageApiService.findThumbnailUrlByAdvertisementId(advertisementId)
             )
         )
     }
@@ -107,7 +107,7 @@ class AdvertisementImageController(
             GetAllAdImageMetadataResponse.of(
                 FrontErrorCode.OK.code,
                 FrontErrorCode.OK.message,
-                advertisementImageService.findAllMetaDataByAdvertisementId(advertisementId)
+                advertisementImageApiService.findAllMetaDataByAdvertisementId(advertisementId)
             )
         )
     }
@@ -116,7 +116,7 @@ class AdvertisementImageController(
     fun getByIdentifiedUrl(
         @PathVariable imageUri: String
     ): ResponseEntity<ByteArray> {
-        val result = advertisementImageService.findByIdentifiedUri(imageUri)
+        val result = advertisementImageApiService.findByIdentifiedUri(imageUri)
         return ResponseEntity.ok()
             .header(
                 HttpHeaders.CONTENT_DISPOSITION,

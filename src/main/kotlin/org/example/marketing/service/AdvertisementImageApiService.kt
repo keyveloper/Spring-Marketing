@@ -1,108 +1,43 @@
 package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import org.apache.tika.Tika
-import org.example.marketing.config.CustomDateTimeFormatter
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
+import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.board.AdvertisementImage
-import org.example.marketing.dto.board.request.MakeNewAdvertisementImageRequest
-import org.example.marketing.dto.board.request.SaveAdvertisementImage
 import org.example.marketing.dto.board.request.SetAdvertisementThumbnailRequest
 import org.example.marketing.dto.board.response.BinaryImageDataWithType
+import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
+import org.example.marketing.enums.ProfileImageType
+import org.example.marketing.enums.UserType
 import org.example.marketing.exception.*
 import org.example.marketing.repository.board.AdvertisementImageRepository
 import org.example.marketing.repository.board.AdvertisementRepository
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.client.WebClient
+import org.springframework.web.reactive.function.client.awaitBody
 import java.io.File
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
 import java.util.*
 
+// service for image-api-server
 @Service
-class AdvertisementImageService(
+class AdvertisementImageApiService(
     private val advertisementImageRepository: AdvertisementImageRepository,
     private val advertisementRepository: AdvertisementRepository,
-    private val advertisementDraftService: AdvertisementDraftService
+    private val advertisementDraftService: AdvertisementDraftService,
+
+    @Qualifier("imageApiServerClient") private val marketingApiClient: WebClient,
+    private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) {
-    private val rootDirPath = "C:\\Users\\dideh\\Desktop\\Spring\\images\\advertisement"
     private val logger = KotlinLogging.logger {}
-    fun save(
-        advertiserId: Long,
-        meta: MakeNewAdvertisementImageRequest,
-        file: MultipartFile
-    ): AdvertisementImage {
+    private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
-        // extract meta data
-        val tika = Tika()
-        val realType = tika.detect(file.inputStream)
-        // save file
-        val dir = Paths.get(rootDirPath)
-        Files.createDirectories(dir)
 
-        val extension = when (realType) {
-            "image/png" -> "png"
-            "image/jpeg" -> "jpg"
-            else -> "bin"
-        }
-        val fileNameUuid = "${UUID.randomUUID()}.$extension"
-        val filePath = dir.resolve(fileNameUuid)
-        val apiUuid = UUID.randomUUID().toString()
-        val apiCalUri = "/advertisement/image/$apiUuid"
-
-        logger.info {
-            "filename: $fileNameUuid\n" +
-                    "filePath: $filePath\n" +
-                    "apiUuid: $apiUuid\n" +
-                    "apiCalUrl: $apiCalUri\n" +
-                    "extension : $extension"
-        }
-
-        // 🙄 orphan file ...
-        file.inputStream.use {
-            Files.copy(it, filePath, StandardCopyOption.REPLACE_EXISTING)
-        }
-
-        try {
-            return transaction {
-                // draft validation check
-                val draft = advertisementDraftService.findById(meta.draftId)
-
-                // limitation check
-                val count = advertisementImageRepository.findAllByAdvertisementId(meta.draftId)
-                    .size
-                if (count >= 5) {
-                    throw InsertLimitationAdImageException()
-                }
-
-                // expired check
-                val apiCallAt = System.currentTimeMillis() / 1000
-                if (draft.expiredAt < apiCallAt) {
-                    throw ExpiredDraftException(
-                        logics = "advertisementDraft svc - save - draft expried checking",
-                        expiredAt = CustomDateTimeFormatter.epochToString(draft.expiredAt),
-                        apiCallAt = CustomDateTimeFormatter.epochToString(apiCallAt)
-                    )
-                }
-
-                val savedEntity = advertisementImageRepository.save(
-                    SaveAdvertisementImage.of(
-                        meta = meta,
-                        convertedFileName = fileNameUuid,
-                        filePath = filePath.toString(),
-                        apiCallUri = apiCalUri,
-                        fileSizeKB = file.size / 1024,
-                        fileType = realType
-                    )
-                )
-                AdvertisementImage.of(savedEntity)
-            }
-        } catch (ex: Exception) {
-            runCatching { Files.deleteIfExists(filePath) }
-            throw ex
-        }
-    }
 
     fun findByIdentifiedUri(uri: String): BinaryImageDataWithType{
         return transaction {

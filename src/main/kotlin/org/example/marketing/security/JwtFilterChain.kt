@@ -15,13 +15,20 @@ class JwtFilterChain(
     private val jwtTokenProvider: JwtTokenProvider
 ): OncePerRequestFilter() {
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
-        logger.info {"?"}
-        val path = request.requestURI
+    companion object {
+        private val log = KotlinLogging.logger {}
+    }
 
+    // Skip async dispatches - they're already authenticated in the initial request
+    override fun shouldNotFilterAsyncDispatch(): Boolean {
+        log.info { "⚙️ shouldNotFilterAsyncDispatch() called - returning true" }
+        return true  // Don't filter async dispatches
+    }
+
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val path = request.requestURI
         val skip = path.startsWith("/test") || path.startsWith("/entry") ||
                 path.startsWith("/open")
-
         return skip
     }
 
@@ -30,14 +37,20 @@ class JwtFilterChain(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
-        val logger = KotlinLogging.logger {}
-        logger.info { "Authorization: ${request.getHeader("Authorization")}" }
+        // Manual check for ASYNC dispatch as backup
+        if (request.dispatcherType == jakarta.servlet.DispatcherType.ASYNC) {
+            log.info { "⏭️ Skipping JWT filter for ASYNC dispatch" }
+            filterChain.doFilter(request, response)
+            return
+        }
 
+        log.info { "🔍 DispatcherType: ${request.dispatcherType}" }
+        log.info { "Authorization: ${request.getHeader("Authorization")}" }
 
         if (shouldNotFilter(request)) {
-            logger.info {"\uD83D\uDD13 Skipping JWT filter for: ${request.requestURI}"}
+            log.info { "🔓 Skipping JWT filter for: ${request.requestURI}" }
             val auth = SecurityContextHolder.getContext().authentication
-            logger.info {"\uD83D\uDD0D Authentication after skip: $auth"}
+            log.info { "🔍 Authentication after skip: $auth" }
             filterChain.doFilter(request, response)
             return
         }
@@ -46,13 +59,13 @@ class JwtFilterChain(
 
         if (jwtTokenProvider.validateToken(jwtToken)) {
             val authentication: Authentication = jwtTokenProvider.getAuthentication(jwtToken)
-            logger.info {"[in doFilterInternal] final authentication: $authentication"}
+            log.info { "[in doFilterInternal] final authentication: $authentication" }
             SecurityContextHolder.getContext().authentication = authentication
             val contextAuth = SecurityContextHolder.getContext().authentication
-            logger.info { "✅ Auth stored in context: $contextAuth" }
-            logger.info { "Context auth isAuthenticated: ${contextAuth?.isAuthenticated}" }
-            logger.info { "Context auth class: ${contextAuth?.javaClass}" }
-            logger.info { "✅ Principal class: ${authentication.principal::class.qualifiedName}" }
+            log.info { "✅ Auth stored in context: $contextAuth" }
+            log.info { "Context auth isAuthenticated: ${contextAuth?.isAuthenticated}" }
+            log.info { "Context auth class: ${contextAuth?.javaClass}" }
+            log.info { "✅ Principal class: ${authentication.principal::class.qualifiedName}" }
         }
 
         filterChain.doFilter(request, response)

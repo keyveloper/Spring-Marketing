@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service
 class OpenAIApiService(
     private val chatClient: ChatClient,
     private val circuitBreakerRegistry: CircuitBreakerRegistry,
-    private val keywordFilterService: KeywordFilterService
 ) {
     private val rule = KEYWORD_COMBINATION_PROMPT
     private val logger = KotlinLogging.logger {}

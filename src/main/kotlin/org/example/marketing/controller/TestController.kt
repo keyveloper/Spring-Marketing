@@ -54,17 +54,7 @@ class TestController(
         )
     }
 
-    @GetMapping("/test/gpt/filters")
-    suspend fun getRelatedKeywordFiltered1And2(
-        @RequestBody request: GetKeywordCombinationRequest
-    ): ResponseEntity<List<String?>> {
-        return ResponseEntity.ok().body(
-            keywordTestService.fetchRelatedKeywordFiltered1(
-                request.keyword,
-                request.context
-            )
-        )
-    }
+
 
     @PostMapping("/test/ad")
     suspend fun testAd(

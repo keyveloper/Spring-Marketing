@@ -40,4 +40,23 @@ class WebClientConfig {
             .baseUrl("http://localhost:3000/scrapper") // Customize if needed
             .build()
     }
+
+    @Bean("imageApiServerClient")
+    fun imageApiServerWebClient(): WebClient {
+        val timeout = Duration.ofSeconds(30)
+
+        val httpClient = HttpClient.create()
+            .responseTimeout(timeout)
+            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10_000)
+            .doOnConnected { conn ->
+                conn.addHandlerLast(ReadTimeoutHandler(timeout.seconds.toInt()))
+                conn.addHandlerLast(WriteTimeoutHandler(timeout.seconds.toInt()))
+            }
+
+        return WebClient.builder()
+            .clientConnector(ReactorClientHttpConnector(httpClient))
+            .baseUrl("http://localhost:8081") // marketing-api-server base URL
+            .defaultHeader("Content-Type", "application/json")
+            .build()
+    }
 }

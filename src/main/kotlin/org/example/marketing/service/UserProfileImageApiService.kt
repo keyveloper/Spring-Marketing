@@ -4,74 +4,119 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
-import org.example.marketing.domain.user.AdvertiserProfileImage
-import org.example.marketing.dto.board.response.BinaryImageDataWithType
-import org.example.marketing.dto.user.request.MakeNewProfileImageApiRequest
+import org.example.marketing.domain.user.UserProfileImageInfo
+import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
+import org.example.marketing.dto.user.request.UploadUserProfileImageRequestFromClient
+import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
+import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.enums.UserType
 import org.example.marketing.exception.NotFoundAdvertiserImageException
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.example.marketing.exception.UploadFailedToImageServerException
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.core.io.buffer.DataBufferUtils
+import org.springframework.core.io.buffer.DefaultDataBufferFactory
+import org.springframework.http.HttpHeaders
+import org.springframework.http.MediaType
+import org.springframework.http.client.MultipartBodyBuilder
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
+import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
-import java.nio.file.Files
-import java.nio.file.Paths
-import java.util.*
+import org.springframework.web.reactive.function.client.awaitBody
 
 @Service
-class AdvertiserProfileImageService(
-    @Qualifier("marketingApiClient") private val marketingApiClient: WebClient,
+class UserProfileImageApiService(
+    @Qualifier("imageApiServerClient") private val imageApiServerClient: WebClient,
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) {
     private val logger = KotlinLogging.logger {}
     private val circuitBreaker = circuitBreakerRegistry.circuitBreaker("marketingApiCircuitBreaker")
 
-    @CircuitBreaker(name = "marketingApiCircuitBreaker", fallbackMethod = "uploadToImageServerFallback")
-    fun uploadToImageServer(
+    suspend fun uploadToImageServer(
         userId: Long,
         userType: UserType,
+        profileImageType: ProfileImageType,
         file: MultipartFile
-    ): AdvertiserProfileImage {
-        logger.info { "Uploading image to image-api-server for user: $userId, type: ${UserType}" }
+    ): UserProfileImageInfo {
+        logger.info { "Uploading image to image-api-server for user: ${userId}, type: ${userType}" }
 
         return try {
             circuitBreaker.executeSuspendFunction {
-                val apiReqeust = MakeNewProfileImageApiRequest.of(
-                    userType, userId,
+                val apiRequest = UploadUserProfileImageApiRequest.of(
+                    userType = userType,
+                    userId = userId,
+                    profileImageType = profileImageType
                 )
+
+                // Build multipart body with file and metadata
+                val bodyBuilder = MultipartBodyBuilder()
+
+                // Add file part
+                bodyBuilder.part("file", file.resource)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "form-data; name=file; filename=${file.originalFilename}")
+                    .contentType(MediaType.parseMediaType(file.contentType
+                        ?: MediaType.APPLICATION_OCTET_STREAM_VALUE))
+
+                // Add metadata part
+                bodyBuilder.part("meta", apiRequest, MediaType.APPLICATION_JSON)
+
+                val response = imageApiServerClient.post()
+                    .uri("/api/profile-images")
+                    .contentType(MediaType.MULTIPART_FORM_DATA)
+                    .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
+                    .retrieve()
+                    .awaitBody<UploadUserProfileImageResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    org.example.marketing.enums.MSAServiceErrorCode.OK -> {
+                        val result = response.saveProfileImageResult
+                            ?: throw UploadFailedToImageServerException(
+                                logics = "userprofileImageApiServer - uploadToImageServer",
+                            )
+
+                        logger.info { "Successfully uploaded image: id=${result.id}, s3Key=${result.s3Key}" }
+
+                        // Convert SaveProfileImageResult to AdvertiserProfileImage
+                        UserProfileImageInfo(
+                            id = result.id,
+                            s3Key = result.s3Key,
+                            bucketName = result.bucketName,
+                            contentType = result.contentType,
+                            size = result.size,
+                            originalFileName = result.originalFileName,
+                        )
+                    }
+                    else -> {
+                        logger.error { "Upload failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        throw UploadFailedToImageServerException(
+                            logics = "userprofileImageApiServer - uploadToImageServer",
+                        )
+                    }
+                }
             }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to upload image to image-api-server: ${ex.message}" }
+            throw ex
         }
     }
 
-    fun commit(advertiserId: Long, metaEntityId: Long): AdvertiserProfileImage {
-        return transaction {
-            // 📌 skip legal check
-
-            val commitedEntity = advertiserProfileImageRepository.commitById(metaEntityId)
-
-            if (commitedEntity != null) {
-                AdvertiserProfileImage.of(commitedEntity)
-            } else {
-                throw NotFoundAdvertiserImageException("adProfileImgSvc- commit")
-            }
-        }
-    }
-
-    fun findByUnifiedCode(unifiedCode: String): BinaryImageDataWithType {
-        return transaction {
-            val targetEntity = advertiserProfileImageRepository.findByUnifiedCode(unifiedCode)
-
-            if (targetEntity != null) {
-                val path = Paths.get(targetEntity.filePath)
-                val bytes = Files.readAllBytes(path)
-                val type = targetEntity.fileType
-                BinaryImageDataWithType.of(
-                    bytes = bytes,
-                    type = type
-                )
-            } else {
-                throw NotFoundAdvertiserImageException("adProfileImgSvc- findByUnifidedCode")
-            }
-        }
+    suspend fun uploadToImageServerFallback(
+        userId: Long,
+        userType: UserType,
+        profileImageType: ProfileImageType,
+        file: MultipartFile,
+        throwable: Throwable
+    ): UserProfileImageInfo {
+        logger.error { "Circuit breaker fallback triggered for uploadToImageServer: ${throwable.message}" }
+        logger.error { "Failed request details - userId: $userId, userType: $userType, profileImageType: $profileImageType, fileName: ${file.originalFilename}" }
+        throw UploadFailedToImageServerException(
+            logics = "UserProfileImageApiService - uploadToImageServer fallback",
+            message = "Failed to upload image to image-api-server: ${throwable.message}"
+        )
     }
 }

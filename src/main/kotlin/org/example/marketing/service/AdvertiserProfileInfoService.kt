@@ -11,7 +11,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import org.springframework.stereotype.Service
 
 @Service
-class AdvertiseProfileInfoService(
+class AdvertiserProfileInfoService(
     private val advertiserProfileInfoRepository: AdvertiserProfileInfoRepository,
     private val advertiserProfileDslRepository: AdvertiserProfileDslRepository,
     private val advertisementPackageService: AdvertisementPackageService
