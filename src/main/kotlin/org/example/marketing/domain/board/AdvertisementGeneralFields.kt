@@ -23,14 +23,12 @@ data class AdvertisementGeneralFields(
     val itemInfo: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val imageUris: List<String?>,
-    val thumbnailUri: String?,
+    val imageUris: List<String?> = listOf(),
+    val thumbnailUri: String? = null,
 ) {
     companion object {
         fun of(
             domain: AdvertisementPackageEntity,
-            imageUris: List<String?>,
-            thumbnailUri: String?
         ): AdvertisementGeneralFields {
             return AdvertisementGeneralFields(
                 id = domain.id,
@@ -51,8 +49,6 @@ data class AdvertisementGeneralFields(
                 itemInfo = domain.itemInfo,
                 createdAt = domain.createdAt,
                 updatedAt = domain.updatedAt,
-                imageUris = imageUris,
-                thumbnailUri = thumbnailUri
             )
         }
 

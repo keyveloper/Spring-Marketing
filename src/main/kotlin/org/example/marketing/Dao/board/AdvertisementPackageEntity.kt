@@ -26,8 +26,6 @@ data class AdvertisementPackageEntity(
     val itemInfo: String?,
     val createdAt: Long,
     val updatedAt: Long,
-    val imageUri: String,
-    val isThumbnail: Boolean,
     val category: DeliveryCategory?,
     // 📌 location info
 ) {
@@ -52,8 +50,6 @@ data class AdvertisementPackageEntity(
                 itemInfo = row[AdvertisementsTable.itemInfo],
                 createdAt = row[AdvertisementsTable.createdAt],
                 updatedAt = row[AdvertisementsTable.updatedAt],
-                imageUri = row[AdvertisementImagesTable.apiCallUri],
-                isThumbnail = row[AdvertisementImagesTable.isThumbnail],
                 category = row[AdvertisementDeliveryCategoriesTable.category],
             )
         }

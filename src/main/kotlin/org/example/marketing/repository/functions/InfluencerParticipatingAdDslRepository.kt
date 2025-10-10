@@ -5,7 +5,6 @@ import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.DraftStatus
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.table.AdvertisementDraftsTable
-import org.example.marketing.table.AdvertisementImagesTable
 import org.example.marketing.table.AdvertisementsTable
 import org.example.marketing.table.ReviewOffersTable
 import org.jetbrains.exposed.sql.*
@@ -23,15 +22,6 @@ class InfluencerParticipatingAdDslRepository {
                 additionalConstraint = {
                     (ReviewOffersTable.influencerId eq influencerId) and
                             (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-                }
-            ).join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
                 }
             ).join(
                 otherTable = AdvertisementDraftsTable,

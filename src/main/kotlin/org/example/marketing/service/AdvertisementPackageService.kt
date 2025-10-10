@@ -17,14 +17,10 @@ class AdvertisementPackageService(
         return domains.groupBy { it.id }
             .map { (advertisementId, groupedRows) ->
                 val advertisement = groupedRows.first()
-                val imageUris = groupedRows.map { it.imageUri }.distinct()
-                val thumbnailUri = groupedRows.find { it.isThumbnail }?.imageUri
                 val category = groupedRows.map { it.category }.distinct()
 
                 val generalFields = AdvertisementGeneralFields.of(
                     domain = advertisement,
-                    imageUris = imageUris,
-                    thumbnailUri = thumbnailUri
                 )
 
                 AdvertisementPackage.of(generalFields, category)
@@ -38,13 +34,9 @@ class AdvertisementPackageService(
 
             val original = packagesDomain.firstOrNull()
                 ?: throw NotFoundAdvertisementException(logics = "adPackageSvc-findByAdvertiserId: $advertisementId")
-            val imageUris = packagesDomain.map { it.imageUri }.distinct()
-            val thumbnailUri = packagesDomain.find { it.isThumbnail }?.imageUri
 
             val generalFields = AdvertisementGeneralFields.of(
                 domain = original,
-                imageUris = imageUris,
-                thumbnailUri = thumbnailUri
             )
 
             val categories = packagesDomain.map { it.category }.distinct()

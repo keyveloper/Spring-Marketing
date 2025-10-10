@@ -26,16 +26,6 @@ class FollowDslRepository {
                             (AdvertiserFollowersTable.influencerId eq influenceId) and
                             (AdvertiserFollowersTable.followStatus eq FollowStatus.FOLLOW)
                 }
-            )
-            .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
-                }
             ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,

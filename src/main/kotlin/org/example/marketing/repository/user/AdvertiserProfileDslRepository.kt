@@ -43,17 +43,6 @@ class AdvertiserProfileDslRepository {
     fun findLiveAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.advertiserId eq advertiserId) and
-                            (AdvertisementsTable.status eq AdvertisementStatus.LIVE)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
@@ -86,16 +75,6 @@ class AdvertiserProfileDslRepository {
     fun findExpiredAllAdsByAdvertiserId(advertiserId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.EXPIRED) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.advertiserId eq advertiserId)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,

@@ -5,7 +5,6 @@ import org.example.marketing.dto.board.response.DeleteAdDraftResponse
 import org.example.marketing.dto.board.response.IssueNewAdvertisementDraftResponse
 import org.example.marketing.enums.FrontErrorCode
 import org.example.marketing.service.AdvertisementDraftService
-import org.example.marketing.service.AdvertisementImageDslService
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.*
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*
 @RestController
 class AdvertisementDraftController(
     private val advertisementDraftService: AdvertisementDraftService,
-    private val advertisementImageDslService: AdvertisementImageDslService,
 ) {
 
     @PostMapping("/advertisement/new-draft")
@@ -25,23 +23,6 @@ class AdvertisementDraftController(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
                 advertisementDraft = advertisementDraftService.issueDraft(advertiserPrincipal.userId)
-            )
-        )
-    }
-
-    @DeleteMapping("/advertisement/draft/{draftId}")
-    fun deleteById(
-        @PathVariable("draftId") draftId: Long,
-        @AuthenticationPrincipal advertiserPrincipal: AdvertiserPrincipal
-    ): ResponseEntity<DeleteAdDraftResponse> {
-        advertisementImageDslService.withdrawDraft(
-            advertiserId = advertiserPrincipal.userId,
-            targetDaftId = draftId,
-        )
-        return ResponseEntity.ok().body(
-            DeleteAdDraftResponse.of(
-                frontErrorCode = FrontErrorCode.OK.code,
-                errorMessage = FrontErrorCode.OK.message,
             )
         )
     }

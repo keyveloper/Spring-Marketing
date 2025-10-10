@@ -8,7 +8,6 @@ import kotlinx.datetime.minus
 import org.example.marketing.dao.board.AdvertisementPackageEntity
 import org.example.marketing.enums.*
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
-import org.example.marketing.table.AdvertisementImagesTable
 import org.example.marketing.table.AdvertisementsTable
 import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.*
@@ -26,17 +25,6 @@ class AdvertisementDeliveryDslRepository {
     : List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.createdAt lessEq cutoffTime) and
-                            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.INNER,
                 onColumn = AdvertisementsTable.id,
@@ -73,17 +61,6 @@ class AdvertisementDeliveryDslRepository {
     ): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.createdAt greaterEq pivotTime) and
-                            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.INNER,
                 onColumn = AdvertisementsTable.id,
@@ -113,17 +90,6 @@ class AdvertisementDeliveryDslRepository {
     ): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.createdAt lessEq pivotTime) and
-                            (AdvertisementsTable.reviewType eq ReviewType.DELIVERY)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.INNER,
                 onColumn = AdvertisementsTable.id,

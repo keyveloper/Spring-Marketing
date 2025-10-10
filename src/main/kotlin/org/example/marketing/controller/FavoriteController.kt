@@ -47,19 +47,19 @@ class FavoriteController(
             )
         )
     }
-
-    @GetMapping("/favorite/ads/influencer-personal")
-    fun getAllAdsWithThumbnail(
-        @AuthenticationPrincipal influencerPrincipal: InfluencerPrincipal
-    ): ResponseEntity<GetInfluencerPersonalFavoriteAdsResponse> {
-        return ResponseEntity.ok().body(
-            GetInfluencerPersonalFavoriteAdsResponse.of(
-                frontErrorCode = FrontErrorCode.OK.code,
-                errorMessage = FrontErrorCode.OK.message,
-                result  = advertisementFavoriteService.findAllAdWithThumbnailByInfluencerId(
-                    influencerPrincipal.userId
-                )
-            )
-        )
-    }
+//
+//    @GetMapping("/favorite/ads/influencer-personal")
+//    fun getAllAdsWithThumbnail(
+//        @AuthenticationPrincipal influencerPrincipal: InfluencerPrincipal
+//    ): ResponseEntity<GetInfluencerPersonalFavoriteAdsResponse> {
+//        return ResponseEntity.ok().body(
+//            GetInfluencerPersonalFavoriteAdsResponse.of(
+//                frontErrorCode = FrontErrorCode.OK.code,
+//                errorMessage = FrontErrorCode.OK.message,
+//                result  = advertisementFavoriteService.findAllAdWithThumbnailByInfluencerId(
+//                    influencerPrincipal.userId
+//                )
+//            )
+//        )
+//    }
 }

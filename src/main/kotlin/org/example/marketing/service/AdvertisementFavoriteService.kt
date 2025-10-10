@@ -78,19 +78,19 @@ class AdvertisementFavoriteService(
             advertisementPackageService.groupToPackage(packageDomains)
         }
     }
-
-    fun findAllAdWithThumbnailByInfluencerId(influencerId: Long): List<InfluencerFavoriteAdWithThumbnail> {
-        return transaction {
-            val entities = favoriteDslRepository.findAllFavoriteAdByInfluencerId(influencerId)
-
-            entities
-                .groupBy { it.advertisementId } //📌  혹시 두개일 수도 있어서
-                .mapNotNull { (_, group) ->
-                    val thumbnailEntity = group.find { it.isThumbnail }
-                    thumbnailEntity?.let {
-                        InfluencerFavoriteAdWithThumbnail.of(it)
-                    }
-                }
-        }
-    }
+//
+//    fun findAllAdWithThumbnailByInfluencerId(influencerId: Long): List<InfluencerFavoriteAdWithThumbnail> {
+//        return transaction {
+//            val entities = favoriteDslRepository.findAllFavoriteAdByInfluencerId(influencerId)
+//
+//            entities
+//                .groupBy { it.advertisementId } //📌  혹시 두개일 수도 있어서
+//                .mapNotNull { (_, group) ->
+//                    val thumbnailEntity = group.find { it.isThumbnail }
+//                    thumbnailEntity?.let {
+//                        InfluencerFavoriteAdWithThumbnail.of(it)
+//                    }
+//                }
+//        }
+//    }
 }

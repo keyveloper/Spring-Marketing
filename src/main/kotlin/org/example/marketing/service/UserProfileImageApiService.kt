@@ -2,19 +2,14 @@ package org.example.marketing.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.user.UserProfileImageInfo
 import org.example.marketing.dto.user.request.UploadUserProfileImageApiRequest
-import org.example.marketing.dto.user.request.UploadUserProfileImageRequestFromClient
 import org.example.marketing.dto.user.response.UploadUserProfileImageResponseFromServer
 import org.example.marketing.enums.ProfileImageType
 import org.example.marketing.enums.UserType
-import org.example.marketing.exception.NotFoundAdvertiserImageException
 import org.example.marketing.exception.UploadFailedToImageServerException
 import org.springframework.beans.factory.annotation.Qualifier
-import org.springframework.core.io.buffer.DataBufferUtils
-import org.springframework.core.io.buffer.DefaultDataBufferFactory
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.http.client.MultipartBodyBuilder

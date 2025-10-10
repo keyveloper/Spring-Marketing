@@ -5,7 +5,6 @@ import org.example.marketing.domain.user.AdvertiserPrincipal
 import org.example.marketing.dto.board.request.*
 import org.example.marketing.dto.board.response.*
 import org.example.marketing.enums.FrontErrorCode
-import org.example.marketing.service.AdvertisementImageDslService
 import org.example.marketing.service.AdvertisementGeneralService
 import org.example.marketing.service.AdvertisementPackageService
 import org.springframework.http.ResponseEntity
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*
 class AdvertisementCRUDController( // only for general advertisement
     private val advertisementService: AdvertisementGeneralService,
     private val advertisementPackageService: AdvertisementPackageService,
-    private val advertisementImageDslService: AdvertisementImageDslService
 ) {
     @PostMapping("/advertisement/general")
     fun save(
@@ -62,16 +60,4 @@ class AdvertisementCRUDController( // only for general advertisement
         )
     }
 
-    @DeleteMapping("/advertisement")
-    fun delete(
-        @Valid @RequestBody request: DeleteAdvertisementRequest
-    ): ResponseEntity<DeleteAdvertisementResponse> {
-        advertisementImageDslService.deleteAdvertisement(request.targetId)
-        return ResponseEntity.ok().body(
-            DeleteAdvertisementResponse.of(
-                frontErrorCode = FrontErrorCode.OK.code,
-                errorMessage = FrontErrorCode.OK.message,
-            )
-        )
-    }
 }

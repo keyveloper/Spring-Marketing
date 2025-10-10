@@ -21,16 +21,6 @@ class AdvertisementEventRepository {
         val cutoffTime = now.minus(7, DateTimeUnit.DAY, systemTZ).toEpochMilliseconds()
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.createdAt lessEq cutoffTime)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
@@ -54,15 +44,6 @@ class AdvertisementEventRepository {
     fun findDeadlineAll(): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
             .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE)
-                }
-            ).join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,

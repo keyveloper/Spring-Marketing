@@ -5,7 +5,6 @@ import org.example.marketing.enums.AdvertisementStatus
 import org.example.marketing.enums.EntityLiveStatus
 import org.example.marketing.enums.UserStatus
 import org.example.marketing.table.AdvertisementDeliveryCategoriesTable
-import org.example.marketing.table.AdvertisementImagesTable
 import org.example.marketing.table.AdvertisementsTable
 import org.example.marketing.table.AdvertisersTable
 import org.jetbrains.exposed.sql.ColumnSet
@@ -19,17 +18,7 @@ class AdvertisementPackageRepository {
     // 🎮 common find
     fun findPackageByAdvertisementId(advertisementId: Long): List<AdvertisementPackageEntity> {
         val joinedTables: ColumnSet = AdvertisementsTable
-            .join(
-                otherTable = AdvertisementImagesTable,
-                joinType = JoinType.INNER,
-                onColumn = AdvertisementsTable.id,
-                otherColumn = AdvertisementImagesTable.advertisementId,
-                additionalConstraint = {
-                    (AdvertisementsTable.status eq AdvertisementStatus.LIVE) and
-                            (AdvertisementImagesTable.liveStatus eq EntityLiveStatus.LIVE) and
-                            (AdvertisementsTable.id eq advertisementId)
-                }
-            ).join(
+           .join(
                 AdvertisementDeliveryCategoriesTable,
                 JoinType.LEFT,
                 onColumn = AdvertisementsTable.id,
