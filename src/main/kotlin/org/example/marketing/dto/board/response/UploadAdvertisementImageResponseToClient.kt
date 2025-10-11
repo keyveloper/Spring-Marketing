@@ -3,7 +3,7 @@ package org.example.marketing.dto.board.response
 import org.example.marketing.domain.board.AdvertisementImageInfo
 import org.example.marketing.dto.error.FrontErrorResponse
 
-class UploadAdvertisementImageResponseToClient(
+data class UploadAdvertisementImageResponseToClient(
     override val frontErrorCode: Int,
     override val errorMessage: String,
     val result: AdvertisementImageInfo

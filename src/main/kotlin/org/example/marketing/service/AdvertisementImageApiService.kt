@@ -5,9 +5,10 @@ import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.board.AdvertisementImageInfo
 import org.example.marketing.dto.board.request.UploadAdvertisementImageApiRequest
+import org.example.marketing.dto.board.response.AdvertisementImageMetadataWithUrl
+import org.example.marketing.dto.board.response.AdvertisementImageResponseFromServer
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseFromServer
 import org.example.marketing.exception.UploadFailedToImageServerException
-import org.example.marketing.repository.board.AdvertisementRepository
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -29,6 +30,7 @@ class AdvertisementImageApiService(
 
     suspend fun uploadToImageServer(
         userId: Long,
+        advertisementId: Long,
         isThumbnail: Boolean,
         file: MultipartFile
     ): AdvertisementImageInfo {
@@ -38,6 +40,8 @@ class AdvertisementImageApiService(
         return try {
             circuitBreaker.executeSuspendFunction {
                 val apiRequest = UploadAdvertisementImageApiRequest.of(
+                    advertisementId = advertisementId,
+                    writerId = userId,
                     isThumbnail = isThumbnail
                 )
 
@@ -95,6 +99,47 @@ class AdvertisementImageApiService(
             logger.error { "Failed to upload advertisement image to image-api-server: ${ex.message}" }
             throw ex
         }
+    }
+
+    suspend fun fetchImageByAdvertisementId(adId: Long): List<AdvertisementImageMetadataWithUrl> {
+        logger.info {"fetch advertisementImageMetadataWithUrl: adId: ${adId}"}
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val response = marketingApiClient.get()
+                    .uri("/api/advertisement-images/{adId}", adId)
+                    .retrieve()
+                    .awaitBody<AdvertisementImageResponseFromServer>()
+
+
+                // ⚒️ Debugging logs
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}, " +
+                        "imageCount=${response.result.size}" }
+
+                response.result.forEachIndexed { index, metadata ->
+                    logger.info { "Image[$index]: bucketName=${metadata.bucketName}, s3Key=${metadata.s3Key}, " +
+                            "contentType=${metadata.contentType}, size=${metadata.size}, " +
+                            "originalFileName=${metadata.originalFileName}, isThumbnail=${metadata.isThumbnail}" }
+                }
+
+                logger.info { "Successfully fetched images for advertisement: $adId" }
+                response.result
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to fetch advertisement images for adId=$adId: ${ex.message}" }
+            throw ex
+        }
+
+    }
+
+    suspend fun fetchImageByAdvertisementIdFallback(
+        adId: Long,
+        throwable: Throwable
+    ): List<AdvertisementImageMetadataWithUrl> {
+        logger.error { "Circuit breaker fallback triggered for fetchImageByAdvertisementId: ${throwable.message}" }
+        logger.error { "Failed request details - adId: $adId" }
+        return emptyList()
     }
 
     suspend fun uploadToImageServerFallback(
