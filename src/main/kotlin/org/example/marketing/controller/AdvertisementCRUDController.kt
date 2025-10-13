@@ -25,10 +25,7 @@ class AdvertisementCRUDController( // only for general advertisement
             MakeNewAdvertisementGeneralResponse.of(
                 frontErrorCode = FrontErrorCode.OK.code,
                 errorMessage = FrontErrorCode.OK.message,
-                createdId = advertisementService.save(
-                    advertiserPrincipal.userId,
-                    request
-                )
+                result = advertisementService.save(advertiserPrincipal.userId, request)
             )
         )
     }

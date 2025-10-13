@@ -4,10 +4,14 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry
 import io.github.resilience4j.kotlin.circuitbreaker.executeSuspendFunction
 import org.example.marketing.domain.board.AdvertisementImageInfo
+import org.example.marketing.dto.board.request.ConnectAdvertisementIdRequest
 import org.example.marketing.dto.board.request.UploadAdvertisementImageApiRequest
 import org.example.marketing.dto.board.response.AdvertisementImageMetadataWithUrl
 import org.example.marketing.dto.board.response.AdvertisementImageResponseFromServer
+import org.example.marketing.dto.board.response.ConnectAdvertisementResponseFromServer
+import org.example.marketing.dto.board.response.ConnectAdvertisementResult
 import org.example.marketing.dto.board.response.UploadAdvertisementImageResponseFromServer
+import org.example.marketing.exception.MSAErrorException
 import org.example.marketing.exception.UploadFailedToImageServerException
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.http.HttpHeaders
@@ -23,6 +27,7 @@ import org.springframework.web.reactive.function.client.awaitBody
 @Service
 class AdvertisementImageApiService(
     @Qualifier("imageApiServerClient") private val marketingApiClient: WebClient,
+    private val advertisementDraftService: AdvertisementDraftService,
     private val circuitBreakerRegistry: CircuitBreakerRegistry
 ) {
     private val logger = KotlinLogging.logger {}
@@ -30,7 +35,7 @@ class AdvertisementImageApiService(
 
     suspend fun uploadToImageServer(
         userId: Long,
-        advertisementId: Long,
+        advertisementDraftId: Long,
         isThumbnail: Boolean,
         file: MultipartFile
     ): AdvertisementImageInfo {
@@ -38,9 +43,12 @@ class AdvertisementImageApiService(
                 "$userId, isThumbnail: $isThumbnail" }
 
         return try {
+            // validation check
+            advertisementDraftService.findById(advertisementDraftId)
+
             circuitBreaker.executeSuspendFunction {
                 val apiRequest = UploadAdvertisementImageApiRequest.of(
-                    advertisementId = advertisementId,
+                    advertisementDraftId = advertisementDraftId,
                     writerId = userId,
                     isThumbnail = isThumbnail
                 )
@@ -154,5 +162,54 @@ class AdvertisementImageApiService(
             logics = "AdvertisementImageApiService - uploadToImageServer fallback",
             message = "Failed to upload advertisement image to image-api-server: ${throwable.message}"
         )
+    }
+
+    suspend fun connectAdvertisementToImageServer(
+        draftId: Long,
+        advertisementId: Long
+    ): ConnectAdvertisementResult {
+        logger.info { "Connecting advertisement images to advertisement: draftId=$draftId, advertisementId=$advertisementId" }
+
+        return try {
+            circuitBreaker.executeSuspendFunction {
+                val request = ConnectAdvertisementIdRequest(
+                    draftId = draftId,
+                    advertisementId = advertisementId
+                )
+
+                val response = marketingApiClient.post()
+                    .uri("/api/advertisement-images/connect/advertisement")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(request)
+                    .retrieve()
+                    .awaitBody<ConnectAdvertisementResponseFromServer>()
+
+                logger.info { "Received response from image-api-server: msaServiceErrorCode=" +
+                        "${response.msaServiceErrorCode}, httpStatus=${response.httpStatus}" }
+
+                when (response.msaServiceErrorCode) {
+                    org.example.marketing.enums.MSAServiceErrorCode.OK -> {
+                        val result = response.result
+
+                        logger.info { "Successfully connected advertisement images: " +
+                                "updatedRow=${result.updatedRow}, " +
+                                "connectedKeys=${result.connectedS3BucketKeys.joinToString()}" }
+
+                        result
+                    }
+                    else -> {
+                        logger.error { "Connection failed with msaServiceErrorCode=${response.msaServiceErrorCode}" +
+                                ", errorMessage=${response.errorMessage}, logics=${response.logics}" }
+                        throw MSAErrorException(
+                            logics = "AdvertisementImageApiService - connectAdvertisementToImageServer",
+                            message = response.errorMessage ?: "Failed to connect advertisement images"
+                        )
+                    }
+                }
+            }
+        } catch (ex: Throwable) {
+            logger.error { "Failed to connect advertisement to image-api-server: ${ex.message}" }
+            throw ex
+        }
     }
 }

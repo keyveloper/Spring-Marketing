@@ -30,18 +30,18 @@ class AdvertisementImageController(
     ): ResponseEntity<UploadAdvertisementImageResponseToClient> {
         // Capture authentication before async execution
         val userId = userPrincipal.userId
-        val advertisementId = meta.advertisementId
+        val draftId = meta.advertisementDraftId
         val isThumbnail = meta.isThumbnail
 
         val result = advertisementImageApiService.uploadToImageServer(
             userId =userId,
-            advertisementId =advertisementId,
+            advertisementDraftId = draftId,
             isThumbnail = isThumbnail,
             file = file
         )
 
         /***
-         TODO: Should Add Exception when userType equals INFLUENCER....!
+         TODO: Should Add Exception when userType equals INFLUENCER....! 👉 add validation
         ***/
 
         return ResponseEntity.ok().body(
